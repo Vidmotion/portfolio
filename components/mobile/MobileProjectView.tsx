@@ -1,0 +1,201 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { springs, galleryFade } from '@/lib/motion'
+import { getProjectBySlug } from '@/lib/content'
+import { categoryGradient } from '@/lib/utils'
+import { categoryLabel } from '@/core/registries/categories'
+
+interface MobileProjectViewProps {
+  projectId: string
+  onBack: () => void
+}
+
+export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps) {
+  const project = getProjectBySlug(projectId)
+
+  if (!project) {
+    return (
+      <div style={{ position: 'absolute', inset: 0, background: '#fcfcfd', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a0a0a5', fontSize: '13px', fontFamily: 'var(--font-text)' }}>
+        Project not found
+      </div>
+    )
+  }
+
+  const gradient = categoryGradient(project.category)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 24 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 24 }}
+      transition={springs.default}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        background: '#fcfcfd',
+        overflowY: 'auto',
+        fontFamily: 'var(--font-text)',
+      }}
+    >
+      {/* Cover */}
+      <div
+        style={{
+          width: '100%',
+          height: '330px',
+          position: 'relative',
+          background: gradient,
+          display: 'flex',
+          alignItems: 'flex-end',
+          flexShrink: 0,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)',
+          }}
+          aria-hidden
+        />
+
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          style={{
+            position: 'absolute',
+            top: '56px',
+            left: '18px',
+            width: '34px',
+            height: '34px',
+            borderRadius: '50%',
+            background: 'rgba(0,0,0,0.32)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: 'none',
+            color: '#fff',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2,
+          }}
+          aria-label="Back to projects"
+        >
+          ‹
+        </button>
+
+        {/* Cover meta */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            width: '100%',
+            padding: '60px 24px 26px',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '10px',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.82)',
+              fontWeight: 500,
+            }}
+          >
+            {categoryLabel(project.category)} · {project.year}
+          </div>
+          <div
+            style={{
+              fontSize: '34px',
+              fontWeight: 600,
+              color: '#fff',
+              letterSpacing: '-0.03em',
+              lineHeight: 1.0,
+              marginTop: '8px',
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            {project.title}
+          </div>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: '28px 24px 44px' }}>
+        <p
+          style={{
+            fontSize: '17px',
+            lineHeight: 1.65,
+            color: '#2a2a2c',
+            margin: '0 0 26px',
+            letterSpacing: '-0.015em',
+          }}
+        >
+          {project.description}
+        </p>
+
+        {/* Gallery */}
+        {project.gallery.slice(0, 3).map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: '100%',
+              aspectRatio: '4/3',
+              borderRadius: '16px',
+              marginBottom: '14px',
+              background: gradient,
+              opacity: galleryFade(i),
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04),0 8px 20px rgba(0,0,0,0.07)',
+            }}
+            aria-label={`Gallery image ${i + 1}`}
+          />
+        ))}
+
+        {/* Credits */}
+        <div
+          style={{
+            marginTop: '24px',
+            paddingTop: '24px',
+            borderTop: '0.5px solid rgba(0,0,0,0.08)',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '10px',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: '#b0b0b5',
+              fontWeight: 600,
+              marginBottom: '14px',
+            }}
+          >
+            Credits
+          </div>
+
+          {project.credits.map((credit, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '10px 0',
+                borderBottom: '0.5px solid rgba(0,0,0,0.05)',
+              }}
+            >
+              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{credit.role}</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 500 }}>{credit.name}</span>
+            </div>
+          ))}
+
+          {project.client && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '14px' }}>
+              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>Client</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 600 }}>{project.client}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}

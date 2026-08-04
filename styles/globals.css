@@ -1,0 +1,328 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Portfolio OS — Global Styles
+   Source of truth: Claude/docs/DESIGN_FOUNDATIONS.md
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@import "tailwindcss";
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Color: Neutral Primitives (Light Mode) ──────────────────────────────── */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #F8F8F8;
+  --neutral-100: #F2F2F2;
+  --neutral-200: #ECECEC;
+  --neutral-300: #E0E0E0;
+  --neutral-400: #C4C4C4;
+  --neutral-500: #999999;
+  --neutral-600: #666666;
+  --neutral-700: #444444;
+  --neutral-800: #222222;
+  --neutral-900: #111111;
+
+  /* ── Color: Accent ───────────────────────────────────────────────────────── */
+  --accent-blue:       #0A7EFF;
+  --accent-blue-hover: #0066CC;
+
+  /* ── Color: Status ───────────────────────────────────────────────────────── */
+  --status-success: #34C759;
+  --status-warning: #FF9F0A;
+  --status-error:   #FF3B30;
+
+  /* ── Color: Semantic — Backgrounds ──────────────────────────────────────── */
+  --bg-primary:   var(--neutral-200);
+  --bg-secondary: var(--neutral-100);
+  --bg-window:    rgba(255, 255, 255, 0.72);
+  --bg-dock:      rgba(220, 220, 220, 0.72);
+  --bg-menu:      rgba(248, 248, 248, 0.88);
+  --bg-widget:    rgba(255, 255, 255, 0.65);
+  --bg-overlay:   rgba(0, 0, 0, 0.40);
+
+  /* ── Color: Semantic — Text ──────────────────────────────────────────────── */
+  --text-primary:     var(--neutral-900);
+  --text-secondary:   var(--neutral-600);
+  --text-tertiary:    var(--neutral-500);
+  --text-placeholder: var(--neutral-400);
+  --text-on-accent:   var(--neutral-0);
+
+  /* ── Color: Semantic — Borders ───────────────────────────────────────────── */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.20);
+  --border-window: rgba(255, 255, 255, 0.20);
+
+  /* ── Color: Semantic — Interaction ──────────────────────────────────────── */
+  --hover-overlay:  rgba(255, 255, 255, 0.12);
+  --active-overlay: rgba(255, 255, 255, 0.22);
+
+  /* ── Typography: Font Families ───────────────────────────────────────────── */
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  --font-text:    "SF Pro Text",    -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  --font-mono:    "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ── Typography: Size Scale ──────────────────────────────────────────────── */
+  --font-size-2xs:  0.625rem;   /* 10px */
+  --font-size-xs:   0.6875rem;  /* 11px */
+  --font-size-sm:   0.75rem;    /* 12px */
+  --font-size-base: 0.8125rem;  /* 13px */
+  --font-size-md:   0.9375rem;  /* 15px */
+  --font-size-lg:   1.0625rem;  /* 17px */
+  --font-size-xl:   1.25rem;    /* 20px */
+  --font-size-2xl:  1.5rem;     /* 24px */
+  --font-size-3xl:  2rem;       /* 32px */
+  --font-size-4xl:  3rem;       /* 48px */
+  --font-size-5xl:  4rem;       /* 64px */
+  --font-size-6xl:  6rem;       /* 96px */
+
+  /* ── Typography: Weight Scale ────────────────────────────────────────────── */
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  /* ── Typography: Line Height ─────────────────────────────────────────────── */
+  --line-height-tight:   1.1;
+  --line-height-snug:    1.2;
+  --line-height-normal:  1.4;
+  --line-height-relaxed: 1.6;
+  --line-height-loose:   1.8;
+
+  /* ── Typography: Letter Spacing ──────────────────────────────────────────── */
+  --tracking-tight:  -0.03em;
+  --tracking-snug:   -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+
+  /* ── Spacing ─────────────────────────────────────────────────────────────── */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+  --space-32: 8rem;      /* 128px */
+
+  --spacing-xs:  var(--space-1);
+  --spacing-sm:  var(--space-2);
+  --spacing-md:  var(--space-4);
+  --spacing-lg:  var(--space-6);
+  --spacing-xl:  var(--space-8);
+  --spacing-2xl: var(--space-12);
+  --spacing-3xl: var(--space-16);
+
+  /* ── Border Radius ───────────────────────────────────────────────────────── */
+  --radius-xs:     6px;
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     16px;
+  --radius-xl:     18px;
+  --radius-2xl:    22px;
+  --radius-3xl:    24px;
+  --radius-widget: 26px;
+  --radius-dock:   26px;
+  --radius-full:   9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────────────────────── */
+  --shadow-xs:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:  0 4px 8px rgba(0,0,0,0.08);
+  --shadow-md:  0 8px 24px rgba(0,0,0,0.10);
+  --shadow-lg:  0 16px 48px rgba(0,0,0,0.12);
+  --shadow-xl:  0 24px 64px rgba(0,0,0,0.14);
+  --shadow-2xl: 0 40px 80px rgba(0,0,0,0.16);
+
+  --shadow-window:          0 20px 60px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-window-focused:  0 28px 72px rgba(0,0,0,0.18), 0 6px 16px rgba(0,0,0,0.08);
+  --shadow-window-inactive: 0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-dock:            0 8px 40px rgba(0,0,0,0.18);
+  --shadow-widget:          0 8px 24px rgba(0,0,0,0.10);
+  --shadow-menu:            0 4px 20px rgba(0,0,0,0.12);
+
+  /* ── Z-Index Hierarchy ───────────────────────────────────────────────────── */
+  --z-wallpaper:          0;
+  --z-desktop-icons:      10;
+  --z-widgets:            20;
+  --z-windows:            30;
+  --z-window-active:      50;
+  --z-dock:               70;
+  --z-menu-bar:           80;
+  --z-context-menu:       90;
+  --z-modal:              100;
+  --z-notifications:      110;
+  --z-tooltip:            120;
+
+  /* ── Window Sizes (px) ───────────────────────────────────────────────────── */
+  --window-sm-w: 480px; --window-sm-h: 360px;
+  --window-md-w: 680px; --window-md-h: 480px;
+  --window-lg-w: 900px; --window-lg-h: 600px;
+  --window-xl-w: 1100px; --window-xl-h: 720px;
+
+  /* ── Widget Sizes (px) ───────────────────────────────────────────────────── */
+  --widget-small-w:  160px; --widget-small-h:  160px;
+  --widget-medium-w: 340px; --widget-medium-h: 160px;
+  --widget-large-w:  340px; --widget-large-h:  340px;
+  --widget-wide-w:   520px; --widget-wide-h:   160px;
+
+  /* ── Icon Sizes ──────────────────────────────────────────────────────────── */
+  --icon-xs:  12px;
+  --icon-sm:  16px;
+  --icon-md:  20px;
+  --icon-lg:  24px;
+  --icon-xl:  32px;
+  --icon-2xl: 48px;
+  --icon-3xl: 64px;
+
+  /* ── Motion: Duration (ms) ───────────────────────────────────────────────── */
+  --duration-micro:   120ms;
+  --duration-hover:   180ms;
+  --duration-select:  220ms;
+  --duration-open:    350ms;
+  --duration-close:   280ms;
+  --duration-window:  450ms;
+  --duration-page:    650ms;
+  --duration-modal:   320ms;
+  --duration-widget:  350ms;
+}
+
+/* ─── Tailwind Theme Extension ────────────────────────────────────────────── */
+
+@theme inline {
+  --font-sans:    var(--font-text);
+  --font-display: var(--font-display);
+  --font-mono:    var(--font-mono);
+
+  /* Surface colors exposed to Tailwind utilities */
+  --color-bg-primary:   var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-window:    var(--bg-window);
+  --color-bg-dock:      var(--bg-dock);
+  --color-bg-menu:      var(--bg-menu);
+  --color-bg-widget:    var(--bg-widget);
+  --color-bg-overlay:   var(--bg-overlay);
+
+  --color-text-primary:     var(--text-primary);
+  --color-text-secondary:   var(--text-secondary);
+  --color-text-tertiary:    var(--text-tertiary);
+  --color-text-placeholder: var(--text-placeholder);
+  --color-text-on-accent:   var(--text-on-accent);
+
+  --color-accent:       var(--accent-blue);
+  --color-accent-hover: var(--accent-blue-hover);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-medium: var(--border-medium);
+  --color-border-strong: var(--border-strong);
+  --color-border-window: var(--border-window);
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* OS experience: no page scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-text);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+/* ─── Glass Utility Classes ──────────────────────────────────────────────── */
+
+.glass-standard {
+  background: var(--bg-window);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--border-window);
+}
+
+.glass-heavy {
+  background: var(--bg-dock);
+  backdrop-filter: blur(60px) saturate(200%);
+  -webkit-backdrop-filter: blur(60px) saturate(200%);
+}
+
+.glass-widget {
+  background: var(--bg-widget);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+/* macOS/iOS "squircle" continuous corner curvature. Progressive enhancement —
+   unsupported browsers silently keep the plain border-radius arc set inline,
+   which already looks correct on its own. */
+.glass-widget-squircle {
+  corner-shape: squircle;
+}
+
+/* ─── Skeleton Shimmer ───────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    -45deg,
+    var(--neutral-200) 40%,
+    var(--neutral-100) 50%,
+    var(--neutral-200) 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: var(--neutral-200);
+  }
+}
+
+/* ─── Accessibility Preferences (Settings app) ──────────────────────────── */
+
+[data-reduced-motion='true'] *,
+[data-reduced-motion='true'] *::before,
+[data-reduced-motion='true'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+[data-high-contrast='true'] {
+  filter: contrast(1.16) brightness(1.04);
+}
+
+/* ─── Focus Ring ─────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(10, 126, 255, 0.20);
+}

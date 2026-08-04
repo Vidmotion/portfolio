@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  ::selection{background:rgba(10,126,255,0.18);}
+  ::-webkit-scrollbar{width:9px;height:9px;}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:9999px;border:2px solid transparent;background-clip:padding-box;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  @keyframes winOpen{from{opacity:0;transform:scale(0.94) translateY(8px);filter:blur(6px);}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0);}}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes dockBounce{0%{transform:translateY(0);}30%{transform:translateY(-26px);}55%{transform:translateY(0);}72%{transform:translateY(-9px);}100%{transform:translateY(0);}}
+  @keyframes vinyl{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:0.001ms !important;}}
+</style>
+</helmet>
+<div data-screen-label="Portfolio OS" style="{{ wallStyle }}">
+
+  <!-- ============ NAVIGATOR ============ -->
+  <div style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;gap:2px;padding:4px;background:rgba(28,28,30,0.62);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:9999px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 30px rgba(0,0,0,0.28);font-family:Inter,sans-serif;">
+    <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="4">
+      <button onClick="{{ nav.go }}" style="{{ nav.style }}">{{ nav.label }}</button>
+    </sc-for>
+  </div>
+
+  <!-- ============ BOOT ============ -->
+  <sc-if value="{{ booting }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;z-index:8000;background:#0b0b0c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:54px;font-family:Inter,sans-serif;animation:fadeIn .5s ease;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:22px;">
+        <div style="width:74px;height:74px;border-radius:20px;background:linear-gradient(150deg,#f4f4f5,#c7c7cc);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(255,255,255,0.08);">
+          <div style="width:30px;height:30px;border-radius:50%;border:3px solid #0b0b0c;border-top-color:transparent;transform:rotate(20deg);"></div>
+        </div>
+        <div style="color:#f2f2f2;font-size:17px;font-weight:600;letter-spacing:0.04em;">Portfolio OS</div>
+        <div style="color:#6b6b70;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">Carlo Desantis</div>
+      </div>
+      <div style="width:220px;height:4px;border-radius:9999px;background:rgba(255,255,255,0.1);overflow:hidden;">
+        <div style="height:100%;border-radius:9999px;background:linear-gradient(90deg,#e8e8ea,#fff);width:{{ bootW }};transition:width .2s ease;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ DESKTOP ============ -->
+  <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+   <div data-screen-label="Desktop" style="position:absolute;inset:0;">
+
+    <!-- MENU BAR -->
+    <div style="position:absolute;top:0;left:0;right:0;height:30px;z-index:80;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(248,248,248,0.78);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(0,0,0,0.06);font-family:Inter,sans-serif;font-size:13px;color:#1c1c1e;">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="width:15px;height:15px;border-radius:5px;background:linear-gradient(150deg,#2b2b2e,#5a5a5f);"></div>
+        <span style="font-weight:700;">Carlo Desantis</span>
+        <span style="font-weight:500;color:#3a3a3c;">File</span>
+        <span style="font-weight:400;color:#3a3a3c;">Edit</span>
+        <span style="font-weight:400;color:#3a3a3c;">View</span>
+        <span style="font-weight:400;color:#3a3a3c;">Window</span>
+        <span style="font-weight:400;color:#3a3a3c;">Help</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;color:#1c1c1e;">
+        <div style="display:flex;gap:3px;align-items:flex-end;height:11px;">
+          <div style="width:3px;height:5px;background:#1c1c1e;border-radius:1px;"></div>
+          <div style="width:3px;height:7px;background:#1c1c1e;border-radius:1px;"></div>
+          <div style="width:3px;height:9px;background:#1c1c1e;border-radius:1px;"></div>
+          <div style="width:3px;height:11px;background:#1c1c1e;border-radius:1px;"></div>
+        </div>
+        <span style="font-size:12px;font-weight:500;">{{ date }}</span>
+        <span style="font-size:12px;font-weight:600;">{{ clock }}</span>
+      </div>
+    </div>
+
+    <!-- WIDGETS -->
+    <div style="position:absolute;top:60px;left:34px;z-index:20;display:flex;gap:18px;align-items:flex-start;font-family:Inter,sans-serif;">
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div style="width:160px;height:160px;border-radius:26px;background:rgba(255,255,255,0.58);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.10);padding:18px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:600;">{{ date }}</div>
+          <div style="font-size:42px;font-weight:700;letter-spacing:-0.03em;color:#111;line-height:1;">{{ clockBig }}</div>
+          <div style="font-size:12px;color:#666;font-weight:500;">{{ clockSub }}</div>
+        </div>
+        <div style="width:160px;border-radius:26px;background:rgba(255,255,255,0.58);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.10);padding:20px 22px;display:flex;flex-direction:column;justify-content:center;gap:8px;">
+          <div style="font-size:14px;font-weight:600;color:#111;line-height:1.35;letter-spacing:-0.01em;">"Light first. The rest follows."</div>
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:600;">Manifesto</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div style="width:340px;height:160px;border-radius:26px;background:rgba(255,255,255,0.58);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.10);padding:18px;display:flex;gap:16px;align-items:center;">
+          <div style="width:96px;height:96px;border-radius:18px;background:linear-gradient(135deg,#1db954,#0d6b32);flex:none;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.18);">
+            <div style="width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#0b0b0c 22%,#1db954 23%,#1db954 100%);animation:vinyl 6s linear infinite;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#1db954;font-weight:700;">Now Playing</div>
+            <div style="font-size:15px;font-weight:700;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Low Frequencies</div>
+            <div style="font-size:12px;color:#666;font-weight:500;">Carlo Desantis</div>
+            <div style="height:4px;border-radius:9999px;background:rgba(0,0,0,0.1);margin-top:8px;overflow:hidden;"><div style="height:100%;width:42%;border-radius:9999px;background:#1db954;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:#999;margin-top:2px;font-variant-numeric:tabular-nums;"><span>1:24</span><span>3:18</span></div>
+          </div>
+        </div>
+        <div style="width:340px;height:160px;border-radius:26px;background:rgba(255,255,255,0.58);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.10);padding:16px 18px;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;">Recent Projects</div>
+          <sc-for list="{{ recentProjects }}" as="rp" hint-placeholder-count="3">
+            <div onClick="{{ rp.open }}" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <div style="{{ rp.thumbStyle }}"></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rp.title }}</div>
+                <div style="font-size:11px;color:#999;">{{ rp.meta }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="width:206px;height:338px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(0,0,0,0.12);position:relative;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 2px,rgba(0,0,0,0) 2px 16px),linear-gradient(150deg,hsl(28 22% 70%),hsl(20 26% 52%));">
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:16px;background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);">
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.8);font-weight:700;">Photos</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-top:2px;">Salt &amp; Iron</div>
+        </div>
+        <div style="position:absolute;top:14px;left:14px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">[ PHOTO 4:5 ]</div>
+      </div>
+    </div>
+
+    <!-- DESKTOP FOLDER ICONS -->
+    <div style="position:absolute;top:54px;right:30px;z-index:10;display:grid;grid-template-columns:repeat(2,84px);gap:8px 4px;font-family:Inter,sans-serif;">
+      <sc-for list="{{ folders }}" as="f" hint-placeholder-count="6">
+        <button onClick="{{ f.open }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;background:transparent;border:none;cursor:pointer;border-radius:10px;">
+          <div style="width:54px;height:42px;position:relative;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.14));">
+            <div style="position:absolute;top:0;left:4px;width:24px;height:9px;border-radius:5px 5px 0 0;background:linear-gradient(#9db4d6,#8aa6cf);"></div>
+            <div style="position:absolute;top:6px;left:0;right:0;bottom:0;border-radius:7px;background:linear-gradient(150deg,#bcd0ec,#9db4d6);"></div>
+          </div>
+          <span style="font-size:12px;color:#1c1c1e;font-weight:500;text-shadow:0 1px 2px rgba(255,255,255,0.6);text-align:center;line-height:1.2;">{{ f.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <!-- WINDOWS -->
+    <sc-for list="{{ windows }}" as="win" hint-placeholder-count="0">
+      <div data-win="{{ win.id }}" data-screen-label="{{ win.title }}" onMouseDown="{{ win.focus }}" style="{{ win.posStyle }}">
+        <div style="width:100%;height:100%;border-radius:22px;overflow:hidden;background:rgba(255,255,255,0.86);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(255,255,255,0.55);box-shadow:0 28px 72px rgba(0,0,0,0.20),0 6px 16px rgba(0,0,0,0.10);display:flex;flex-direction:column;animation:winOpen .35s cubic-bezier(0.16,1,0.3,1);">
+          <div onPointerDown="{{ win.dragStart }}" style="height:46px;flex:none;display:flex;align-items:center;gap:14px;padding:0 16px;background:rgba(255,255,255,0.4);border-bottom:1px solid rgba(0,0,0,0.07);cursor:grab;font-family:Inter,sans-serif;">
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button onClick="{{ win.close }}" style="width:12px;height:12px;border-radius:50%;background:#ff5f57;border:none;cursor:pointer;padding:0;"></button>
+              <div style="width:12px;height:12px;border-radius:50%;background:#febc2e;"></div>
+              <div style="width:12px;height:12px;border-radius:50%;background:#28c840;"></div>
+            </div>
+            <div style="flex:1;text-align:center;font-size:13px;font-weight:600;color:#3a3a3c;margin-right:52px;">{{ win.title }}</div>
+          </div>
+          <div style="flex:1;min-height:0;display:flex;overflow:hidden;font-family:Inter,sans-serif;">
+
+            <sc-if value="{{ win.isFinder }}" hint-placeholder-val="{{ true }}">
+              <div style="width:188px;flex:none;background:rgba(245,245,247,0.6);border-right:1px solid rgba(0,0,0,0.06);padding:14px 10px;overflow-y:auto;">
+                <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;font-weight:700;padding:6px 10px;">Favorites</div>
+                <sc-for list="{{ finderSidebar }}" as="cat" hint-placeholder-count="7">
+                  <button onClick="{{ cat.select }}" style="{{ cat.style }}">{{ cat.label }}</button>
+                </sc-for>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+                <div style="height:46px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid rgba(0,0,0,0.06);">
+                  <span style="font-size:15px;font-weight:700;color:#111;">{{ finderTitle }}</span>
+                  <span style="font-size:12px;color:#999;">{{ finderCount }}</span>
+                  <div style="flex:1;"></div>
+                  <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.05);border-radius:8px;padding:5px 12px;width:180px;">
+                    <div style="width:11px;height:11px;border:1.6px solid #999;border-radius:50%;"></div>
+                    <span style="font-size:12px;color:#aaa;">Search</span>
+                  </div>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:20px;align-content:start;">
+                  <sc-for list="{{ finderProjects }}" as="proj" hint-placeholder-count="8">
+                    <button onClick="{{ proj.open }}" onDblClick="{{ proj.open }}" style="display:flex;flex-direction:column;gap:9px;background:transparent;border:none;cursor:pointer;padding:0;text-align:left;">
+                      <div style="{{ proj.coverStyle }}width:100%;aspect-ratio:16/10;border-radius:12px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.1);">
+                        <span style="position:absolute;top:9px;left:10px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:rgba(255,255,255,0.75);">{{ proj.tag }}</span>
+                      </div>
+                      <div style="padding:0 2px;">
+                        <div style="font-size:13px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ proj.title }}</div>
+                        <div style="font-size:11px;color:#999;">{{ proj.meta }}</div>
+                      </div>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="height:26px;flex:none;display:flex;align-items:center;padding:0 18px;border-top:1px solid rgba(0,0,0,0.06);font-size:11px;color:#999;">{{ finderCount }} · Carlo Desantis</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ win.isProject }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1;overflow-y:auto;background:#fbfbfc;">
+                <div style="{{ win.project.coverStyle }}width:100%;height:320px;position:relative;">
+                  <span style="position:absolute;top:16px;left:18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(255,255,255,0.78);">{{ win.project.coverTag }}</span>
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:34px 40px 30px;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);">
+                    <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.85);font-weight:600;">{{ win.project.catLabel }} · {{ win.project.year }}</div>
+                    <div style="font-size:46px;font-weight:700;letter-spacing:-0.03em;color:#fff;line-height:1.05;margin-top:8px;">{{ win.project.title }}</div>
+                  </div>
+                </div>
+                <div style="padding:36px 40px;max-width:640px;">
+                  <p style="font-size:19px;line-height:1.6;color:#1c1c1e;font-weight:400;margin:0;letter-spacing:-0.01em;">{{ win.project.desc }}</p>
+                </div>
+                <div style="padding:0 40px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                  <sc-for list="{{ win.project.gallery }}" as="g" hint-placeholder-count="4">
+                    <div style="{{ g.style }}aspect-ratio:4/3;border-radius:14px;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.08);">
+                      <span style="position:absolute;top:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);">{{ g.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="padding:40px;display:flex;gap:60px;">
+                  <div style="flex:1;">
+                    <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:14px;">Credits</div>
+                    <sc-for list="{{ win.project.credits }}" as="c" hint-placeholder-count="3">
+                      <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
+                        <span style="font-size:13px;color:#999;">{{ c.role }}</span>
+                        <span style="font-size:13px;color:#111;font-weight:500;">{{ c.name }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="width:180px;flex:none;">
+                    <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:14px;">Client</div>
+                    <div style="font-size:15px;color:#111;font-weight:600;">{{ win.project.client }}</div>
+                    <div style="font-size:13px;color:#666;margin-top:4px;">{{ win.project.year }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ win.isPhotos }}" hint-placeholder-val="{{ true }}">
+              <div style="width:172px;flex:none;background:rgba(245,245,247,0.6);border-right:1px solid rgba(0,0,0,0.06);padding:14px 10px;">
+                <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;font-weight:700;padding:6px 10px;">Library</div>
+                <div style="padding:8px 10px;border-radius:8px;background:rgba(10,126,255,0.12);font-size:13px;color:#0a7eff;font-weight:600;">All Photos</div>
+                <div style="padding:8px 10px;font-size:13px;color:#3a3a3c;">Albums</div>
+                <div style="padding:8px 10px;font-size:13px;color:#3a3a3c;">Favorites</div>
+              </div>
+              <div style="flex:1;overflow-y:auto;padding:20px;">
+                <div style="font-size:22px;font-weight:700;color:#111;margin-bottom:16px;letter-spacing:-0.02em;">Salt &amp; Iron</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                  <sc-for list="{{ photoGrid }}" as="ph" hint-placeholder-count="9">
+                    <div style="{{ ph.style }}aspect-ratio:1;border-radius:8px;position:relative;overflow:hidden;"></div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ win.isNotes }}" hint-placeholder-val="{{ true }}">
+              <div style="width:208px;flex:none;background:rgba(245,245,247,0.6);border-right:1px solid rgba(0,0,0,0.06);padding:14px 8px;overflow-y:auto;">
+                <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;font-weight:700;padding:6px 10px;">Notes</div>
+                <sc-for list="{{ noteList }}" as="n" hint-placeholder-count="3">
+                  <button onClick="{{ n.select }}" style="{{ n.style }}">
+                    <div style="font-size:13px;font-weight:600;color:#111;">{{ n.title }}</div>
+                    <div style="font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ n.preview }}</div>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="flex:1;overflow-y:auto;padding:44px 56px;background:#fff;">
+                <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:600;">{{ note.kicker }}</div>
+                <h1 style="font-size:34px;font-weight:700;color:#111;letter-spacing:-0.025em;margin:10px 0 26px;line-height:1.1;">{{ note.title }}</h1>
+                <div style="font-size:16px;line-height:1.8;color:#2a2a2c;white-space:pre-line;max-width:560px;">{{ note.body }}</div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </div>
+    </sc-for>
+
+    <!-- DOCK -->
+    <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:70;">
+      <div data-dock style="display:flex;align-items:flex-end;gap:10px;padding:10px 14px;background:rgba(220,220,222,0.5);backdrop-filter:blur(60px) saturate(200%);-webkit-backdrop-filter:blur(60px) saturate(200%);border-radius:26px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 18px 50px rgba(0,0,0,0.22);">
+        <sc-for list="{{ dockApps }}" as="app" hint-placeholder-count="9">
+          <sc-if value="{{ app.isSep }}" hint-placeholder-val="{{ false }}">
+            <div style="width:1px;height:46px;background:rgba(0,0,0,0.14);margin:0 3px;"></div>
+          </sc-if>
+          <sc-if value="{{ app.isApp }}" hint-placeholder-val="{{ true }}">
+            <button data-dock-item onClick="{{ app.action }}" title="{{ app.label }}" style="position:relative;width:54px;height:54px;border:none;background:transparent;padding:0;cursor:pointer;transform-origin:bottom center;transition:transform .12s ease;display:flex;align-items:flex-end;justify-content:center;">
+              <div style="{{ app.iconStyle }}width:54px;height:54px;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.18),inset 0 1px 1px rgba(255,255,255,0.3);">
+                <span style="{{ app.markStyle }}">{{ app.mark }}</span>
+              </div>
+              <sc-if value="{{ app.running }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:rgba(0,0,0,0.55);"></div>
+              </sc-if>
+            </button>
+          </sc-if>
+        </sc-for>
+      </div>
+    </div>
+
+   </div>
+  </sc-if>
+
+  <!-- ============ MOBILE ============ -->
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Mobile" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#2a2a2e,#161618);font-family:Inter,sans-serif;">
+      <div style="width:340px;height:716px;border-radius:54px;padding:11px;background:linear-gradient(160deg,#3a3a3d,#19191b);box-shadow:0 40px 90px rgba(0,0,0,0.5),inset 0 0 2px rgba(255,255,255,0.3);">
+        <div style="width:100%;height:100%;border-radius:44px;overflow:hidden;position:relative;{{ mobileWall }}">
+
+          <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:18px 28px 0;color:{{ mobileFg }};">
+            <span style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;">{{ clock }}</span>
+            <div style="position:absolute;left:50%;top:11px;transform:translateX(-50%);width:88px;height:26px;border-radius:9999px;background:#000;"></div>
+            <div style="display:flex;align-items:center;gap:5px;">
+              <div style="display:flex;gap:2px;align-items:flex-end;height:10px;"><div style="width:3px;height:4px;background:currentColor;border-radius:1px;"></div><div style="width:3px;height:6px;background:currentColor;border-radius:1px;"></div><div style="width:3px;height:8px;background:currentColor;border-radius:1px;"></div><div style="width:3px;height:10px;background:currentColor;border-radius:1px;"></div></div>
+              <div style="width:22px;height:11px;border:1px solid currentColor;border-radius:3px;padding:1.5px;"><div style="width:70%;height:100%;background:currentColor;border-radius:1px;"></div></div>
+            </div>
+          </div>
+
+          <sc-if value="{{ mobileLock }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ unlock }}" style="position:absolute;inset:0;background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:#fff;padding:0;">
+              <div style="margin-top:96px;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="font-size:18px;font-weight:600;letter-spacing:0.02em;text-shadow:0 2px 12px rgba(0,0,0,0.4);">{{ mobileDate }}</div>
+                <div style="font-size:88px;font-weight:700;letter-spacing:-0.04em;line-height:0.95;text-shadow:0 4px 24px rgba(0,0,0,0.4);">{{ clockBig }}</div>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="margin-bottom:40px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+                <div style="width:150px;height:4px;border-radius:9999px;background:rgba(255,255,255,0.6);"></div>
+                <div style="font-size:12px;letter-spacing:0.08em;color:rgba(255,255,255,0.85);text-shadow:0 1px 6px rgba(0,0,0,0.4);">Swipe up to open</div>
+              </div>
+            </button>
+          </sc-if>
+
+          <sc-if value="{{ mobileHome }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;padding:62px 26px 0;display:flex;flex-direction:column;animation:fadeIn .4s ease;">
+              <div style="height:150px;border-radius:24px;background:rgba(255,255,255,0.16);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.22);padding:18px;display:flex;flex-direction:column;justify-content:space-between;margin-bottom:24px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                  <div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:700;">Now Playing</div><div style="font-size:17px;font-weight:700;color:#fff;margin-top:4px;">Low Frequencies</div><div style="font-size:12px;color:rgba(255,255,255,0.7);">Carlo Desantis</div></div>
+                  <div style="width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,#0b0b0c 22%,#1db954 23%);animation:vinyl 6s linear infinite;"></div>
+                </div>
+                <div style="height:4px;border-radius:9999px;background:rgba(255,255,255,0.25);"><div style="width:42%;height:100%;background:#fff;border-radius:9999px;"></div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px 18px;">
+                <sc-for list="{{ mobileApps }}" as="m" hint-placeholder-count="8">
+                  <button onClick="{{ m.action }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;background:transparent;border:none;cursor:pointer;padding:0;">
+                    <div style="{{ m.iconStyle }}width:58px;height:58px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);"><span style="{{ m.markStyle }}">{{ m.mark }}</span></div>
+                    <span style="font-size:11px;color:#fff;font-weight:500;text-shadow:0 1px 4px rgba(0,0,0,0.5);">{{ m.label }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="display:flex;justify-content:center;gap:6px;margin-bottom:8px;"><div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.9);"></div><div style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);"></div></div>
+              <div style="height:96px;border-radius:34px;background:rgba(255,255,255,0.16);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:space-around;padding:0 18px;margin-bottom:14px;">
+                <sc-for list="{{ mobileDock }}" as="md" hint-placeholder-count="4">
+                  <button onClick="{{ md.action }}" style="{{ md.iconStyle }}width:58px;height:58px;border-radius:15px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);"><span style="{{ md.markStyle }}">{{ md.mark }}</span></button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ mobileAppView }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;background:#fbfbfc;display:flex;flex-direction:column;animation:fadeIn .35s ease;">
+              <div style="height:96px;flex:none;display:flex;align-items:flex-end;padding:0 22px 12px;border-bottom:1px solid rgba(0,0,0,0.07);">
+                <button onClick="{{ mobileBack }}" style="background:transparent;border:none;cursor:pointer;font-size:16px;color:#0a7eff;display:flex;align-items:center;gap:4px;padding:0;font-weight:500;">‹ Home</button>
+                <div style="flex:1;text-align:center;font-size:17px;font-weight:700;color:#111;margin-right:50px;">{{ mobileAppTitle }}</div>
+              </div>
+              <div style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:16px;">
+                <sc-for list="{{ mobileProjects }}" as="mp" hint-placeholder-count="6">
+                  <button onClick="{{ mp.open }}" style="background:transparent;border:none;cursor:pointer;padding:0;text-align:left;display:flex;flex-direction:column;gap:8px;">
+                    <div style="{{ mp.coverStyle }}width:100%;aspect-ratio:16/10;border-radius:16px;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.1);">
+                      <span style="position:absolute;top:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,0.75);">{{ mp.tag }}</span>
+                    </div>
+                    <div><div style="font-size:16px;font-weight:700;color:#111;">{{ mp.title }}</div><div style="font-size:13px;color:#999;">{{ mp.meta }}</div></div>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ mobileProjView }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;background:#fbfbfc;overflow-y:auto;animation:fadeIn .35s ease;">
+              <div style="{{ mProject.coverStyle }}width:100%;height:300px;position:relative;">
+                <button onClick="{{ mobileBackToApp }}" style="position:absolute;top:52px;left:18px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;">‹</button>
+                <div style="position:absolute;left:0;right:0;bottom:0;padding:26px 22px;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);">
+                  <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.85);font-weight:600;">{{ mProject.catLabel }} · {{ mProject.year }}</div>
+                  <div style="font-size:32px;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1.05;margin-top:6px;">{{ mProject.title }}</div>
+                </div>
+              </div>
+              <div style="padding:24px 22px;">
+                <p style="font-size:16px;line-height:1.6;color:#1c1c1e;margin:0 0 22px;">{{ mProject.desc }}</p>
+                <sc-for list="{{ mProject.gallery }}" as="g" hint-placeholder-count="3">
+                  <div style="{{ g.style }}width:100%;aspect-ratio:4/3;border-radius:14px;margin-bottom:14px;"></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;border-radius:9999px;background:{{ mobileFg }};opacity:0.5;z-index:40;"></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ TABLET ============ -->
+  <sc-if value="{{ isTablet }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Tablet" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#26262a,#141416);font-family:Inter,sans-serif;padding:30px;">
+      <div style="width:980px;max-width:94vw;aspect-ratio:4/3;border-radius:30px;padding:14px;background:linear-gradient(160deg,#3a3a3d,#19191b);box-shadow:0 40px 90px rgba(0,0,0,0.5);">
+        <div style="width:100%;height:100%;border-radius:18px;overflow:hidden;position:relative;background-image:linear-gradient(160deg,#e8e4dd,#d4dae2);">
+          <div style="position:absolute;top:0;left:0;right:0;height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(248,248,248,0.7);backdrop-filter:blur(20px);font-size:13px;color:#1c1c1e;">
+            <span style="font-weight:700;">Carlo Desantis</span>
+            <span style="font-weight:600;font-variant-numeric:tabular-nums;">{{ clock }}</span>
+          </div>
+          <div style="position:absolute;top:74px;left:60px;width:520px;height:380px;border-radius:20px;overflow:hidden;background:rgba(255,255,255,0.88);backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 28px 72px rgba(0,0,0,0.2);display:flex;flex-direction:column;">
+            <div style="height:50px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid rgba(0,0,0,0.07);"><div style="display:flex;gap:8px;"><div style="width:13px;height:13px;border-radius:50%;background:#ff5f57;"></div><div style="width:13px;height:13px;border-radius:50%;background:#febc2e;"></div><div style="width:13px;height:13px;border-radius:50%;background:#28c840;"></div></div><div style="flex:1;text-align:center;font-size:14px;font-weight:600;color:#3a3a3c;margin-right:50px;">Finder — Film</div></div>
+            <div style="flex:1;padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-content:start;">
+              <sc-for list="{{ tabletProjects }}" as="tp" hint-placeholder-count="6">
+                <div style="display:flex;flex-direction:column;gap:8px;"><div style="{{ tp.coverStyle }}width:100%;aspect-ratio:16/10;border-radius:12px;"></div><div style="font-size:13px;font-weight:600;color:#111;">{{ tp.title }}</div></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="position:absolute;top:90px;right:50px;width:280px;padding:22px;border-radius:20px;background:rgba(255,255,255,0.58);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.5);">
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:10px;">Touch Model</div>
+            <div style="font-size:14px;line-height:1.55;color:#2a2a2c;">Tap to open · Long-press for context menus · Drag windows with one finger · Pinch to resize. No hover states — every affordance is touch-first.</div>
+          </div>
+          <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;padding:12px 18px;background:rgba(220,220,222,0.5);backdrop-filter:blur(60px) saturate(200%);border-radius:28px;border:1px solid rgba(255,255,255,0.45);box-shadow:0 18px 50px rgba(0,0,0,0.2);">
+            <sc-for list="{{ tabletDock }}" as="td" hint-placeholder-count="6">
+              <div style="{{ td.iconStyle }}width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.18);"><span style="{{ td.markStyle }}">{{ td.mark }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ FOUNDATIONS ============ -->
+  <sc-if value="{{ isFoundations }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Foundations" style="position:absolute;inset:0;overflow-y:auto;background:#f4f4f5;font-family:Inter,sans-serif;">
+      <div style="max-width:1080px;margin:0 auto;padding:78px 48px 120px;">
+        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#999;font-weight:700;">Design Foundations · Handoff</div>
+        <h1 style="font-size:52px;font-weight:700;letter-spacing:-0.03em;color:#111;margin:14px 0 8px;">Portfolio OS Tokens</h1>
+        <p style="font-size:17px;color:#666;max-width:560px;line-height:1.5;margin:0 0 56px;">The single source of truth. Every value below maps to a token in <span style="font-family:'JetBrains Mono',monospace;font-size:14px;">DESIGN_FOUNDATIONS.md</span> — semantic names ready for a v2 dark theme without restructuring.</p>
+
+        <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Color · Semantic</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:56px;">
+          <sc-for list="{{ colorTokens }}" as="c" hint-placeholder-count="10">
+            <div style="border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+              <div style="{{ c.swatch }}height:70px;border-bottom:1px solid rgba(0,0,0,0.06);"></div>
+              <div style="padding:10px 12px;"><div style="font-size:12px;font-weight:600;color:#111;">{{ c.name }}</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#999;margin-top:2px;">{{ c.value }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Typography · Scale</div>
+        <div style="background:#fff;border-radius:18px;padding:14px 26px;margin-bottom:56px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+          <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="6">
+            <div style="display:flex;align-items:baseline;gap:24px;padding:16px 0;border-bottom:1px solid #f0f0f0;">
+              <div style="width:130px;flex:none;"><div style="font-size:12px;font-weight:600;color:#111;">{{ t.name }}</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#999;">{{ t.spec }}</div></div>
+              <div style="{{ t.style }}color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Light first.</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:56px;">
+          <div>
+            <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Spacing · 8px base</div>
+            <sc-for list="{{ spacingScale }}" as="s" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+                <div style="width:64px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#999;">{{ s.name }}</div>
+                <div style="{{ s.bar }}height:14px;border-radius:4px;background:#0a7eff;"></div>
+                <div style="font-size:11px;color:#666;">{{ s.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div>
+            <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Radius</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+              <sc-for list="{{ radiusScale }}" as="r" hint-placeholder-count="6">
+                <div style="text-align:center;"><div style="{{ r.box }}height:64px;background:linear-gradient(150deg,#dfe3e8,#c4cdd6);border:1px solid rgba(0,0,0,0.06);"></div><div style="font-size:11px;color:#111;font-weight:600;margin-top:6px;">{{ r.name }}</div><div style="font-size:10px;color:#999;">{{ r.value }}</div></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Elevation · Shadows</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:24px;margin-bottom:56px;">
+          <sc-for list="{{ shadowScale }}" as="sh" hint-placeholder-count="5">
+            <div style="text-align:center;"><div style="{{ sh.box }}height:80px;background:#fff;border-radius:16px;"></div><div style="font-size:12px;font-weight:600;color:#111;margin-top:14px;">{{ sh.name }}</div></div>
+          </sc-for>
+        </div>
+
+        <div style="font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:#aaa;font-weight:700;margin-bottom:18px;border-top:1px solid #e0e0e0;padding-top:26px;">Motion · Springs &amp; Timing</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div style="background:#fff;border-radius:18px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+            <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:14px;">Spring Presets</div>
+            <sc-for list="{{ springs }}" as="sp" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f0f0f0;"><span style="font-size:13px;color:#111;font-weight:500;">{{ sp.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#666;">{{ sp.value }}</span></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border-radius:18px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+            <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:14px;">Timing Tokens</div>
+            <sc-for list="{{ timings }}" as="tm" hint-placeholder-count="7">
+              <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f0f0f0;"><span style="font-size:13px;color:#111;font-weight:500;">{{ tm.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#666;">{{ tm.value }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#0A7EFF&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;wallpaper&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Morning&quot;,&quot;Slate&quot;,&quot;Mono&quot;],&quot;default&quot;:&quot;Morning&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: 'desktop', booting: true, bootPct: 0,
+    clock: '', clockBig: '', clockSub: '', date: '', mobileDate: '',
+    windows: [], finderCat: 'all', noteSel: 'bio',
+    mobile: 'lock', mobileProject: null, mobileAppTitle: '', mobileFilter: null,
+  };
+  _z = 60; _wid = 0;
+
+  componentDidMount() {
+    this._tick();
+    this._clockTimer = setInterval(() => this._tick(), 1000);
+    this._bootTimer = setInterval(() => {
+      this.setState(s => ({ bootPct: Math.min(100, s.bootPct + 7 + Math.random() * 7) }));
+    }, 95);
+    this._bootDone = setTimeout(() => {
+      clearInterval(this._bootTimer);
+      this.setState({ bootPct: 100 });
+      setTimeout(() => this.setState({ booting: false }), 420);
+    }, 1850);
+    this._initDock();
+  }
+  componentWillUnmount() {
+    clearInterval(this._clockTimer); clearInterval(this._bootTimer);
+    clearTimeout(this._bootDone); clearTimeout(this._dockRetry);
+  }
+
+  _tick() {
+    const d = new Date();
+    let h = d.getHours(); const m = d.getMinutes();
+    const ap = h >= 12 ? 'PM' : 'AM'; let hh = h % 12; if (hh === 0) hh = 12;
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dshort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const mshort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    this.setState({
+      clock: hh + ':' + String(m).padStart(2, '0') + ' ' + ap,
+      clockBig: hh + ':' + String(m).padStart(2, '0'),
+      clockSub: ap + ' · ' + dshort[d.getDay()],
+      date: dshort[d.getDay()] + ' ' + mshort[d.getMonth()] + ' ' + d.getDate(),
+      mobileDate: days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate(),
+    });
+  }
+
+  _initDock() {
+    const setup = () => {
+      const dock = document.querySelector('[data-dock]');
+      if (!dock) { this._dockRetry = setTimeout(setup, 200); return; }
+      const items = () => Array.from(dock.querySelectorAll('[data-dock-item]'));
+      const reset = () => items().forEach(it => { it.style.transform = 'translateY(0) scale(1)'; });
+      dock.addEventListener('pointermove', (e) => {
+        items().forEach(it => {
+          const r = it.getBoundingClientRect();
+          const c = r.left + r.width / 2;
+          const t = Math.max(0, 1 - Math.abs(e.clientX - c) / 120);
+          it.style.transform = 'translateY(' + (-t * 12) + 'px) scale(' + (1 + t * 0.55) + ')';
+        });
+      });
+      dock.addEventListener('pointerleave', reset);
+    };
+    setup();
+  }
+
+  _projects() {
+    if (this._cache) return this._cache;
+    const P = (id, title, cat, catLabel, year, client, hue, desc) => ({ id, title, cat, catLabel, year, client, hue, desc });
+    this._cache = [
+      P('nocturne','Nocturne','film','Film',2025,'Self-Initiated',248,'A nocturnal short shot entirely on available light across a single sleepless city night. The camera never rushes; it waits for the moment to arrive.'),
+      P('static-bloom','Static Bloom','film','Film',2024,'Maison Records',262,'A music video built from analog distortion and slow blooms of color — sound made visible through movement and grain.'),
+      P('salt-iron','Salt & Iron','photography','Photography',2024,'Editorial',26,'A coastal editorial series studying weathered surfaces, working hands and the quiet dignity of labor by the sea.'),
+      P('after-hours','After Hours','photography','Photography',2023,'Personal',32,'Personal photographs made in the hours most people sleep — empty rooms, soft neon, the texture of being awake alone.'),
+      P('aperture-house','Aperture House','creative-direction','Creative Direction',2025,'Aperture House',162,'Full visual identity and launch campaign for an independent gallery — from wordmark to spatial design.'),
+      P('low-frequencies','Low Frequencies','music','Music',2024,'Self-Released',300,'An audio-visual record exploring sub-bass as emotion. Each track paired with a single uninterrupted long-take film.'),
+      P('tailored-silence','Tailored Silence','fashion','Fashion',2025,'Atelier Verne',350,'A lookbook for a tailoring house — restraint as luxury, photographed in raw daylight against bare plaster.'),
+      P('the-long-drive','The Long Drive','advertising','Advertising',2024,'Northbound Auto',210,'A 60-second spot following one continuous drive from dusk to dark — no dialogue, only motion and light.'),
+      P('coastlines','Coastlines','film','Film',2023,'Documentary',200,'A short documentary on three families who have fished the same waters for a century, told in their own pauses.'),
+      P('form-field','Form & Field','creative-direction','Creative Direction',2024,'Studio Meridian',150,'Art direction for an architecture monograph — a grid system designed to disappear behind the buildings.'),
+      P('origin','Origin','advertising','Advertising',2025,'Lumen Coffee',204,'Brand film and campaign system tracing a single coffee bean from soil to cup, shot across two continents.'),
+      P('greyscale','Greyscale','photography','Photography',2022,'Personal',220,'A monochrome study of the city in winter — concrete, fog, and the rare figure passing through.'),
+    ];
+    return this._cache;
+  }
+
+  _cover(hue, light, stripe) {
+    const s = stripe ? 'repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 2px,rgba(0,0,0,0) 2px 16px),' : '';
+    return 'background-image:' + s + 'linear-gradient(135deg,hsl(' + hue + ' 17% ' + (light + 14) + '%),hsl(' + hue + ' 21% ' + light + '%));';
+  }
+
+  _open(app, project) {
+    if (app !== 'project') {
+      const ex = this.state.windows.find(w => w.app === app);
+      if (ex) return this._focus(ex.id);
+    }
+    const sizes = { finder: [880, 560], project: [780, 600], photos: [820, 560], notes: [760, 540] };
+    const titles = { finder: 'Finder', project: project ? project.title : 'Project', photos: 'Photos', notes: 'Notes' };
+    const [w, h] = sizes[app] || [680, 480];
+    const n = this.state.windows.length;
+    const id = 'w' + (++this._wid);
+    const win = { id, app, title: titles[app], w, h,
+      x: 200 + n * 34 + (app === 'project' ? 120 : 0), y: 64 + n * 28, z: ++this._z, project };
+    this.setState(s => ({ windows: [...s.windows, win] }));
+  }
+  _focus(id) {
+    this._z++;
+    const z = this._z;
+    this.setState(s => ({ windows: s.windows.map(w => w.id === id ? { ...w, z } : w) }));
+  }
+  _close(id) {
+    this.setState(s => ({ windows: s.windows.filter(w => w.id !== id) }));
+  }
+  _startDrag(e, id) {
+    e.preventDefault(); e.stopPropagation();
+    this._focus(id);
+    const el = document.querySelector('[data-win="' + id + '"]');
+    const win = this.state.windows.find(w => w.id === id);
+    const sx = e.clientX, sy = e.clientY, ox = win.x, oy = win.y;
+    let nx = ox, ny = oy;
+    const move = (ev) => {
+      nx = ox + (ev.clientX - sx); ny = Math.max(30, oy + (ev.clientY - sy));
+      if (el) el.style.transform = 'translate(' + nx + 'px,' + ny + 'px)';
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      this.setState(s => ({ windows: s.windows.map(w => w.id === id ? { ...w, x: nx, y: ny } : w) }));
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  }
+  _bounce(e) {
+    const el = e.currentTarget;
+    el.style.animation = 'dockBounce .6s ease';
+    setTimeout(() => { el.style.animation = ''; }, 640);
+  }
+
+  _appIcon(id) {
+    const map = {
+      finder: 'background:linear-gradient(160deg,#d9e3f0,#aebfd6);',
+      photos: 'background:linear-gradient(160deg,#ffffff,#dfe2e7);',
+      notes:  'background:linear-gradient(160deg,#fff6cf,#ffe79a);',
+      spotify:'background:linear-gradient(160deg,#1ed760,#0c8a3a);',
+      instagram:'background:linear-gradient(140deg,#f9a03f,#e1306c 55%,#a233b8);',
+      mail:   'background:linear-gradient(160deg,#3aa0ff,#0a64d6);',
+      figma:  'background:linear-gradient(160deg,#8b6cf0,#5b46c4);',
+      photoshop:'background:linear-gradient(160deg,#2a4d8f,#0b1f4d);',
+      davinci:'background:linear-gradient(160deg,#3a3a40,#19191c);',
+    };
+    return map[id] || 'background:#ccc;';
+  }
+  _appMark(id) {
+    const white = 'font-size:22px;font-weight:700;color:#fff;font-family:Inter,sans-serif;';
+    const map = {
+      finder: { mark: '◑', style: 'font-size:30px;color:#3a5a86;' },
+      photos: { mark: '◎', style: 'font-size:30px;color:#7a7f88;' },
+      notes:  { mark: '≡', style: 'font-size:30px;color:#caa23a;' },
+      spotify:{ mark: '♫', style: white },
+      instagram:{ mark: '◉', style: white },
+      mail:   { mark: '@', style: white },
+      figma:  { mark: '◆', style: 'font-size:20px;color:#fff;' },
+      photoshop:{ mark: 'Ps', style: 'font-size:18px;font-weight:700;color:#7fb5ff;font-family:Inter;' },
+      davinci:{ mark: 'Dv', style: 'font-size:18px;font-weight:700;color:#c9c9cf;font-family:Inter;' },
+    };
+    return map[id] || { mark: '', style: white };
+  }
+
+  renderVals() {
+    const accent = this.props.accent || '#0A7EFF';
+    const wp = this.props.wallpaper || 'Morning';
+    const walls = {
+      Morning: 'background:radial-gradient(120% 90% at 18% 0%,rgba(255,250,242,0.7),transparent 55%),linear-gradient(160deg,#e9e4dc 0%,#dfe3e8 45%,#d3dae3 100%);',
+      Slate:   'background:radial-gradient(120% 90% at 80% 0%,rgba(255,255,255,0.4),transparent 55%),linear-gradient(160deg,#cfd6df,#aab4c2 100%);',
+      Mono:    'background:linear-gradient(160deg,#ededee,#dadadc 100%);',
+    };
+    const wallStyle = 'position:absolute;inset:0;overflow:hidden;' + (walls[wp] || walls.Morning);
+
+    const view = this.state.view;
+    const nav = (id, label) => ({ label, go: () => this.setState({ view: id }),
+      style: 'padding:6px 16px;border-radius:9999px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:Inter,sans-serif;transition:all .18s ease;'
+        + (view === id ? 'background:#fff;color:#111;' : 'background:transparent;color:rgba(255,255,255,0.75);') });
+    const navItems = [nav('desktop','Desktop'), nav('tablet','Tablet'), nav('mobile','Mobile'), nav('foundations','Foundations')];
+
+    const projects = this._projects();
+    const dec = (p) => ({ ...p, meta: p.catLabel + ' · ' + p.year,
+      tag: '[ ' + p.catLabel.toUpperCase() + ' 16:9 ]',
+      coverStyle: this._cover(p.hue, 58, true),
+      coverTag: '[ ' + p.catLabel.toUpperCase() + ' · COVER 16:9 ]',
+      gallery: [0,1,2,3].map(i => ({ style: this._cover(p.hue, 62 + (i%2)*4, true), label: '[ ' + String(i+1).padStart(2,'0') + ' ]' })),
+      credits: [
+        { role: 'Direction', name: 'Carlo Desantis' },
+        { role: 'Cinematography', name: 'Carlo Desantis' },
+        { role: 'Edit & Color', name: 'Carlo Desantis' },
+      ],
+      thumbStyle: this._cover(p.hue, 60, false) + 'width:40px;height:40px;border-radius:9px;flex:none;',
+      open: () => this._open('project', p),
+    });
+
+    const cats = [
+      { id: 'all', label: 'All Projects' },
+      { id: 'film', label: 'Film' },
+      { id: 'photography', label: 'Photography' },
+      { id: 'creative-direction', label: 'Creative Direction' },
+      { id: 'music', label: 'Music' },
+      { id: 'fashion', label: 'Fashion' },
+      { id: 'advertising', label: 'Advertising' },
+    ];
+    const finderSidebar = cats.map(c => ({ ...c,
+      select: () => this.setState({ finderCat: c.id }),
+      style: 'display:block;width:100%;text-align:left;padding:7px 10px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:' + (this.state.finderCat === c.id ? '600' : '500') + ';margin-bottom:1px;background:' + (this.state.finderCat === c.id ? 'rgba(10,126,255,0.12)' : 'transparent') + ';color:' + (this.state.finderCat === c.id ? accent : '#3a3a3c') + ';' }));
+    const finderProjects = (this.state.finderCat === 'all' ? projects : projects.filter(p => p.cat === this.state.finderCat)).map(dec);
+    const finderTitle = (cats.find(c => c.id === this.state.finderCat) || {}).label || 'All Projects';
+    const finderCount = finderProjects.length + ' projects';
+
+    const notes = {
+      bio: { kicker: 'Biography', title: 'Carlo Desantis', preview: 'Filmmaker, photographer, creative director.',
+        body: "Carlo Desantis is a filmmaker, photographer and creative director working between film and stills.\n\nHis work is built on patience — waiting for natural light, for the unguarded gesture, for the moment a scene stops performing and simply exists. He has directed short films, music videos and commercial work, and his photography has appeared in editorial and personal series across a decade.\n\nHe lives and works between the coast and the city, and prefers to let the work speak before he does." },
+      manifesto: { kicker: 'Manifesto', title: 'Light First', preview: 'The rest follows.',
+        body: "Light first. The rest follows.\n\nI do not chase spectacle. I chase the quiet that comes before it — the held breath, the empty frame, the second take that finally feels true.\n\nA film is not a sequence of beautiful images. It is a feeling that survives the cut.\n\nEverything I make tries to disappear, so the thing it is about can step forward." },
+      philosophy: { kicker: 'Philosophy', title: 'On Restraint', preview: 'What can be removed?',
+        body: "Every frame asks one question: what can be removed?\n\nRestraint is not the absence of ideas. It is the discipline to keep only the ones that matter. The most expensive thing in any image is the part you were brave enough to leave out.\n\nI trust slowness. I trust silence. I trust the audience to lean in." },
+    };
+    const noteList = Object.keys(notes).map(k => ({ ...notes[k],
+      select: () => this.setState({ noteSel: k }),
+      style: 'display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;margin-bottom:2px;background:' + (this.state.noteSel === k ? 'rgba(10,126,255,0.1)' : 'transparent') + ';' }));
+    const note = notes[this.state.noteSel] || notes.bio;
+
+    const windows = this.state.windows.map(w => ({
+      id: w.id, title: w.title,
+      posStyle: 'position:absolute;left:0;top:0;transform:translate(' + w.x + 'px,' + w.y + 'px);width:' + w.w + 'px;height:' + w.h + 'px;z-index:' + w.z + ';',
+      isFinder: w.app === 'finder', isProject: w.app === 'project', isPhotos: w.app === 'photos', isNotes: w.app === 'notes',
+      project: w.project ? dec(w.project) : {},
+      close: () => this._close(w.id), focus: () => this._focus(w.id), dragStart: (e) => this._startDrag(e, w.id),
+    }));
+    const openApps = this.state.windows.map(w => w.app);
+
+    const dapp = (id, label, action) => ({ isApp: true, isSep: false, label, action,
+      iconStyle: this._appIcon(id), mark: this._appMark(id).mark, markStyle: this._appMark(id).style,
+      running: openApps.includes(id) });
+    const dockApps = [
+      dapp('finder','Finder', () => this._open('finder')),
+      dapp('photos','Photos', () => this._open('photos')),
+      dapp('notes','Notes', () => this._open('notes')),
+      { isSep: true, isApp: false },
+      dapp('spotify','Spotify', (e) => this._bounce(e)),
+      dapp('instagram','Instagram', (e) => this._bounce(e)),
+      dapp('mail','Mail', (e) => this._bounce(e)),
+      dapp('figma','Figma', (e) => this._bounce(e)),
+      dapp('photoshop','Photoshop', (e) => this._bounce(e)),
+      dapp('davinci','DaVinci Resolve', (e) => this._bounce(e)),
+    ];
+
+    const folders = cats.filter(c => c.id !== 'all').map(c => ({ label: c.label,
+      open: () => { this.setState({ finderCat: c.id }); this._open('finder'); } }));
+
+    const recentProjects = ['nocturne','aperture-house','tailored-silence'].map(id => dec(projects.find(p => p.id === id)));
+    const photoGrid = [26,30,26,32,28,26,30,28,32].map((h,i) => ({ style: this._cover(h, 60 + (i%3)*4, true) }));
+
+    // MOBILE
+    const mobile = this.state.mobile;
+    const mIcon = (id) => ({ iconStyle: this._appIcon(id), mark: this._appMark(id).mark, markStyle: this._appMark(id).style });
+    const mApp = (id, label, action) => ({ ...mIcon(id), label, action });
+    const openMobileApp = (title, filter) => this.setState({ mobile: 'app', mobileAppTitle: title, mobileFilter: filter });
+    const mobileApps = [
+      mApp('finder','Finder', () => openMobileApp('Work', null)),
+      mApp('photos','Photos', () => openMobileApp('Photos', 'photography')),
+      mApp('notes','Notes', () => openMobileApp('Film', 'film')),
+      mApp('spotify','Music', () => openMobileApp('Music', 'music')),
+      mApp('instagram','Featured', () => openMobileApp('Featured', null)),
+      mApp('mail','Contact', () => openMobileApp('Work', null)),
+      mApp('figma','Design', () => openMobileApp('Design', 'creative-direction')),
+      mApp('photoshop','Fashion', () => openMobileApp('Fashion', 'fashion')),
+    ];
+    const mobileDock = [
+      mApp('finder','', () => openMobileApp('Work', null)),
+      mApp('photos','', () => openMobileApp('Photos', 'photography')),
+      mApp('notes','', () => openMobileApp('Film', 'film')),
+      mApp('mail','', () => openMobileApp('Work', null)),
+    ];
+    const mFilter = this.state.mobileFilter;
+    const mobileProjects = (mFilter ? projects.filter(p => p.cat === mFilter) : projects).map(p => {
+      const d = dec(p); return { ...d, open: () => this.setState({ mobile: 'project', mobileProject: p }) };
+    });
+    const mProject = this.state.mobileProject ? (() => { const d = dec(this.state.mobileProject); return { ...d, gallery: d.gallery.slice(0,3) }; })() : {};
+
+    // FOUNDATIONS
+    const sw = (css) => 'background:' + css + ';';
+    const colorTokens = [
+      { name: 'bg / primary', value: '#ECECEC', swatch: sw('#ECECEC') },
+      { name: 'bg / window', value: 'rgba(255,255,255,.72)', swatch: 'background:#fff;background-image:repeating-conic-gradient(#eee 0% 25%,#fff 0% 50%);background-size:16px 16px;' },
+      { name: 'text / primary', value: '#111111', swatch: sw('#111111') },
+      { name: 'text / secondary', value: '#666666', swatch: sw('#666666') },
+      { name: 'text / tertiary', value: '#999999', swatch: sw('#999999') },
+      { name: 'accent / blue', value: '#0A7EFF', swatch: sw('#0A7EFF') },
+      { name: 'status / success', value: '#34C759', swatch: sw('#34C759') },
+      { name: 'status / warning', value: '#FF9F0A', swatch: sw('#FF9F0A') },
+      { name: 'status / error', value: '#FF3B30', swatch: sw('#FF3B30') },
+      { name: 'border / medium', value: 'rgba(0,0,0,.12)', swatch: sw('rgba(0,0,0,.12)') },
+    ];
+    const ts = (size, weight, ls, lh) => 'font-size:' + size + 'px;font-weight:' + weight + ';letter-spacing:' + ls + ';line-height:' + lh + ';';
+    const typeScale = [
+      { name: 'Display L', spec: '48 / 700', style: ts(48, 700, '-0.03em', 1.1) },
+      { name: 'Heading XL', spec: '32 / 700', style: ts(32, 700, '-0.02em', 1.2) },
+      { name: 'Title L', spec: '24 / 600', style: ts(24, 600, '-0.02em', 1.2) },
+      { name: 'Body L', spec: '17 / 400', style: ts(17, 400, '0', 1.5) },
+      { name: 'Body M', spec: '15 / 400', style: ts(15, 400, '0', 1.5) },
+      { name: 'Caption', spec: '12 / 500', style: ts(12, 500, '0', 1.4) },
+    ];
+    const spacingScale = [
+      { name: 'space-1', value: '4px', bar: 'width:4px;' },
+      { name: 'space-2', value: '8px', bar: 'width:8px;' },
+      { name: 'space-4', value: '16px', bar: 'width:16px;' },
+      { name: 'space-6', value: '24px', bar: 'width:24px;' },
+      { name: 'space-8', value: '32px', bar: 'width:32px;' },
+      { name: 'space-12', value: '48px', bar: 'width:48px;' },
+      { name: 'space-16', value: '64px', bar: 'width:64px;' },
+    ];
+    const radiusScale = [
+      { name: 'sm', value: '8px', box: 'border-radius:8px;' },
+      { name: 'md', value: '12px', box: 'border-radius:12px;' },
+      { name: 'lg', value: '16px', box: 'border-radius:16px;' },
+      { name: '2xl', value: '22px', box: 'border-radius:22px;' },
+      { name: 'widget', value: '26px', box: 'border-radius:26px;' },
+      { name: 'full', value: '9999px', box: 'border-radius:9999px;' },
+    ];
+    const shadowScale = [
+      { name: 'shadow-sm', box: 'box-shadow:0 4px 8px rgba(0,0,0,0.08);' },
+      { name: 'shadow-md', box: 'box-shadow:0 8px 24px rgba(0,0,0,0.10);' },
+      { name: 'shadow-lg', box: 'box-shadow:0 16px 48px rgba(0,0,0,0.12);' },
+      { name: 'shadow-window', box: 'box-shadow:0 20px 60px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06);' },
+      { name: 'shadow-dock', box: 'box-shadow:0 8px 40px rgba(0,0,0,0.18);' },
+    ];
+    const springs = [
+      { name: 'Default', value: '220 / 28' },
+      { name: 'Large Window', value: '170 / 24' },
+      { name: 'Dock', value: '300 / 20' },
+      { name: 'Cursor', value: '420 / 32' },
+    ];
+    const timings = [
+      { name: 'Micro', value: '120ms' }, { name: 'Hover', value: '180ms' },
+      { name: 'Selection', value: '220ms' }, { name: 'Open', value: '350ms' },
+      { name: 'Close', value: '280ms' }, { name: 'Window', value: '450ms' },
+      { name: 'Page', value: '650ms' },
+    ];
+    const tabletProjects = projects.filter(p => p.cat === 'film' || p.cat === 'photography').slice(0,6).map(dec);
+    const tabletDock = ['finder','photos','notes','spotify','mail','figma'].map(id => mIcon(id));
+
+    return {
+      wallStyle, navItems,
+      booting: this.state.booting, bootW: Math.round(this.state.bootPct) + '%',
+      isDesktop: !this.state.booting && view === 'desktop',
+      isMobile: view === 'mobile', isTablet: view === 'tablet', isFoundations: view === 'foundations',
+      clock: this.state.clock, clockBig: this.state.clockBig, clockSub: this.state.clockSub,
+      date: this.state.date, mobileDate: this.state.mobileDate,
+      windows, dockApps, folders, finderSidebar, finderProjects, finderTitle, finderCount,
+      recentProjects, photoGrid, noteList, note,
+      mobileWall: 'background:linear-gradient(165deg,#4a4452 0%,#2a2730 50%,#191720 100%);',
+      mobileFg: '#fff',
+      mobileLock: mobile === 'lock', mobileHome: mobile === 'home',
+      mobileAppView: mobile === 'app', mobileProjView: mobile === 'project',
+      unlock: () => this.setState({ mobile: 'home' }),
+      mobileBack: () => this.setState({ mobile: 'home' }),
+      mobileBackToApp: () => this.setState({ mobile: 'app' }),
+      mobileAppTitle: this.state.mobileAppTitle, mobileApps, mobileDock, mobileProjects, mProject,
+      tabletProjects, tabletDock,
+      colorTokens, typeScale, spacingScale, radiusScale, shadowScale, springs, timings,
+    };
+  }
+}
+</script>
+</body>
+</html>
