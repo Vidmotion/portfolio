@@ -122,6 +122,7 @@ const css = `.palette {
   --mobile-media-ink: ${rgba(palette.butter, 0.85)};
   --mobile-media-shade: ${rgba(palette.ganache, 0.72)};
   --mobile-scrim: ${rgba(palette.ganache, 0.27)};
+  --mobile-status-material: ${rgba(palette.ganache, 0.9)};
   --mobile-folder-tab: linear-gradient(${blend(palette.powder, palette.butter, 0.28)}, ${palette.powder});
   --mobile-folder-back: linear-gradient(${blend(palette.powder, palette.butter, 0.62)}, ${blend(palette.powder, '#ffffff', 0.3)});
   --mobile-folder-front: linear-gradient(150deg, ${blend(palette.powder, '#ffffff', 0.32)}, ${palette.powder});

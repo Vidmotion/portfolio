@@ -38,7 +38,7 @@ export function MobileShell() {
       {/* Status bar — the new Home Screen design (Figma) has no simulated status
           bar chrome; it relies on real device safe-area insets instead. Lock/App/
           Project screens keep the existing simulated bar. */}
-      {screen !== 'home' && <MobileStatusBar light={false} />}
+      {screen !== 'home' && <MobileStatusBar light={screen === 'project'} />}
 
       {screen === 'lock' && (
         <div
