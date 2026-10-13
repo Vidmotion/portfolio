@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { galleryFade } from '@/lib/motion'
 import { getProjectBySlug } from '@/lib/content'
-import { mobileCategoryGradient } from '@/core/registries/mobilePalette'
+import { categoryGradient } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
 import { useMobileMotion } from './useMobileMotion'
 import { useLocaleStore } from '@/store/localeStore'
@@ -25,11 +25,11 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'var(--mobile-surface)',
+          background: '#fcfcfd',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--mobile-muted)',
+          color: '#a0a0a5',
           fontSize: '13px',
           fontFamily: 'var(--font-text)',
         }}
@@ -39,7 +39,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
     )
   }
 
-  const gradient = mobileCategoryGradient(project.category)
+  const gradient = categoryGradient(project.category)
 
   return (
     <motion.div
@@ -51,7 +51,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
         position: 'absolute',
         zIndex: 20,
         inset: 0,
-        background: 'var(--mobile-surface)',
+        background: '#fcfcfd',
         overflowY: 'auto',
         fontFamily: 'var(--font-text)',
       }}
@@ -91,7 +91,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             border: 'none',
-            color: 'var(--mobile-butter)',
+            color: '#fff',
             fontSize: '18px',
             display: 'flex',
             alignItems: 'center',
@@ -117,7 +117,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               fontSize: '10px',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'var(--mobile-media-ink)',
+              color: 'rgba(255,255,255,0.82)',
               fontWeight: 500,
             }}
           >
@@ -127,7 +127,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             style={{
               fontSize: '34px',
               fontWeight: 600,
-              color: 'var(--mobile-butter)',
+              color: '#fff',
               letterSpacing: '-0.03em',
               lineHeight: 1.0,
               marginTop: '8px',
@@ -145,7 +145,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
           style={{
             fontSize: '17px',
             lineHeight: 1.65,
-            color: 'var(--mobile-text)',
+            color: '#2a2a2c',
             margin: '0 0 26px',
             letterSpacing: '-0.015em',
           }}
@@ -183,7 +183,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               fontSize: '10px',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
-              color: 'var(--mobile-muted)',
+              color: '#b0b0b5',
               fontWeight: 600,
               marginBottom: '14px',
             }}
@@ -201,8 +201,8 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
                 borderBottom: '0.5px solid rgba(0,0,0,0.05)',
               }}
             >
-              <span style={{ fontSize: '13px', color: 'var(--mobile-muted)' }}>{credit.role}</span>
-              <span style={{ fontSize: '13px', color: 'var(--mobile-text)', fontWeight: 500 }}>
+              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{credit.role}</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 500 }}>
                 {credit.name}
               </span>
             </div>
@@ -210,8 +210,8 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
 
           {project.client && (
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '14px' }}>
-              <span style={{ fontSize: '13px', color: 'var(--mobile-muted)' }}>{text.client}</span>
-              <span style={{ fontSize: '13px', color: 'var(--mobile-text)', fontWeight: 600 }}>
+              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{text.client}</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 600 }}>
                 {project.client}
               </span>
             </div>

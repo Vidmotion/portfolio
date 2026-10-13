@@ -13,7 +13,6 @@ import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
 import { uiText } from '@/core/registries/locale'
 import styles from './EasterEggLayer.module.css'
-import palette from '@/styles/generated/mobile-palette.module.css'
 
 function SecretDialog({ egg }: { egg: EasterEgg }) {
   const ref = useRef<HTMLDialogElement>(null)
@@ -41,8 +40,7 @@ function SecretDialog({ egg }: { egg: EasterEgg }) {
   return (
     <motion.dialog
       ref={ref}
-      className={`${styles.dialog} ${detectPlatform() === 'mobile' ? palette.palette : ''}`}
-      data-mobile-theme={detectPlatform() === 'mobile' ? 'butter' : undefined}
+      className={styles.dialog}
       onKeyDown={(event) => event.stopPropagation()}
       aria-label={egg === 'hello' ? text.secretHello : text.secretAction}
       onCancel={(event) => {

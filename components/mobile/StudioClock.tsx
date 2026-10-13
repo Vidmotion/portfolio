@@ -54,7 +54,7 @@ export function StudioClock() {
               y1={60 + sin * radius}
               x2={60 + cos * (radius - length)}
               y2={60 + sin * (radius - length)}
-              stroke="currentColor"
+              stroke="#f5f5f7"
               strokeWidth={index % 5 === 0 ? 1.4 : 1}
               opacity={index % 5 === 0 ? 0.8 : 0.35}
               strokeLinecap="round"

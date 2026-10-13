@@ -48,7 +48,5 @@ next-env.d.ts
 /public/icons/ui/
 /public/icons/mobile/
 
-# Shared Retina icons and mobile palette variants are built from the registries.
+# Shared Retina icons are built from the canonical registry.
 /public/icons/shared/
-/public/icons/brand/
-/styles/generated/

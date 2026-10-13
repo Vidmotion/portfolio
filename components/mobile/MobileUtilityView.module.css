@@ -2,11 +2,11 @@
   position: absolute;
   z-index: 10;
   inset: 0;
-  background: var(--mobile-canvas);
+  background: #f2f2f7;
   display: flex;
   flex-direction: column;
   font-family: var(--font-text);
-  color: var(--mobile-text);
+  color: #1c1c1e;
 }
 .header {
   flex-shrink: 0;
@@ -19,7 +19,7 @@
   margin-left: -7px;
   min-height: 44px;
   min-width: 64px;
-  color: var(--mobile-link);
+  color: #0066cc;
   background: transparent;
   border: 0;
   font: inherit;
@@ -41,7 +41,7 @@
   padding: 12px 22px max(40px, calc(env(safe-area-inset-bottom) + 24px));
 }
 .group {
-  background: var(--mobile-surface);
+  background: #fff;
   border-radius: 18px;
   overflow: hidden;
 }
@@ -53,12 +53,12 @@
   gap: 10px;
   padding: 12px 17px;
   text-decoration: none;
-  color: var(--mobile-link);
+  color: #0066cc;
   font-size: 15px;
   overflow-wrap: anywhere;
 }
 .group a + a {
-  border-top: 0.5px solid var(--mobile-line);
+  border-top: 0.5px solid #d8d8de;
 }
 .contactIdentity {
   display: flex;
@@ -82,7 +82,7 @@
   font-size: 13px;
   line-height: 1.4;
   max-width: 250px;
-  color: var(--mobile-muted);
+  color: #66666f;
 }
 .setting {
   display: flex;
@@ -94,7 +94,7 @@
   font-size: 15px;
 }
 .setting + .setting {
-  border-top: 0.5px solid var(--mobile-line);
+  border-top: 0.5px solid #d8d8de;
 }
 .toggle {
   width: 56px;
@@ -119,7 +119,7 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: var(--mobile-surface);
+  background: #fff;
   box-shadow: 0 2px 4px #0003;
   transition: transform 0.16s ease-out;
 }
@@ -137,7 +137,7 @@
   width: 100px;
   height: 100px;
   border-radius: 24px;
-  background: var(--mobile-widget-material);
+  background: linear-gradient(150deg, #42444d, #25262c);
   box-shadow:
     inset 0 1px 0 #ffffff40,
     0 12px 24px #0002;
@@ -146,12 +146,12 @@
   max-width: 260px;
   margin: 0;
   text-align: center;
-  color: var(--mobile-muted);
+  color: #696971;
   font-size: 15px;
   line-height: 1.55;
 }
 .photos p {
-  color: var(--mobile-muted);
+  color: #696971;
   font-size: 14px;
   line-height: 1.55;
   margin: 20px 0 0;
@@ -160,7 +160,7 @@
   margin: 0;
   border-radius: 20px;
   overflow: hidden;
-  background: var(--mobile-surface);
+  background: #fff;
 }
 .portraitPhoto img {
   display: block;
@@ -170,10 +170,10 @@
 .portraitPhoto figcaption {
   padding: 14px 16px;
   font-size: 12px;
-  color: var(--mobile-muted);
+  color: #696971;
 }
 .view :focus-visible {
-  outline: 2px solid var(--mobile-link);
+  outline: 2px solid #0066cc;
   outline-offset: -3px;
 }
 @media (prefers-reduced-motion: reduce) {

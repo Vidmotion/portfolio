@@ -9,7 +9,7 @@ import { playlist } from '@/core/registries/playlist'
 import { categories } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
 import { projects } from '@/lib/content'
-import { mobileCategoryGradient } from '@/core/registries/mobilePalette'
+import { categoryGradient } from '@/lib/utils'
 import { useLocaleStore } from '@/store/localeStore'
 import { useEasterEggStore } from '@/store/easterEggStore'
 import { useLongPress } from '@/hooks/useLongPress'
@@ -160,7 +160,7 @@ export function MailWidget({ launch, open, reduced }: WidgetProps) {
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
       <span className={styles.mailIcon}>
-        <AppGlyph icon="mail" appearance="mobile" />
+        <AppGlyph icon="mail" />
       </span>
       <span>
         <small>{text.mail}</small>
@@ -196,7 +196,7 @@ export function ProjectPreviewWidget({
           >
             <span
               className={styles.projectThumb}
-              style={{ background: mobileCategoryGradient(project.category) }}
+              style={{ background: categoryGradient(project.category) }}
               aria-hidden
             />
             <span>

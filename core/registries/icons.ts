@@ -13,6 +13,6 @@ export const appIcons = {
   instagram: 'instagram',
 } satisfies Record<ApplicationId, IconId>
 
-export function iconSource(id: IconId, appearance: 'neutral' | 'mobile' = 'neutral') {
-  return `/icons/${appearance === 'mobile' ? 'brand' : 'shared'}/${id}.png`
+export function iconSource(id: IconId) {
+  return `/icons/shared/${id}.png`
 }

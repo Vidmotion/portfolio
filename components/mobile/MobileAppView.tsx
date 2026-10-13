@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { springs, staggerDelay } from '@/lib/motion'
 import { projects } from '@/lib/content'
-import { mobileCategoryGradient } from '@/core/registries/mobilePalette'
+import { categoryGradient } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
 import { categories } from '@/core/registries/categories'
 import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
@@ -42,7 +42,7 @@ export function MobileAppView({
         transformOrigin,
         pointerEvents: present ? 'auto' : 'none',
         inset: 0,
-        background: 'var(--mobile-surface)',
+        background: '#fcfcfd',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'var(--font-text)',
@@ -53,7 +53,7 @@ export function MobileAppView({
         style={{
           flexShrink: 0,
           padding: '62px 24px 16px',
-          borderBottom: '0.5px solid var(--mobile-line)',
+          borderBottom: '0.5px solid rgba(0,0,0,0.06)',
         }}
       >
         <button
@@ -62,7 +62,7 @@ export function MobileAppView({
             background: 'transparent',
             border: 'none',
             fontSize: '15px',
-            color: 'var(--mobile-link)',
+            color: '#0066cc',
             display: 'flex',
             alignItems: 'center',
             gap: '3px',
@@ -80,7 +80,7 @@ export function MobileAppView({
           style={{
             fontSize: '30px',
             fontWeight: 600,
-            color: 'var(--mobile-text)',
+            color: '#161617',
             letterSpacing: '-0.03em',
             marginTop: '10px',
             fontFamily: 'var(--font-display)',
@@ -115,7 +115,7 @@ export function MobileAppView({
                 background: 'transparent',
                 textAlign: 'left',
                 cursor: 'pointer',
-                color: 'var(--mobile-text)',
+                color: '#161617',
               }}
               aria-label={`Open ${folder.label} folder`}
             >
@@ -124,9 +124,7 @@ export function MobileAppView({
             </button>
           ))}
         {category && filtered.length === 0 && (
-          <p style={{ color: 'var(--mobile-muted)', fontSize: '15px', padding: '12px 8px' }}>
-            {text.noProjects}
-          </p>
+          <p style={{ color: '#666', fontSize: '15px', padding: '12px 8px' }}>{text.noProjects}</p>
         )}
         {filtered.map((project, i) => (
           <motion.button
@@ -156,7 +154,7 @@ export function MobileAppView({
                 borderRadius: '18px',
                 position: 'relative',
                 overflow: 'hidden',
-                background: mobileCategoryGradient(project.category),
+                background: categoryGradient(project.category),
                 boxShadow: '0 1px 2px rgba(0,0,0,0.04),0 10px 26px rgba(0,0,0,0.1)',
               }}
             >
@@ -168,7 +166,7 @@ export function MobileAppView({
                   fontFamily: '"JetBrains Mono", "SF Mono", monospace',
                   fontSize: '8px',
                   letterSpacing: '0.06em',
-                  color: 'var(--mobile-media-ink)',
+                  color: 'rgba(255,255,255,0.7)',
                   textTransform: 'uppercase',
                 }}
               >
@@ -181,14 +179,14 @@ export function MobileAppView({
                 style={{
                   fontSize: '18px',
                   fontWeight: 600,
-                  color: 'var(--mobile-text)',
+                  color: '#161617',
                   letterSpacing: '-0.02em',
                   fontFamily: 'var(--font-display)',
                 }}
               >
                 {project.title}
               </div>
-              <div style={{ fontSize: '13px', color: 'var(--mobile-muted)', marginTop: '1px' }}>
+              <div style={{ fontSize: '13px', color: '#a0a0a5', marginTop: '1px' }}>
                 {categoryLabel(project.category)} · {project.year}
               </div>
             </div>

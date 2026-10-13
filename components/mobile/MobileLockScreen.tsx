@@ -33,7 +33,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        color: 'var(--mobile-text)',
+        color: '#fff',
         padding: 0,
         fontFamily: 'var(--font-text)',
       }}
@@ -66,7 +66,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             fontSize: '17px',
             fontWeight: 500,
             letterSpacing: '0.01em',
-            textShadow: 'none',
+            textShadow: '0 2px 16px rgba(0,0,0,0.35)',
             opacity: 0.95,
           }}
         >
@@ -78,7 +78,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             fontWeight: 300,
             letterSpacing: '-0.05em',
             lineHeight: 0.95,
-            textShadow: 'none',
+            textShadow: '0 4px 30px rgba(0,0,0,0.35)',
             fontVariantNumeric: 'tabular-nums',
             marginTop: '2px',
           }}
@@ -94,10 +94,10 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
           width: 'min(300px, calc(100% - 48px))',
           padding: '16px 18px',
           borderRadius: '22px',
-          background: 'var(--mobile-widget-material)',
+          background: 'rgba(39,40,45,0.88)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          boxShadow: 'var(--mobile-glass-shadow)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
@@ -119,7 +119,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
               fontSize: '10px',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'var(--mobile-muted)',
+              color: 'rgba(255,255,255,0.65)',
               fontWeight: 600,
             }}
           >
@@ -129,7 +129,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             style={{
               fontSize: '13px',
               fontWeight: 400,
-              color: 'var(--mobile-text)',
+              color: '#fff',
               lineHeight: 1.4,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -138,7 +138,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             {profile.title}
           </div>
         </div>
-        <span style={{ color: 'var(--mobile-text)', fontSize: '23px', opacity: 0.8 }}>›</span>
+        <span style={{ color: '#fff', fontSize: '23px', opacity: 0.8 }}>›</span>
       </div>
 
       <div style={{ flex: 1 }} />
@@ -158,7 +158,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             width: '150px',
             height: '4px',
             borderRadius: '9999px',
-            background: 'var(--mobile-berry)',
+            background: 'rgba(255,255,255,0.55)',
           }}
         />
         <div
@@ -166,8 +166,8 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
           style={{
             fontSize: '12px',
             letterSpacing: '0.04em',
-            color: 'var(--mobile-muted)',
-            textShadow: 'none',
+            color: 'rgba(255,255,255,0.8)',
+            textShadow: '0 1px 8px rgba(0,0,0,0.35)',
           }}
         >
           {text.unlock}

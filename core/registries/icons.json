@@ -3,25 +3,60 @@
     "source": "projects.svg",
     "family": "authored",
     "scale": 0.72,
-    "paint": "sculpted"
+    "edgeToEdge": false
   },
-  "about": { "source": "about me.svg", "family": "authored", "scale": 1, "paint": "tile" },
-  "film": { "source": "video.svg", "family": "authored", "scale": 0.72, "paint": "sculpted" },
-  "contacts": { "source": "find me.svg", "family": "authored", "scale": 1, "paint": "tile" },
-  "mail": { "source": "message me.svg", "family": "authored", "scale": 0.72, "paint": "sculpted" },
-  "photos": { "source": "photo.svg", "family": "authored", "scale": 0.72, "paint": "sculpted" },
-  "spotify": { "source": "spotify.svg", "family": "authored", "scale": 0.72, "paint": "sculpted" },
+  "about": {
+    "source": "about me.svg",
+    "family": "authored",
+    "scale": 1,
+    "edgeToEdge": true
+  },
+  "film": {
+    "source": "video.svg",
+    "family": "authored",
+    "scale": 0.72,
+    "edgeToEdge": false
+  },
+  "contacts": {
+    "source": "find me.svg",
+    "family": "authored",
+    "scale": 1,
+    "edgeToEdge": true
+  },
+  "mail": {
+    "source": "message me.svg",
+    "family": "authored",
+    "scale": 0.72,
+    "edgeToEdge": false
+  },
+  "photos": {
+    "source": "photo.svg",
+    "family": "authored",
+    "scale": 0.72,
+    "edgeToEdge": false
+  },
+  "spotify": {
+    "source": "spotify.svg",
+    "family": "authored",
+    "scale": 0.72,
+    "edgeToEdge": false
+  },
   "settings": {
     "source": "settings.svg",
     "family": "authored",
     "scale": 0.72,
-    "paint": "sculpted"
+    "edgeToEdge": false
   },
   "instagram": {
     "source": "instagram.svg",
     "family": "social",
     "scale": 0.68,
-    "paint": "sculpted"
+    "edgeToEdge": false
   },
-  "linkedin": { "source": "linkedin.svg", "family": "social", "scale": 0.62, "paint": "sculpted" }
+  "linkedin": {
+    "source": "linkedin.svg",
+    "family": "social",
+    "scale": 1,
+    "edgeToEdge": false
+  }
 }

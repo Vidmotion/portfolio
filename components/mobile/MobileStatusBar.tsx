@@ -4,11 +4,12 @@ import { useTime } from '@/hooks/useTime'
 
 interface MobileStatusBarProps {
   light?: boolean
+  frosted?: boolean
 }
 
-export function MobileStatusBar({ light = true }: MobileStatusBarProps) {
+export function MobileStatusBar({ light = true, frosted = false }: MobileStatusBarProps) {
   const { fullTime } = useTime()
-  const color = light ? 'var(--mobile-butter, #fff)' : 'var(--mobile-text, #161617)'
+  const color = light ? '#fff' : '#161617'
 
   return (
     <div
@@ -24,9 +25,9 @@ export function MobileStatusBar({ light = true }: MobileStatusBarProps) {
         justifyContent: 'space-between',
         padding: '20px 30px 0',
         color,
-        background: light ? 'var(--mobile-status-material)' : undefined,
-        backdropFilter: light ? 'blur(18px)' : undefined,
-        WebkitBackdropFilter: light ? 'blur(18px)' : undefined,
+        background: frosted ? 'rgba(20, 20, 24, 0.9)' : undefined,
+        backdropFilter: frosted ? 'blur(18px)' : undefined,
+        WebkitBackdropFilter: frosted ? 'blur(18px)' : undefined,
         pointerEvents: 'none',
       }}
       aria-hidden
