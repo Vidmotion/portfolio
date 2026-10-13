@@ -3,6 +3,10 @@
 import { motion } from 'framer-motion'
 import { useTime } from '@/hooks/useTime'
 import { springs } from '@/lib/motion'
+import { identity } from '@/core/registries/identity'
+import { profile } from '@/core/registries/profile'
+import { uiText } from '@/core/registries/locale'
+import { useLocaleStore } from '@/store/localeStore'
 
 interface MobileLockScreenProps {
   onUnlock: () => void
@@ -10,6 +14,7 @@ interface MobileLockScreenProps {
 
 export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
   const { bigTime, dateLong } = useTime()
+  const text = uiText[useLocaleStore((state) => state.locale)]
 
   return (
     <motion.button
@@ -31,11 +36,16 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
         padding: 0,
         fontFamily: 'var(--font-text)',
       }}
-      aria-label="Tap to unlock"
+      aria-label={text.unlock}
     >
       {/* Date + Time */}
       <div
-        style={{ marginTop: '92px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        style={{
+          marginTop: '92px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
       >
         <div
           style={{
@@ -63,14 +73,14 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
         </div>
       </div>
 
-      {/* Now Playing widget */}
+      {/* Portfolio entry — real identity, no simulated playback state. */}
       <div
         style={{
           marginTop: '30px',
-          width: '228px',
+          width: 'min(300px, calc(100% - 48px))',
           padding: '16px 18px',
           borderRadius: '22px',
-          background: 'rgba(255,255,255,0.14)',
+          background: 'rgba(39,40,45,0.88)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
@@ -78,7 +88,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
           alignItems: 'center',
           gap: '14px',
         }}
-        aria-label="Now Playing"
+        aria-label={identity.name}
       >
         <div
           style={{
@@ -86,7 +96,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             height: '42px',
             borderRadius: '11px',
             flexShrink: 0,
-            background: 'url(/spotify-cover.jpg) center/cover no-repeat, linear-gradient(150deg, hsl(300 14% 52%), hsl(280 16% 38%))',
+            background: `url(${profile.portrait}) center/cover no-repeat`,
           }}
         />
         <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
@@ -99,22 +109,22 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
               fontWeight: 600,
             }}
           >
-            Now Playing
+            {identity.name}
           </div>
           <div
             style={{
-              fontSize: '14px',
-              fontWeight: 600,
+              fontSize: '13px',
+              fontWeight: 400,
               color: '#fff',
-              whiteSpace: 'nowrap',
+              lineHeight: 1.4,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
           >
-            Low Frequencies
+            {profile.title}
           </div>
         </div>
-        <span style={{ color: '#fff', fontSize: '16px', opacity: 0.9 }}>▶</span>
+        <span style={{ color: '#fff', fontSize: '23px', opacity: 0.8 }}>›</span>
       </div>
 
       <div style={{ flex: 1 }} />
@@ -145,7 +155,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             textShadow: '0 1px 8px rgba(0,0,0,0.35)',
           }}
         >
-          Tap to open
+          {text.tapToOpen}
         </div>
       </div>
     </motion.button>

@@ -3,12 +3,17 @@ import type { ProjectCategory } from '@/types'
 
 export type MobileScreen = 'lock' | 'home' | 'app' | 'project' | 'utility'
 export type MobileUtility = 'about' | 'photos' | 'settings' | 'contacts'
+export type MobileLaunchOrigin = { x: number; y: number }
 
 interface MobileStore {
   screen: MobileScreen
   activeCategory: ProjectCategory | null
   activeProjectId: string | null
   activeUtility: MobileUtility | null
+  homePage: 0 | 1
+  launchOrigin: MobileLaunchOrigin | null
+  setHomePage: (page: 0 | 1) => void
+  setLaunchOrigin: (origin: MobileLaunchOrigin) => void
 
   unlock: () => void
   openApp: (category: ProjectCategory | null) => void
@@ -23,6 +28,10 @@ export const useMobileStore = create<MobileStore>((set, get) => ({
   activeCategory: null,
   activeProjectId: null,
   activeUtility: null,
+  homePage: 0,
+  launchOrigin: null,
+  setHomePage: (homePage) => set({ homePage }),
+  setLaunchOrigin: (launchOrigin) => set({ launchOrigin }),
 
   unlock: () => set({ screen: 'home' }),
 

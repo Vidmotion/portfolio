@@ -10,6 +10,7 @@ import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
 import type { ProjectCategory } from '@/types'
+import { useMobileMotion } from './useMobileMotion'
 
 interface MobileAppViewProps {
   category: ProjectCategory | null
@@ -25,18 +26,21 @@ export function MobileAppView({
   onBack,
 }: MobileAppViewProps) {
   const locale = useLocaleStore((s) => s.locale)
+  const { appEntrance, transformOrigin, present } = useMobileMotion()
   const text = uiText[locale]
   const filtered = category ? projects.filter((p) => p.category === category) : []
   const title = category ? categoryLabel(category) : text.projects
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      transition={springs.default}
+      {...appEntrance}
+      aria-hidden={!present}
+      inert={!present}
       style={{
         position: 'absolute',
+        zIndex: 10,
+        transformOrigin,
+        pointerEvents: present ? 'auto' : 'none',
         inset: 0,
         background: '#fcfcfd',
         display: 'flex',

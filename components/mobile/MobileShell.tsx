@@ -23,6 +23,7 @@ export function MobileShell() {
     openUtility,
     openProject,
     goBack,
+    setLaunchOrigin,
   } = useMobileStore()
 
   const isLight = screen === 'lock' || screen === 'home'
@@ -48,33 +49,36 @@ export function MobileShell() {
           Project screens keep the existing simulated bar. */}
       {screen !== 'home' && <MobileStatusBar light={isLight} />}
 
-      <div
-        style={{
-          position: 'absolute',
-          top: screen === 'home' ? '2px' : '12px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '86px',
-          minHeight: '25px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          color: '#fff',
-          background: screen === 'home' ? 'transparent' : '#000',
-          borderRadius: '999px',
-          zIndex: 50,
-        }}
-      >
-        <LanguageSwitcher />
-      </div>
+      {screen !== 'home' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '86px',
+            minHeight: '25px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: '#fff',
+            background: '#000',
+            borderRadius: '999px',
+            zIndex: 50,
+          }}
+        >
+          <LanguageSwitcher />
+        </div>
+      )}
 
       {/* Screens */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {screen === 'lock' && <MobileLockScreen key="lock" onUnlock={unlock} />}
         {screen === 'home' && (
           <MobileHomeScreen
             key="home"
             onOpenApp={openApp}
+            onPrepareLaunch={setLaunchOrigin}
             onOpenNotes={() => openUtility('about')}
             onOpenPhotos={() => openUtility('photos')}
             onOpenSettings={() => openUtility('settings')}

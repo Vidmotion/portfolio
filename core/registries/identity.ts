@@ -2,7 +2,7 @@ export type Identity = {
   name: string
   productName: string
   email: string
-  social: Array<{ platform: string; url: string }>
+  social: Array<{ platform: string; url: string; label?: string }>
 }
 
 export const identity: Identity = {
@@ -10,7 +10,11 @@ export const identity: Identity = {
   productName: 'Portfolio OS',
   email: 'info@carlodesantis.com',
   social: [
-    { platform: 'instagram', url: 'https://www.instagram.com/carloodesantis/' },
-    { platform: 'linkedin', url: 'https://www.linkedin.com/in/carlo-desantis-design/' },
+    { platform: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/carloodesantis/' },
+    {
+      platform: 'linkedin',
+      label: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/carlo-desantis-design/',
+    },
   ],
 }

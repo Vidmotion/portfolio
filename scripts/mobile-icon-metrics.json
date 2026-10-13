@@ -1,0 +1,47 @@
+{
+  "about me.svg": {
+    "original": "0 0 60 60",
+    "mobile": "0 0 60 47.452",
+    "sourceHash": "2006f1ae019b3f6911c4124f4b64a164291c754bbb8c0c3a58f0d97fb6973a99"
+  },
+  "find me.svg": {
+    "original": "0 0 60 60",
+    "mobile": "0 0 60 60",
+    "sourceHash": "fd55f1351e235ee49f3404338955d9f329df2eb77503ba9f7e041dbb74e7046a"
+  },
+  "message me.svg": {
+    "original": "0 0 46 41",
+    "mobile": "0 0 46 40.542",
+    "sourceHash": "c6989d4d4f98edd5abe5f9e6019c720fb0364d980995d5de6fed1e20947df8d1"
+  },
+  "notes.svg": {
+    "original": "0 0 18 15",
+    "mobile": "0 0 18 14.927",
+    "sourceHash": "2e7cc08b0e0dbea84203cc9ebb251d5a5e2ea9f94e6ba6e4c57a765e7dfcbe14"
+  },
+  "photo.svg": {
+    "original": "0 0 45 45",
+    "mobile": "0 0 45 45",
+    "sourceHash": "93c1ddbc9f02d43941d75b2b49f1121dfe3788557e0f5e089926f0fc35426d24"
+  },
+  "projects.svg": {
+    "original": "0 0 36 36",
+    "mobile": "0 0 36 36",
+    "sourceHash": "e8055525ef15242d796cb77a9ab3ab413ebf6e23efd78c4df88464b4852a1fba"
+  },
+  "settings.svg": {
+    "original": "0 0 60 60",
+    "mobile": "3.759 3.642 52.481 52.716",
+    "sourceHash": "c822a91fe0f7babfb10fb82047afce59c6fb1f4f1b12e5aa2a3c0efb7399cfe6"
+  },
+  "spotify.svg": {
+    "original": "0 0 49 49",
+    "mobile": "0 0 49 48.801",
+    "sourceHash": "e666545bcb20d3d24b1b6255f24daf3bc82f4c988f3479c678418ed1450fdc97"
+  },
+  "video.svg": {
+    "original": "0 0 44 28",
+    "mobile": "0 0 44 28",
+    "sourceHash": "ca6516c76232f9fc823132deff5bf3a369e8befc14b3f291d2b432e9f5c10445"
+  }
+}

@@ -1,10 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { springs, galleryFade } from '@/lib/motion'
+import { galleryFade } from '@/lib/motion'
 import { getProjectBySlug } from '@/lib/content'
 import { categoryGradient } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
+import { useMobileMotion } from './useMobileMotion'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 
 interface MobileProjectViewProps {
   projectId: string
@@ -13,11 +16,25 @@ interface MobileProjectViewProps {
 
 export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps) {
   const project = getProjectBySlug(projectId)
+  const text = uiText[useLocaleStore((state) => state.locale)]
+  const { reduced, appTransition } = useMobileMotion()
 
   if (!project) {
     return (
-      <div style={{ position: 'absolute', inset: 0, background: '#fcfcfd', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a0a0a5', fontSize: '13px', fontFamily: 'var(--font-text)' }}>
-        Project not found
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: '#fcfcfd',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#a0a0a5',
+          fontSize: '13px',
+          fontFamily: 'var(--font-text)',
+        }}
+      >
+        {text.projectNotFound}
       </div>
     )
   }
@@ -26,12 +43,13 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 24 }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, x: 36 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 24 }}
-      transition={springs.default}
+      exit={reduced ? { opacity: 0 } : { opacity: 0, x: 36 }}
+      transition={appTransition}
       style={{
         position: 'absolute',
+        zIndex: 20,
         inset: 0,
         background: '#fcfcfd',
         overflowY: 'auto',
@@ -66,8 +84,8 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             position: 'absolute',
             top: '56px',
             left: '18px',
-            width: '34px',
-            height: '34px',
+            width: '44px',
+            height: '44px',
             borderRadius: '50%',
             background: 'rgba(0,0,0,0.32)',
             backdropFilter: 'blur(12px)',
@@ -80,7 +98,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             justifyContent: 'center',
             zIndex: 2,
           }}
-          aria-label="Back to projects"
+          aria-label={text.backToProjects}
         >
           ‹
         </button>
@@ -170,7 +188,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               marginBottom: '14px',
             }}
           >
-            Credits
+            {text.credits}
           </div>
 
           {project.credits.map((credit, i) => (
@@ -184,14 +202,18 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               }}
             >
               <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{credit.role}</span>
-              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 500 }}>{credit.name}</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 500 }}>
+                {credit.name}
+              </span>
             </div>
           ))}
 
           {project.client && (
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '14px' }}>
-              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>Client</span>
-              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 600 }}>{project.client}</span>
+              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{text.client}</span>
+              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 600 }}>
+                {project.client}
+              </span>
             </div>
           )}
         </div>

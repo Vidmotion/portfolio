@@ -1,0 +1,459 @@
+/* iOS-inspired web materials; glyph geometry remains author-owned. */
+.home {
+  --icon-size: 66px;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 44px minmax(0, 1fr) 44px 90px;
+  padding: max(12px, env(safe-area-inset-top)) 22px
+    max(24px, calc(env(safe-area-inset-bottom) + 10px));
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.22),
+    rgba(0, 0, 0, 0.08) 55%,
+    rgba(0, 0, 0, 0.3)
+  );
+  color: #fff;
+  font-family: var(--font-text);
+  isolation: isolate;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.header [role='group'] {
+  padding: 3px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.13);
+}
+.header [role='group'] button {
+  min-width: 34px !important;
+  min-height: 28px !important;
+  font-size: 11px !important;
+  border-radius: 9px !important;
+}
+.viewport {
+  overflow: hidden;
+  min-height: 0;
+  outline-offset: -3px;
+}
+.track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  touch-action: pan-y;
+}
+.page {
+  flex: 0 0 100%;
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 14px 0 4px;
+}
+.page::-webkit-scrollbar {
+  display: none;
+}
+.profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 18px;
+  min-height: 168px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 28px;
+  text-align: left;
+  color: #1d1d1f;
+  background: rgba(248, 248, 250, 0.97);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 #fff;
+  cursor: pointer;
+}
+.portrait {
+  width: 80px;
+  height: 96px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 20px;
+}
+.profileCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.profileCopy strong {
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  font-weight: 650;
+}
+.profession {
+  font-size: 13px;
+  line-height: 1.35;
+  color: #4b4b50;
+}
+.location {
+  color: #747479;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.profileArrow {
+  position: absolute;
+  right: 13px;
+  top: 13px;
+  color: #8c8c91;
+}
+.apps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.appButton,
+.dockButton {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.iconTile {
+  overflow: hidden;
+  width: min(100%, var(--icon-size));
+  aspect-ratio: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 23%;
+  box-shadow:
+    0 5px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.graphite {
+  background: linear-gradient(160deg, #383a3f, #202126);
+}
+.paper {
+  background: linear-gradient(160deg, #fbfaf6, #d7d8dd);
+}
+.glyph {
+  width: 54px;
+  height: 54px;
+  max-width: 82%;
+  max-height: 82%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.glyphFull {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: inherit;
+}
+.appLabel {
+  min-height: 30px;
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow:
+    0 1px 8px #000,
+    0 1px 2px #000;
+}
+.workWidget {
+  padding: 16px 14px 12px;
+  flex-shrink: 0;
+  border-radius: 26px;
+  background: rgba(39, 40, 45, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 10px 24px rgba(0, 0, 0, 0.1);
+}
+.widgetHeading {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+.folders {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.folders button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #f7f7fa;
+  cursor: pointer;
+  min-width: 0;
+}
+.folders button span {
+  font-size: 11px;
+  line-height: 1.2;
+  min-height: 27px;
+  text-align: center;
+}
+.musicWidget {
+  padding: 20px;
+  border-radius: 28px;
+  border: 0;
+  background: #26272b;
+  color: #fff;
+  min-height: 190px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 10px 25px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+.musicWidget .widgetHeading {
+  color: #c0c0c8;
+}
+.musicBody {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.cover {
+  border-radius: 19px;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+.musicCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.musicCopy strong {
+  font-size: 27px;
+  line-height: 1.05;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+}
+.musicCopy > span {
+  font-size: 12px;
+  color: #c0c0c8;
+}
+.musicCopy .play {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  margin-top: 7px;
+  font-weight: 600;
+}
+.linksWidget {
+  padding: 20px;
+  border-radius: 28px;
+  background: rgba(248, 248, 250, 0.97);
+  color: #1d1d1f;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.linksWidget .widgetHeading {
+  color: #737378;
+  margin-bottom: 6px;
+}
+.linksWidget a {
+  min-height: 52px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: #1d1d1f;
+  font-size: 18px;
+  font-weight: 550;
+  text-transform: capitalize;
+  letter-spacing: -0.025em;
+}
+.linksWidget a + a {
+  border-top: 0.5px solid #dedee3;
+}
+.linksWidget svg {
+  color: #737378;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 44px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.pagination span {
+  height: 6px;
+  border-radius: 99px;
+  background: #fff;
+}
+.dock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 12px 10px;
+  border-radius: 30px;
+  background: rgba(200, 202, 209, 0.3);
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+    0 12px 24px rgba(0, 0, 0, 0.18);
+}
+.dockButton {
+  width: 100%;
+}
+.dockButton .iconTile {
+  width: min(100%, 64px);
+}
+.dockButton .glyph {
+  width: 52px;
+  height: 52px;
+}
+.home button:focus-visible,
+.home a:focus-visible {
+  outline: 2px solid #70b5ff;
+  outline-offset: 4px;
+}
+@media (max-height: 740px) {
+  .page {
+    gap: 16px;
+    padding-top: 8px;
+  }
+  .profile {
+    min-height: 158px;
+    padding: 17px 18px;
+  }
+}
+@media (max-width: 350px) {
+  .home {
+    padding-left: 16px;
+    padding-right: 16px;
+    --icon-size: 62px;
+  }
+  .profile {
+    gap: 12px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .portrait {
+    width: 66px;
+    height: 84px;
+  }
+  .profileCopy strong {
+    font-size: 23px;
+  }
+  .musicBody {
+    gap: 15px;
+  }
+  .cover {
+    width: 80px;
+    height: 80px;
+  }
+  .glyph:not(.glyphFull) {
+    width: 50px;
+    height: 50px;
+  }
+  .dockButton .glyph {
+    width: 48px;
+    height: 48px;
+  }
+}
+@media (max-height: 660px) {
+  /* Folder shortcuts remain in Projects when browser chrome leaves less room. */
+  .workWidget {
+    display: none;
+  }
+  .musicWidget {
+    min-height: 166px;
+    padding: 18px;
+  }
+  .cover {
+    width: 80px;
+    height: 80px;
+  }
+  .linksWidget {
+    padding: 16px;
+  }
+  .linksWidget a {
+    min-height: 48px;
+    font-size: 17px;
+  }
+}
+.profile:focus-visible,
+.musicWidget:focus-visible {
+  outline-offset: -3px !important;
+}
+.appButton:focus-visible,
+.dockButton:focus-visible {
+  outline: none !important;
+}
+.appButton:focus-visible .iconTile,
+.dockButton:focus-visible .iconTile {
+  outline: 2px solid #70b5ff;
+  outline-offset: 3px;
+}
+.appButton:focus-visible .iconTile,
+.dockButton:focus-visible .iconTile {
+  outline: 2px solid #70b5ff;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dock {
+    backdrop-filter: none;
+    background: #62636b;
+  }
+  .profile,
+  .linksWidget {
+    background: #f8f8fa;
+  }
+}
+:global([data-high-contrast='true']) .workWidget,
+:global([data-high-contrast='true']) .musicWidget {
+  background: #161619;
+}
+:global([data-high-contrast='true']) .profile,
+:global([data-high-contrast='true']) .linksWidget {
+  background: #fff;
+}

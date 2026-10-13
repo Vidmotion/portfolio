@@ -6,7 +6,7 @@ import { identity } from '@/core/registries/identity'
 import { uiText } from '@/core/registries/locale'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
-import { springs } from '@/lib/motion'
+import { useMobileMotion } from './useMobileMotion'
 import type { MobileUtility } from '@/store/mobileStore'
 
 export function MobileUtilityView({
@@ -17,6 +17,7 @@ export function MobileUtilityView({
   onBack: () => void
 }) {
   const locale = useLocaleStore((s) => s.locale)
+  const { appEntrance, transformOrigin, present } = useMobileMotion()
   const text = uiText[locale]
   const { settings, setReducedMotion, setHighContrast } = useSettingsStore()
   const title =
@@ -29,12 +30,16 @@ export function MobileUtilityView({
           : text.contacts
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      transition={springs.default}
+      {...appEntrance}
+      role="region"
+      aria-label={title}
+      aria-hidden={!present}
+      inert={!present}
       style={{
         position: 'absolute',
+        zIndex: 10,
+        transformOrigin,
+        pointerEvents: present ? 'auto' : 'none',
         inset: 0,
         background: '#fcfcfd',
         display: 'flex',
@@ -50,6 +55,8 @@ export function MobileUtilityView({
             background: 'transparent',
             border: 'none',
             padding: 0,
+            minHeight: '44px',
+            minWidth: '44px',
             fontSize: '15px',
             cursor: 'pointer',
           }}
@@ -87,7 +94,7 @@ export function MobileUtilityView({
                 rel="noopener noreferrer"
                 style={{ color: '#0066cc', textTransform: 'capitalize' }}
               >
-                {social.platform}
+                {social.label ?? social.platform}
               </a>
             ))}
           </div>
