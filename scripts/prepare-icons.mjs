@@ -40,12 +40,14 @@ for (const name of names) {
   }
   const opticalBox = metrics[name]
   if (opticalBox && createHash('sha256').update(original).digest('hex') === opticalBox.sourceHash) {
-    const [, , width, height] = opticalBox.mobile.split(' ')
+    // Notes is an edge-to-edge tile; preserve its original square canvas.
+    const viewBox = name === 'about me.svg' ? opticalBox.original : opticalBox.mobile
+    const [, , width, height] = viewBox.split(' ')
     // Give the Retina export ample source resolution without changing the viewBox.
     const retinaScale = 512 / Math.max(Number(width), Number(height))
     mobileVersion = mobileVersion.replace(/<svg\b([^>]*)>/, (_, attributes) => {
       const cleaned = attributes.replace(/\s+(width|height|viewBox)="[^"]*"/g, '')
-      return `<svg${cleaned} width="${Number(width) * retinaScale}" height="${Number(height) * retinaScale}" viewBox="${opticalBox.mobile}">`
+      return `<svg${cleaned} width="${Number(width) * retinaScale}" height="${Number(height) * retinaScale}" viewBox="${viewBox}">`
     })
   }
   await writeFile(new URL(encodeURIComponent(name), mobileDestination), mobileVersion)

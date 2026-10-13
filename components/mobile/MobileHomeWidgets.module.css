@@ -305,6 +305,11 @@
     font-size: 10px;
   }
 }
+@media (max-height: 540px) {
+  .expertise {
+    display: none;
+  }
+}
 @media (prefers-reduced-transparency: reduce) {
   .music,
   .mail,

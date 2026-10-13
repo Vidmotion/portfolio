@@ -98,17 +98,59 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
   const { reduced, present, appTransition, pageSpring } = useMobileMotion()
   const viewport = useRef<HTMLDivElement>(null)
   const today = useRef<HTMLElement>(null)
+  const mainCanvas = useRef<HTMLDivElement>(null)
+  const personalCanvas = useRef<HTMLDivElement>(null)
   const measuredWidth = useRef(0)
   const animatedWidth = useRef(0)
   const dragging = useRef(false)
   const releaseFrame = useRef(0)
   const [width, setWidth] = useState(0)
+  const [canvasFits, setCanvasFits] = useState({ main: 1, personal: 1 })
   const [menu, setMenu] = useState<QuickMenu | null>(null)
   const showEgg = useEasterEggStore((s) => s.show)
   const profileHold = useLongPress(() => showEgg('hello'))
   const x = useMotionValue(0)
+  const todayProgress = useMotionValue(0)
+  const todayEntrance = useTransform(() => {
+    if (reduced || !width) return 0
+    return Math.min(1, Math.abs(x.get()) / width) * 14
+  })
+  const todayOpacity = useTransform(() => {
+    if (reduced || !width) return 1
+    return 1 - Math.min(1, Math.abs(x.get()) / width) * 0.25
+  })
   useLayoutEffect(() => {
     if (today.current) today.current.scrollTop = useMobileStore.getState().todayScrollTop
+  }, [])
+  useLayoutEffect(() => {
+    const area = viewport.current
+    const main = mainCanvas.current
+    const personal = personalCanvas.current
+    if (!area || !main || !personal) return
+    const fit = () => {
+      const page = main.parentElement!
+      const style = getComputedStyle(page)
+      const available = Math.max(
+        0,
+        area.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+      )
+      const next = {
+        main: Math.min(1, available / Math.max(1, main.offsetHeight)),
+        personal: Math.min(1, available / Math.max(1, personal.offsetHeight)),
+      }
+      setCanvasFits((current) =>
+        Math.abs(current.main - next.main) < 0.0001 &&
+        Math.abs(current.personal - next.personal) < 0.0001
+          ? current
+          : next
+      )
+    }
+    fit()
+    const observer = new ResizeObserver(fit)
+    observer.observe(area)
+    observer.observe(main)
+    observer.observe(personal)
+    return () => observer.disconnect()
   }, [])
   const indicatorX = useTransform(() =>
     width ? Math.max(0, Math.min(2, -x.get() / width)) * 44 : 44
@@ -203,7 +245,13 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       tone: 'graphite',
       action: () => props.onOpenApp(null),
     },
-    { label: text.about, file: 'about%20me.svg', tone: 'graphite', action: props.onOpenNotes },
+    {
+      label: text.about,
+      file: 'about%20me.svg',
+      tone: 'graphite',
+      edgeToEdge: true,
+      action: props.onOpenNotes,
+    },
     {
       label: categoryLabel('film-making'),
       file: 'video.svg',
@@ -233,6 +281,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       file: `social-${social.platform}`,
       tone: 'graphite' as const,
       source: `/icons/social/${social.platform}.svg`,
+      edgeToEdge: social.platform === 'linkedin',
       action: () => {
         window.open(social.url, '_blank', 'noopener,noreferrer')
       },
@@ -261,8 +310,17 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       transition={appTransition}
     >
       <header className={styles.header}>
-        <span>{pageNames[homePage]}</span>
+        <motion.span style={{ opacity: homePage === 0 ? todayOpacity : 0 }}>
+          {homePage === 0 ? text.widgetsPage : ''}
+        </motion.span>
         <LanguageSwitcher />
+        {homePage === 0 && (
+          <motion.span
+            className={styles.scrollProgress}
+            style={{ scaleX: todayProgress }}
+            aria-hidden
+          />
+        )}
       </header>
 
       <div
@@ -308,11 +366,22 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             aria-label={text.widgetsPage}
             aria-hidden={homePage !== 0}
             inert={homePage !== 0}
+            onScroll={(event) => {
+              const element = event.currentTarget
+              todayProgress.set(
+                element.scrollTop / Math.max(1, element.scrollHeight - element.clientHeight)
+              )
+            }}
           >
-            <MailWidget launch={launch} open={props.onContact} reduced={reduced} />
-            <MusicWidget launch={launch} open={props.onOpenPlaylist} reduced={reduced} />
-            <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} wide />
-            <ProjectPreviewWidget launch={launch} open={props.onOpenProject} reduced={reduced} />
+            <motion.div
+              className={styles.todayStack}
+              style={{ y: todayEntrance, opacity: todayOpacity }}
+            >
+              <MailWidget launch={launch} open={props.onContact} reduced={reduced} />
+              <MusicWidget launch={launch} open={props.onOpenPlaylist} reduced={reduced} />
+              <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} wide />
+              <ProjectPreviewWidget launch={launch} open={props.onOpenProject} reduced={reduced} />
+            </motion.div>
           </section>
 
           <section
@@ -321,39 +390,45 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             aria-hidden={homePage !== 1}
             inert={homePage !== 1}
           >
-            <motion.button
-              type="button"
-              className={styles.profile}
-              aria-label={`${text.about} — ${identity.name}`}
-              {...profileHold}
-              onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
-              whileTap={reduced ? undefined : { scale: 0.98 }}
-              transition={appTransition}
+            <div
+              ref={mainCanvas}
+              className={styles.homeCanvas}
+              style={{ transform: `scale(${canvasFits.main})` }}
             >
-              <span className={styles.profileCopy}>
-                <strong>{identity.name}</strong>
-                <span className={styles.profession}>{profile.title}</span>
-                <span className={styles.location}>{profile.location[locale]}</span>
-              </span>
-              <ChevronRight size={17} className={styles.profileArrow} aria-hidden />
-            </motion.button>
-            <div className={styles.splitGrid}>
-              <div className={styles.widgetSlot}>
-                <StudioClock />
-                <span className={styles.widgetCaption}>{text.studioTime}</span>
+              <motion.button
+                type="button"
+                className={styles.profile}
+                aria-label={`${text.about} — ${identity.name}`}
+                {...profileHold}
+                onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
+                whileTap={reduced ? undefined : { scale: 0.98 }}
+                transition={appTransition}
+              >
+                <span className={styles.profileCopy}>
+                  <strong>{identity.name}</strong>
+                  <span className={styles.profession}>{profile.title}</span>
+                  <span className={styles.location}>{profile.location[locale]}</span>
+                </span>
+                <ChevronRight size={17} className={styles.profileArrow} aria-hidden />
+              </motion.button>
+              <div className={styles.splitGrid}>
+                <div className={styles.widgetSlot}>
+                  <StudioClock />
+                  <span className={styles.widgetCaption}>{text.studioTime}</span>
+                </div>
+                <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                  {renderApps(apps)}
+                </nav>
               </div>
-              <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
-                {renderApps(apps)}
-              </nav>
-            </div>
-            <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
-              <div className={styles.widgetSlot}>
-                <FolderWidget launch={launch} open={props.onOpenApp} reduced={reduced} />
-                <span className={styles.widgetCaption}>{text.exploreWork}</span>
-              </div>
-              <div className={styles.widgetSlot}>
-                <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
-                <span className={styles.widgetCaption}>{text.portrait}</span>
+              <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
+                <div className={styles.widgetSlot}>
+                  <FolderWidget launch={launch} open={props.onOpenApp} reduced={reduced} />
+                  <span className={styles.widgetCaption}>{text.exploreWork}</span>
+                </div>
+                <div className={styles.widgetSlot}>
+                  <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
+                  <span className={styles.widgetCaption}>{text.portrait}</span>
+                </div>
               </div>
             </div>
           </section>
@@ -364,29 +439,35 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             aria-hidden={homePage !== 2}
             inert={homePage !== 2}
           >
-            <motion.button
-              className={`${styles.profile} ${styles.summary}`}
-              aria-label={text.about}
-              onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
-              whileTap={reduced ? undefined : { scale: 0.98 }}
+            <div
+              ref={personalCanvas}
+              className={styles.homeCanvas}
+              style={{ transform: `scale(${canvasFits.personal})` }}
             >
-              <span className={styles.widgetHeading}>{text.about}</span>
-              <span>{profile.summary[locale]}</span>
-            </motion.button>
-            <div className={styles.splitGrid}>
-              <ExpertiseWidget launch={launch} open={props.onOpenNotes} reduced={reduced} />
-              <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
-                {renderApps(personalApps)}
-              </nav>
-            </div>
-            <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
-              <div className={styles.widgetSlot}>
-                <HelloWidget launch={launch} open={props.onContact} reduced={reduced} />
-                <span className={styles.widgetCaption}>{text.mail}</span>
+              <motion.button
+                className={`${styles.profile} ${styles.summary}`}
+                aria-label={text.about}
+                onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
+                whileTap={reduced ? undefined : { scale: 0.98 }}
+              >
+                <span className={styles.widgetHeading}>{text.about}</span>
+                <span>{profile.summary[locale]}</span>
+              </motion.button>
+              <div className={styles.splitGrid}>
+                <ExpertiseWidget launch={launch} open={props.onOpenNotes} reduced={reduced} />
+                <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                  {renderApps(personalApps)}
+                </nav>
               </div>
-              <div className={styles.widgetSlot}>
-                <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
-                <span className={styles.widgetCaption}>{text.portrait}</span>
+              <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
+                <div className={styles.widgetSlot}>
+                  <HelloWidget launch={launch} open={props.onContact} reduced={reduced} />
+                  <span className={styles.widgetCaption}>{text.mail}</span>
+                </div>
+                <div className={styles.widgetSlot}>
+                  <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
+                  <span className={styles.widgetCaption}>{text.portrait}</span>
+                </div>
               </div>
             </div>
           </section>

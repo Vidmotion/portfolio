@@ -1,6 +1,7 @@
 .home {
-  --icon-size: 68px;
-  --home-gutter: 22px;
+  --icon-size: clamp(56px, 17.4vw, 72px);
+  --home-gutter: clamp(16px, 5.6vw, 24px);
+  --canvas-gap: 18px;
   --mobile-widget-material: linear-gradient(
     155deg,
     rgba(210, 215, 224, 0.22),
@@ -18,6 +19,7 @@
   -webkit-touch-callout: none;
 }
 .header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,6 +27,16 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.015em;
+}
+.scrollProgress {
+  position: absolute;
+  bottom: 0;
+  left: var(--home-gutter);
+  right: var(--home-gutter);
+  height: 1px;
+  background: #ffffff60;
+  transform-origin: left;
+  pointer-events: none;
 }
 .header [role='group'] {
   padding: 0;
@@ -55,20 +67,41 @@
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
-  overflow-y: auto;
+  overflow: clip;
   scrollbar-width: none;
   touch-action: pan-y;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  align-items: center;
   padding: 12px var(--home-gutter) 10px;
+}
+.homeCanvas {
+  width: 100%;
+  max-width: 420px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--canvas-gap);
+  transform-origin: top center;
 }
 .page::-webkit-scrollbar {
   display: none;
 }
 .today {
-  gap: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 18px), transparent);
   padding-bottom: 22px;
+}
+.todayStack {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
 }
 .profile {
   position: relative;
@@ -99,7 +132,7 @@
 }
 .profileCopy strong {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: clamp(24px, 7.7vw, 32px);
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 1.08;
@@ -205,10 +238,10 @@
   -webkit-backdrop-filter: blur(18px) saturate(120%);
 }
 .glyph {
-  width: 56px;
-  height: 56px;
-  max-width: 82%;
-  max-height: 82%;
+  width: 72%;
+  height: 72%;
+  max-width: 72%;
+  max-height: 72%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -218,15 +251,10 @@
   max-width: 100%;
   max-height: 100%;
   border-radius: inherit;
-}
-.socialGlyph {
-  display: grid;
-  place-items: center;
-  color: #f0f1f5;
-  pointer-events: none;
+  object-fit: cover;
 }
 .appLabel {
-  font-size: 11px;
+  font-size: clamp(10px, 2.8vw, 11px);
   font-weight: 500;
   min-height: 16px;
   max-width: 100%;
@@ -283,7 +311,9 @@
   z-index: 2;
 }
 .dock {
-  margin-inline: var(--home-gutter);
+  width: calc(100% - var(--home-gutter) * 2);
+  max-width: 440px;
+  justify-self: center;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -303,10 +333,6 @@
 }
 .dockButton .iconTile {
   width: min(100%, 68px);
-}
-.dockButton .glyph {
-  width: 54px;
-  height: 54px;
 }
 .home button:focus-visible {
   outline: 2px solid #90c1ff;
@@ -424,8 +450,13 @@
   outline-offset: -3px;
 }
 @media (max-height: 740px) {
+  .home {
+    --canvas-gap: 14px;
+    grid-template-rows: 44px minmax(0, 1fr) 36px 82px;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(18px, calc(env(safe-area-inset-bottom) + 8px));
+  }
   .page {
-    gap: 14px;
     padding-top: 8px;
   }
   .profile {
@@ -470,18 +501,6 @@
   .profession {
     font-size: 12px;
   }
-  .glyph:not(.glyphFull) {
-    width: 50px;
-    height: 50px;
-  }
-  .dockButton .glyph {
-    width: 48px;
-    height: 48px;
-  }
-  .socialGlyph svg {
-    width: 38px;
-    height: 38px;
-  }
   .clockWidget {
     gap: 6px;
   }
@@ -490,6 +509,57 @@
   }
   .clockDate {
     font-size: 9px;
+  }
+}
+@media (max-height: 540px) {
+  .home {
+    --icon-size: 56px;
+    --canvas-gap: 10px;
+    grid-template-rows: 44px minmax(0, 1fr) 28px 70px;
+    padding-bottom: max(14px, calc(env(safe-area-inset-bottom) + 6px));
+  }
+  .page {
+    padding-block: 6px;
+  }
+  .profile {
+    min-height: 76px;
+    padding: 12px 16px;
+    border-radius: 22px;
+  }
+  .profileCopy strong {
+    font-size: 23px;
+  }
+  .profileCopy {
+    gap: 4px;
+  }
+  .profession,
+  .location {
+    font-size: 10px;
+  }
+  .summary {
+    min-height: 76px;
+    gap: 5px;
+    font-size: 12px;
+  }
+  .summary > span:last-child {
+    -webkit-line-clamp: 2;
+  }
+  .splitGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .splitGrid > .widgetSlot {
+    display: none;
+  }
+  .appQuad {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .dock {
+    padding: 7px 10px;
+    border-radius: 26px;
+  }
+  .dockButton .iconTile {
+    width: min(100%, 56px);
   }
 }
 @media (prefers-reduced-transparency: reduce) {
