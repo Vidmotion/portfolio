@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, ChevronLeft } from 'lucide-react'
 import { ProfileContent } from '@/components/ui/ProfileContent'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
 import { uiText } from '@/core/registries/locale'
@@ -102,6 +103,10 @@ export function MobileUtilityView({
         )}
         {utility === 'settings' && (
           <div className={styles.group}>
+            <div className={styles.setting}>
+              <span>{text.language}</span>
+              <LanguageSwitcher size="regular" />
+            </div>
             {[
               {
                 label: text.reduceMotion,

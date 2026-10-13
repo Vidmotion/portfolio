@@ -49,7 +49,7 @@ export function MobileShell() {
           Project screens keep the existing simulated bar. */}
       {screen !== 'home' && <MobileStatusBar light={isLight} />}
 
-      {screen !== 'home' && (
+      {screen === 'lock' && (
         <div
           style={{
             position: 'absolute',
@@ -106,23 +106,6 @@ export function MobileShell() {
           <MobileProjectView key="project" projectId={activeProjectId} onBack={goBack} />
         )}
       </AnimatePresence>
-
-      {/* Home indicator */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '9px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '130px',
-          height: '5px',
-          borderRadius: '9999px',
-          background: isLight ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.25)',
-          zIndex: 40,
-          pointerEvents: 'none',
-        }}
-        aria-hidden
-      />
     </div>
   )
 }

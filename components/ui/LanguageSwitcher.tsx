@@ -3,7 +3,7 @@
 import { useLocaleStore } from '@/store/localeStore'
 import type { Locale } from '@/types'
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ size = 'compact' }: { size?: 'compact' | 'regular' }) {
   const { locale, setLocale } = useLocaleStore()
   return (
     <div
@@ -21,14 +21,14 @@ export function LanguageSwitcher() {
           onClick={() => setLocale(code)}
           style={{
             fontFamily: 'var(--font-text)',
-            fontSize: '10px',
+            fontSize: size === 'regular' ? '12px' : '10px',
             fontWeight: locale === code ? 600 : 400,
             color: 'inherit',
-            padding: '3px 5px',
-            minWidth: '26px',
-            minHeight: '24px',
+            padding: size === 'regular' ? '8px' : '3px 5px',
+            minWidth: size === 'regular' ? '44px' : '26px',
+            minHeight: size === 'regular' ? '44px' : '24px',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: size === 'regular' ? '12px' : '5px',
             background: locale === code ? 'rgba(128,128,128,.24)' : 'transparent',
             cursor: 'pointer',
             lineHeight: 1.1,

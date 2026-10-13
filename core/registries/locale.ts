@@ -55,6 +55,8 @@ export const uiText = {
     secretAction: 'Action!',
     oneMoreThing: 'One more thing.',
     openFilms: 'Explore Film Making',
+    language: 'Language',
+    scrollExplore: 'Scroll to explore',
   },
   it: {
     projects: 'Progetti',
@@ -110,5 +112,7 @@ export const uiText = {
     secretAction: 'Ciak!',
     oneMoreThing: 'Ancora una cosa.',
     openFilms: 'Esplora Film Making',
+    language: 'Lingua',
+    scrollExplore: 'Scorri per esplorare',
   },
 } satisfies Record<Locale, Record<string, string>>

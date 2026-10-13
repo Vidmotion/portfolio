@@ -1,14 +1,13 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
+import { useId, useLayoutEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { animate, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
+import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
 import { categories, categoryLabel } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { useLocaleStore } from '@/store/localeStore'
 import { useMobileStore, type MobileLaunchOrigin, type MobileHomePage } from '@/store/mobileStore'
 import { useMobileMotion } from './useMobileMotion'
@@ -16,6 +15,7 @@ import { useLongPress } from '@/hooks/useLongPress'
 import { useEasterEggStore } from '@/store/easterEggStore'
 import { MobileQuickActions, type QuickMenu } from './MobileQuickActions'
 import { StudioClock } from './StudioClock'
+import { useHomeSwipe } from './useHomeSwipe'
 import {
   MusicWidget,
   PortraitWidget,
@@ -102,26 +102,28 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
   const personalCanvas = useRef<HTMLDivElement>(null)
   const measuredWidth = useRef(0)
   const animatedWidth = useRef(0)
-  const dragging = useRef(false)
-  const releaseFrame = useRef(0)
   const [width, setWidth] = useState(0)
   const [canvasFits, setCanvasFits] = useState({ main: 1, personal: 1 })
   const [menu, setMenu] = useState<QuickMenu | null>(null)
   const showEgg = useEasterEggStore((s) => s.show)
   const profileHold = useLongPress(() => showEgg('hello'))
   const x = useMotionValue(0)
+  const swipe = useHomeSwipe({ x, width, page: homePage, reduced, navigate: setHomePage })
+  const hintId = useId()
+  const todayScroll = useMotionValue(0)
   const todayProgress = useMotionValue(0)
-  const todayEntrance = useTransform(() => {
-    if (reduced || !width) return 0
-    return Math.min(1, Math.abs(x.get()) / width) * 14
-  })
+  const hintOpacity = useTransform(todayScroll, [0, 48], [1, 0])
   const todayOpacity = useTransform(() => {
     if (reduced || !width) return 1
     return 1 - Math.min(1, Math.abs(x.get()) / width) * 0.25
   })
   useLayoutEffect(() => {
-    if (today.current) today.current.scrollTop = useMobileStore.getState().todayScrollTop
-  }, [])
+    if (!today.current) return
+    const element = today.current
+    element.scrollTop = useMobileStore.getState().todayScrollTop
+    todayScroll.set(element.scrollTop)
+    todayProgress.set(element.scrollTop / Math.max(1, element.scrollHeight - element.clientHeight))
+  }, [todayProgress, todayScroll])
   useLayoutEffect(() => {
     const area = viewport.current
     const main = mainCanvas.current
@@ -185,37 +187,16 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
     const animation = animate(x, -homePage * width, reduced ? { duration: 0 } : pageSpring)
     return () => animation.stop()
   }, [homePage, width, x, reduced, pageSpring])
-  useEffect(() => () => cancelAnimationFrame(releaseFrame.current), [])
 
   const launch = (element: HTMLElement, action?: () => void) => {
-    if (dragging.current || !action) return
+    if (swipe.dragging.current || !action) return
     if (today.current) useMobileStore.getState().setTodayScrollTop(today.current.scrollTop)
     const rect = (element.querySelector('[data-launch-anchor]') ?? element).getBoundingClientRect()
     props.onPrepareLaunch({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 })
     action()
   }
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    const direction =
-      info.offset.x < -width * 0.16 || info.velocity.x < -450
-        ? 1
-        : info.offset.x > width * 0.16 || info.velocity.x > 450
-          ? -1
-          : 0
-    const next = Math.max(0, Math.min(2, homePage + direction)) as MobileHomePage
-    setHomePage(next)
-    if (next === homePage) animate(x, -next * width, reduced ? { duration: 0 } : pageSpring)
-    releaseFrame.current = requestAnimationFrame(() => {
-      dragging.current = false
-    })
-  }
-  const blockDragClick = (event: MouseEvent) => {
-    if (dragging.current) {
-      event.preventDefault()
-      event.stopPropagation()
-    }
-  }
   const quickActions = (element: HTMLElement, app: AppIcon) => {
-    if (dragging.current) return
+    if (swipe.dragging.current) return
     const items = [
       { label: `${text.openApp} ${app.label}`, run: () => launch(element, app.action) },
     ]
@@ -301,6 +282,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
   return (
     <motion.div
       className={styles.home}
+      data-take-look={homePage === 0}
       aria-hidden={!present}
       inert={!present}
       style={{ pointerEvents: present ? 'auto' : 'none' }}
@@ -313,7 +295,6 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
         <motion.span style={{ opacity: homePage === 0 ? todayOpacity : 0 }}>
           {homePage === 0 ? text.widgetsPage : ''}
         </motion.span>
-        <LanguageSwitcher />
         {homePage === 0 && (
           <motion.span
             className={styles.scrollProgress}
@@ -326,15 +307,17 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       <div
         ref={viewport}
         className={styles.viewport}
+        data-take-look={homePage === 0}
         role="region"
         aria-roledescription="carousel"
         aria-label={text.homePages}
         tabIndex={0}
-        onClickCapture={blockDragClick}
+        onClickCapture={swipe.onClickCapture}
         onKeyDown={(event) => {
-          if (event.target !== event.currentTarget) return
+          if (event.target !== event.currentTarget && event.target !== today.current) return
           if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
             event.preventDefault()
+            viewport.current?.focus({ preventScroll: true })
             setHomePage(
               Math.max(
                 0,
@@ -344,44 +327,29 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
           }
         }}
       >
-        <motion.div
-          className={styles.track}
-          style={{ x }}
-          drag="x"
-          dragConstraints={{ left: -width * 2, right: 0 }}
-          dragElastic={reduced ? 0 : 0.1}
-          dragMomentum={false}
-          onDragStart={() => {
-            dragging.current = true
-          }}
-          onDragEnd={onDragEnd}
-          onPointerCancel={() => {
-            dragging.current = false
-            animate(x, -homePage * width, reduced ? { duration: 0 } : pageSpring)
-          }}
-        >
+        <motion.div className={styles.track} style={{ x }} {...swipe.handlers}>
           <section
             className={`${styles.page} ${styles.today}`}
             ref={today}
             aria-label={text.widgetsPage}
             aria-hidden={homePage !== 0}
             inert={homePage !== 0}
+            tabIndex={homePage === 0 ? 0 : -1}
+            aria-describedby={hintId}
             onScroll={(event) => {
               const element = event.currentTarget
+              todayScroll.set(element.scrollTop)
               todayProgress.set(
                 element.scrollTop / Math.max(1, element.scrollHeight - element.clientHeight)
               )
             }}
           >
-            <motion.div
-              className={styles.todayStack}
-              style={{ y: todayEntrance, opacity: todayOpacity }}
-            >
+            <div className={styles.todayStack}>
               <MailWidget launch={launch} open={props.onContact} reduced={reduced} />
               <MusicWidget launch={launch} open={props.onOpenPlaylist} reduced={reduced} />
               <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} wide />
               <ProjectPreviewWidget launch={launch} open={props.onOpenProject} reduced={reduced} />
-            </motion.div>
+            </div>
           </section>
 
           <section
@@ -472,6 +440,12 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             </div>
           </section>
         </motion.div>
+        {homePage === 0 && (
+          <motion.div id={hintId} className={styles.scrollHint} style={{ opacity: hintOpacity }}>
+            <span>{text.scrollExplore}</span>
+            <ChevronDown size={15} aria-hidden />
+          </motion.div>
+        )}
       </div>
 
       <nav className={styles.pagination} aria-label={text.homePages}>
