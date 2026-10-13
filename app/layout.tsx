@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import '@/styles/globals.css'
 import { identity } from '@/core/registries/identity'
+import { profile } from '@/core/registries/profile'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -12,10 +13,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: `${identity.name} — ${identity.productName}`,
-  description: 'Filmmaker, photographer and creative director. A portfolio built as a digital operating system.',
+  description: profile.summary.en,
   openGraph: {
     title: identity.name,
-    description: 'Filmmaker, photographer and creative director.',
+    description: profile.summary.en,
     type: 'website',
   },
 }
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -48,7 +48,7 @@ export function TabletShell() {
       <WindowManager />
 
       {/* Dock */}
-      <TabletDock onOpenFinder={() => launch('finder')} />
+      <TabletDock onLaunch={launch} />
     </div>
   )
 }
@@ -97,7 +97,8 @@ function TouchModelCard() {
           letterSpacing: '-0.01em',
         }}
       >
-        Same OS, same windows and Finder as Desktop — adapted for touch. Tap to open, long-press for context menus, drag with one finger, pinch to resize. No hover states.
+        Same OS, same windows and Finder as Desktop — adapted for touch. Tap to open, long-press for
+        context menus, drag with one finger, pinch to resize. No hover states.
       </div>
     </motion.div>
   )

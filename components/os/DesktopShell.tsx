@@ -15,7 +15,6 @@ import { WindowManager } from '@/components/windows/WindowManager'
 import { useDesktopStore } from '@/store/desktopStore'
 import { useGlobalKeyboard } from '@/hooks/useKeyboard'
 import { useDynamicWallpaper } from '@/hooks/useDynamicWallpaper'
-import { useAccessibilityPreferences } from '@/hooks/useAccessibilityPreferences'
 import { springs } from '@/lib/motion'
 import { identity } from '@/core/registries/identity'
 
@@ -30,7 +29,6 @@ export function DesktopShell() {
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
 
   useGlobalKeyboard()
-  useAccessibilityPreferences()
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault()

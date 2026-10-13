@@ -5,6 +5,9 @@ import { useTime } from '@/hooks/useTime'
 import { useApplicationLauncher } from '@/hooks/useApplicationLauncher'
 import { identity } from '@/core/registries/identity'
 import { menuBarNav } from '@/core/layouts/menuBarNav'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 
 export const MENU_BAR_HEIGHT = 28
 
@@ -15,10 +18,19 @@ interface NavItem {
 
 function useNavItems(): NavItem[] {
   const { launch } = useApplicationLauncher()
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
   return [
-    { label: 'About me', action: () => launch('notes') },
-    ...menuBarNav.map((item) => ({ label: item.label, action: () => launch(item.appId) })),
-    { label: 'Contacts', action: () => launch('settings') },
+    { label: text.about, action: () => launch('notes') },
+    ...menuBarNav.map((item) => ({
+      label: item.label === 'Projects' ? text.projects : item.label,
+      action: () =>
+        launch(
+          item.appId,
+          item.appId === 'finder' ? { category: item.category ?? null } : undefined
+        ),
+    })),
+    { label: text.contacts, action: () => launch('mail') },
   ]
 }
 
@@ -35,7 +47,7 @@ export function MenuBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 flex items-center justify-between"
+      className="fixed top-0 right-0 left-0 flex items-center justify-between"
       style={{
         height: `${MENU_BAR_HEIGHT}px`,
         zIndex: 'var(--z-menu-bar)',
@@ -54,12 +66,21 @@ export function MenuBar() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         {/* Apple-style logo dot */}
         <div
-          style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(255,255,255,0.92)', flexShrink: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
+          style={{
+            width: '18px',
+            height: '18px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.92)',
+            flexShrink: 0,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+          }}
           aria-label={identity.productName}
         />
 
         {/* Brand */}
-        <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}>
+        <span
+          style={{ fontWeight: 600, color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}
+        >
           {identity.name}
         </span>
 
@@ -88,19 +109,47 @@ export function MenuBar() {
       </div>
 
       {/* Right side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#fff' }}>
+        <LanguageSwitcher />
         {/* WiFi icon */}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-label="WiFi connected">
           <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="rgba(255,255,255,0.85)" />
-          <path d="M4.5 7.5C5.6 6.4 6.7 5.8 8 5.8s2.4.6 3.5 1.7" stroke="rgba(255,255,255,0.70)" strokeWidth="1.3" strokeLinecap="round" fill="none" />
-          <path d="M1.5 4.5C3.2 2.8 5.5 1.8 8 1.8s4.8 1 6.5 2.7" stroke="rgba(255,255,255,0.40)" strokeWidth="1.3" strokeLinecap="round" fill="none" />
+          <path
+            d="M4.5 7.5C5.6 6.4 6.7 5.8 8 5.8s2.4.6 3.5 1.7"
+            stroke="rgba(255,255,255,0.70)"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            fill="none"
+          />
+          <path
+            d="M1.5 4.5C3.2 2.8 5.5 1.8 8 1.8s4.8 1 6.5 2.7"
+            stroke="rgba(255,255,255,0.40)"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            fill="none"
+          />
         </svg>
 
-        <span style={{ fontSize: '13px', fontWeight: 400, color: 'rgba(255,255,255,0.78)', fontVariantNumeric: 'tabular-nums' }}>
+        <span
+          style={{
+            fontSize: '13px',
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.78)',
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
           {date}
         </span>
 
-        <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.92)', fontVariantNumeric: 'tabular-nums', minWidth: '58px' }}>
+        <span
+          style={{
+            fontSize: '13px',
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.92)',
+            fontVariantNumeric: 'tabular-nums',
+            minWidth: '58px',
+          }}
+        >
           {fullTime}
         </span>
       </div>

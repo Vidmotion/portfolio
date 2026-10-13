@@ -1,19 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, MotionConfig } from 'framer-motion'
 import { BootScreen } from '@/components/os/BootScreen'
 import { DesktopShell } from '@/components/os/DesktopShell'
 import { TabletShell } from '@/components/tablet/TabletShell'
 import { MobileShell } from '@/components/mobile/MobileShell'
 import { usePlatform } from '@/hooks/usePlatform'
+import { useLocaleStore } from '@/store/localeStore'
+import { useSettingsStore } from '@/store/settingsStore'
+import { useAccessibilityPreferences } from '@/hooks/useAccessibilityPreferences'
 
 export default function Home() {
   const [booted, setBooted] = useState(false)
   const platform = usePlatform()
+  const locale = useLocaleStore((s) => s.locale)
+  const reducedMotion = useSettingsStore((s) => s.settings.accessibility.reducedMotion)
+  useAccessibilityPreferences()
+  useEffect(() => {
+    document.documentElement.lang = locale
+  }, [locale])
 
   return (
-    <>
+    <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
       {/* Boot screen — shown until boot sequence completes */}
       <AnimatePresence>
         {!booted && <BootScreen onComplete={() => setBooted(true)} />}
@@ -35,6 +44,6 @@ export default function Home() {
           <MobileShell />
         </div>
       )}
-    </>
+    </MotionConfig>
   )
 }

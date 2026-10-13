@@ -10,31 +10,31 @@ import type { ApplicationId } from '@/core/registries/apps'
 // Prototype: bottom=18, centered, rgba(245,245,247,0.42) + blur(60px), radius 30px, 54×54px icons
 
 // The canonical Portfolio OS icon set — the exact same SVG assets Mobile
-// and Desktop use (public/icons/SVG/), rendered as plain glyphs with no
+// and Desktop use (public/icons/ui/), rendered as plain glyphs with no
 // background of their own, per the same "same icon language" mapping used
 // on Desktop's Dock (components/os/Dock.tsx).
 const TABLET_ICON_SRC: Record<ApplicationId, string> = {
-  finder: '/icons/SVG/projects.svg',
-  photos: '/icons/SVG/photo.svg',
-  notes: '/icons/SVG/notes.svg',
-  spotify: '/icons/SVG/spotify.svg',
-  settings: '/icons/SVG/settings.svg',
-  mail: '/icons/SVG/message%20me.svg',
-  instagram: '/icons/SVG/photo.svg',
+  finder: '/icons/ui/projects.svg',
+  photos: '/icons/ui/photo.svg',
+  notes: '/icons/ui/notes.svg',
+  spotify: '/icons/ui/spotify.svg',
+  settings: '/icons/ui/settings.svg',
+  mail: '/icons/ui/message%20me.svg',
+  instagram: '/icons/ui/photo.svg',
 }
 
 interface TabletDockProps {
-  onOpenFinder?: () => void
+  onLaunch: (appId: ApplicationId) => void
 }
 
-export function TabletDock({ onOpenFinder }: TabletDockProps) {
+export function TabletDock({ onLaunch }: TabletDockProps) {
   const dockApps = desktopDock.map((id) => {
     const def = apps.find((a) => a.id === id)!
     return {
       id,
       label: def.name,
       icon: TABLET_ICON_SRC[id],
-      onTap: id === 'finder' ? onOpenFinder : undefined,
+      onTap: () => onLaunch(id),
     }
   })
 
@@ -73,11 +73,15 @@ export function TabletDock({ onOpenFinder }: TabletDockProps) {
             alignItems: 'center',
             justifyContent: 'center',
             border: 'none',
-            cursor: app.onTap ? 'pointer' : 'default',
+            cursor: 'pointer',
           }}
           aria-label={app.label}
         >
-          <img src={app.icon} alt="" style={{ width: '58%', height: 'auto', objectFit: 'contain' }} />
+          <img
+            src={app.icon}
+            alt=""
+            style={{ width: '58%', height: 'auto', objectFit: 'contain' }}
+          />
         </motion.button>
       ))}
     </div>

@@ -5,10 +5,16 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { notes } from '@/lib/content'
+import { getNotes } from '@/lib/content'
 import { springs } from '@/lib/motion'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
+import { ProfileContent } from '@/components/ui/ProfileContent'
 
 export function NotesApp() {
+  const locale = useLocaleStore((s) => s.locale)
+  const notes = getNotes(locale)
+  const text = uiText[locale]
   const [selectedNoteId, setSelectedNoteId] = useState(notes[0]?.id ?? null)
   const selectedNote = notes.find((n) => n.id === selectedNoteId)
 
@@ -46,7 +52,7 @@ export function NotesApp() {
             <circle cx="4.5" cy="4.5" r="3.5" stroke="#a0a0a5" strokeWidth="1" />
             <path d="M7.5 7.5l1.5 1.5" stroke="#a0a0a5" strokeWidth="1" strokeLinecap="round" />
           </svg>
-          <span style={{ fontSize: '12px', color: '#c0c0c5' }}>Search</span>
+          <span style={{ fontSize: '12px', color: '#c0c0c5' }}>{text.search}</span>
         </div>
 
         {/* Note list */}
@@ -148,7 +154,11 @@ export function NotesApp() {
                 {selectedNote.title}
               </h1>
 
-              <NoteContent content={selectedNote.content} />
+              {selectedNote.id === 'bio' ? (
+                <ProfileContent />
+              ) : (
+                <NoteContent content={selectedNote.content} />
+              )}
             </motion.div>
           ) : (
             <div
@@ -161,7 +171,7 @@ export function NotesApp() {
                 fontSize: '13px',
               }}
             >
-              Select a note
+              {text.selectNote}
             </div>
           )}
         </AnimatePresence>
@@ -270,7 +280,9 @@ function NoteContent({ content }: { content: string }) {
             letterSpacing: '-0.011em',
             marginBottom: '4px',
           }}
-          dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }}
+          dangerouslySetInnerHTML={{
+            __html: line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'),
+          }}
         />
       )
     }

@@ -73,12 +73,9 @@ export function clampWindowSize(width: number, height: number, x: number, y: num
 // ─── Project Utilities ────────────────────────────────────────────────────────
 
 export const CATEGORY_GRADIENTS: Record<string, string> = {
-  film: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)',
-  photography: 'linear-gradient(135deg, #2d1b69 0%, #11998e 100%)',
+  'film-making': 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)',
+  digital: 'linear-gradient(135deg, #2d1b69 0%, #11998e 100%)',
   'creative-direction': 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
-  music: 'linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)',
-  fashion: 'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)',
-  advertising: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
 }
 
 export function categoryGradient(category: ProjectCategory | string): string {
@@ -88,7 +85,6 @@ export function categoryGradient(category: ProjectCategory | string): string {
 // macOS Sonoma dark widget material — shared by every desktop widget so glass
 // treatment (blur, saturation, elevation) reads identically across all of them.
 const WIDGET_GLASS_INSET_SHADOW = [
-
   // highlight superiore
   'inset 0 1px 0 rgba(255,255,255,.55)',
 
@@ -100,10 +96,12 @@ const WIDGET_GLASS_INSET_SHADOW = [
 
   // lato destro
   'inset -1px 0 0 rgba(255,255,255,.115)',
-
 ]
-const WIDGET_GLASS_RESTING_SHADOW = ['0 12px 32px rgba(0,0,0,.34)', '0 30px 80px rgba(0,0,0,.42)',]
-const WIDGET_GLASS_ELEVATED_SHADOW = ['0 20px 48px rgba(0,0,0,0.40)', '0 44px 100px rgba(0,0,0,0.46)']
+const WIDGET_GLASS_RESTING_SHADOW = ['0 12px 32px rgba(0,0,0,.34)', '0 30px 80px rgba(0,0,0,.42)']
+const WIDGET_GLASS_ELEVATED_SHADOW = [
+  '0 20px 48px rgba(0,0,0,0.40)',
+  '0 44px 100px rgba(0,0,0,0.46)',
+]
 
 export const WIDGET_DARK_GLASS: CSSProperties = {
   background: 'rgba(32,32,34,.20)',
@@ -120,7 +118,10 @@ export const WIDGET_DARK_GLASS: CSSProperties = {
 export function widgetDarkGlass(elevated = false): CSSProperties {
   return {
     ...WIDGET_DARK_GLASS,
-    boxShadow: [...WIDGET_GLASS_INSET_SHADOW, ...(elevated ? WIDGET_GLASS_ELEVATED_SHADOW : WIDGET_GLASS_RESTING_SHADOW)].join(', '),
+    boxShadow: [
+      ...WIDGET_GLASS_INSET_SHADOW,
+      ...(elevated ? WIDGET_GLASS_ELEVATED_SHADOW : WIDGET_GLASS_RESTING_SHADOW),
+    ].join(', '),
   }
 }
 

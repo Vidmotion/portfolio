@@ -6,13 +6,9 @@ export type MobileScreen = 'lock' | 'home' | 'app' | 'project'
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
-export type ProjectCategory =
-  | 'film'
-  | 'photography'
-  | 'creative-direction'
-  | 'music'
-  | 'fashion'
-  | 'advertising'
+export type ProjectCategory = 'digital' | 'film-making' | 'creative-direction'
+
+export type Locale = 'en' | 'it'
 
 export interface ProjectCredit {
   role: string

@@ -5,17 +5,29 @@ import { springs, staggerDelay } from '@/lib/motion'
 import { projects } from '@/lib/content'
 import { categoryGradient } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
+import { categories } from '@/core/registries/categories'
+import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 import type { ProjectCategory } from '@/types'
 
 interface MobileAppViewProps {
-  category: ProjectCategory
+  category: ProjectCategory | null
+  onOpenCategory: (category: ProjectCategory) => void
   onOpenProject: (id: string) => void
   onBack: () => void
 }
 
-export function MobileAppView({ category, onOpenProject, onBack }: MobileAppViewProps) {
-  const filtered = projects.filter((p) => p.category === category)
-  const title = categoryLabel(category)
+export function MobileAppView({
+  category,
+  onOpenCategory,
+  onOpenProject,
+  onBack,
+}: MobileAppViewProps) {
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
+  const filtered = category ? projects.filter((p) => p.category === category) : []
+  const title = category ? categoryLabel(category) : text.projects
 
   return (
     <motion.div
@@ -54,9 +66,9 @@ export function MobileAppView({ category, onOpenProject, onBack }: MobileAppView
             fontWeight: 400,
             fontFamily: 'var(--font-text)',
           }}
-          aria-label="Back to home"
+          aria-label={text.back}
         >
-          ‹ Home
+          ‹ {category ? text.projects : text.home}
         </button>
         <div
           style={{
@@ -83,6 +95,31 @@ export function MobileAppView({ category, onOpenProject, onBack }: MobileAppView
           gap: '22px',
         }}
       >
+        {!category &&
+          categories.map((folder) => (
+            <button
+              key={folder.id}
+              onClick={() => onOpenCategory(folder.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+                padding: '16px 8px',
+                border: 'none',
+                background: 'transparent',
+                textAlign: 'left',
+                cursor: 'pointer',
+                color: '#161617',
+              }}
+              aria-label={`Open ${folder.label} folder`}
+            >
+              <MacOSFolderIcon icon={null} width={66} height={54} />
+              <span style={{ fontSize: '19px', fontWeight: 500 }}>{folder.label}</span>
+            </button>
+          ))}
+        {category && filtered.length === 0 && (
+          <p style={{ color: '#666', fontSize: '15px', padding: '12px 8px' }}>{text.noProjects}</p>
+        )}
         {filtered.map((project, i) => (
           <motion.button
             key={project.id}

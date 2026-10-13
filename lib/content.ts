@@ -1,3 +1,5 @@
+import { getProfileNote } from '@/core/registries/profile'
+import type { Locale } from '@/types'
 import type { Project, NoteEntry, PhotoAlbum } from '@/types'
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
@@ -9,7 +11,7 @@ export const projects: Project[] = [
     id: 'nocturne',
     slug: 'nocturne',
     title: 'Nocturne',
-    category: 'film',
+    category: 'film-making',
     year: 2024,
     client: 'Self-commissioned',
     description:
@@ -34,7 +36,7 @@ export const projects: Project[] = [
     id: 'static-bloom',
     slug: 'static-bloom',
     title: 'Static Bloom',
-    category: 'photography',
+    category: 'creative-direction',
     year: 2024,
     description:
       'A photographic study of industrial landscapes transforming through seasonal light. 42 images across four months.',
@@ -56,7 +58,7 @@ export const projects: Project[] = [
     id: 'salt-and-iron',
     slug: 'salt-and-iron',
     title: 'Salt & Iron',
-    category: 'photography',
+    category: 'creative-direction',
     year: 2023,
     client: 'Private Collection',
     description:
@@ -79,7 +81,7 @@ export const projects: Project[] = [
     id: 'after-hours',
     slug: 'after-hours',
     title: 'After Hours',
-    category: 'music',
+    category: 'film-making',
     year: 2024,
     client: 'Interlude Records',
     description:
@@ -128,7 +130,7 @@ export const projects: Project[] = [
     id: 'low-frequencies',
     slug: 'low-frequencies',
     title: 'Low Frequencies',
-    category: 'music',
+    category: 'film-making',
     year: 2023,
     client: 'Self-commissioned',
     description:
@@ -152,7 +154,7 @@ export const projects: Project[] = [
     id: 'tailored-silence',
     slug: 'tailored-silence',
     title: 'Tailored Silence',
-    category: 'fashion',
+    category: 'creative-direction',
     year: 2024,
     client: 'Atelier Moretti',
     description:
@@ -177,10 +179,9 @@ export const projects: Project[] = [
     id: 'the-long-drive',
     slug: 'the-long-drive',
     title: 'The Long Drive',
-    category: 'film',
+    category: 'film-making',
     year: 2023,
-    description:
-      'A road film. Four days, two people, no destination. Shot on Super 8 and 16mm.',
+    description: 'A road film. Four days, two people, no destination. Shot on Super 8 and 16mm.',
     cover: '/images/projects/the-long-drive-cover.jpg',
     gallery: [
       '/images/projects/the-long-drive-01.jpg',
@@ -200,7 +201,7 @@ export const projects: Project[] = [
     id: 'coastlines',
     slug: 'coastlines',
     title: 'Coastlines',
-    category: 'advertising',
+    category: 'creative-direction',
     year: 2024,
     client: 'Blu Mediterraneo',
     description:
@@ -225,11 +226,10 @@ export const projects: Project[] = [
     id: 'form-and-field',
     slug: 'form-and-field',
     title: 'Form & Field',
-    category: 'advertising',
+    category: 'creative-direction',
     year: 2023,
     client: 'Terreno Wines',
-    description:
-      'Product and lifestyle campaign for a natural wine producer in Piedmont.',
+    description: 'Product and lifestyle campaign for a natural wine producer in Piedmont.',
     cover: '/images/projects/form-field-cover.jpg',
     gallery: [
       '/images/projects/form-field-01.jpg',
@@ -260,9 +260,7 @@ export const projects: Project[] = [
       '/images/projects/origin-03.jpg',
       '/images/projects/origin-04.jpg',
     ],
-    credits: [
-      { role: 'All work', name: 'Carlo Desantis' },
-    ],
+    credits: [{ role: 'All work', name: 'Carlo Desantis' }],
     tags: ['Personal', 'Documentary', 'Mixed Media'],
     featured: false,
   },
@@ -270,7 +268,7 @@ export const projects: Project[] = [
     id: 'greyscale',
     slug: 'greyscale',
     title: 'Greyscale',
-    category: 'photography',
+    category: 'creative-direction',
     year: 2022,
     description:
       'An ongoing series shot exclusively in black and white. Architecture, texture, light.',
@@ -281,9 +279,7 @@ export const projects: Project[] = [
       '/images/projects/greyscale-03.jpg',
       '/images/projects/greyscale-04.jpg',
     ],
-    credits: [
-      { role: 'Photography', name: 'Carlo Desantis' },
-    ],
+    credits: [{ role: 'Photography', name: 'Carlo Desantis' }],
     tags: ['Black & White', 'Architecture', 'Ongoing'],
     featured: false,
   },
@@ -293,33 +289,7 @@ export const projects: Project[] = [
 // Notes is read-only in v1. No editor. Users read content only.
 
 export const notes: NoteEntry[] = [
-  {
-    id: 'bio',
-    title: 'Bio',
-    slug: 'bio',
-    excerpt: 'Filmmaker, photographer, creative director based in Milan.',
-    content: `# Carlo Desantis
-
-Filmmaker, photographer, and creative director based in Milan.
-
-I work at the intersection of moving image and still photography — drawn to light, texture, and the moments that exist just outside the frame.
-
-My practice spans commercial campaigns, music videos, documentaries, and personal long-term projects. Each format asks something different; what remains constant is a commitment to making images that are honest.
-
----
-
-**Film** — narrative and documentary, often shot on film stock. I find the limitations of analog photography clarifying.
-
-**Photography** — editorial, portraiture, landscape. Frequently published and exhibited.
-
-**Creative Direction** — brand identity, campaigns, visual systems. Always beginning with a question about what a brand is actually trying to say.
-
----
-
-Available for commissions and collaborations.
-
-→ carlo@carlodesantis.com`,
-  },
+  getProfileNote('en'),
   {
     id: 'light-first',
     title: 'Light First',
@@ -446,4 +416,8 @@ export function getFeaturedProjects(): Project[] {
 
 export function getNoteBySlug(slug: string): NoteEntry | undefined {
   return notes.find((n) => n.slug === slug)
+}
+
+export function getNotes(locale: Locale): NoteEntry[] {
+  return notes.map((note) => (note.id === 'bio' ? getProfileNote(locale) : note))
 }

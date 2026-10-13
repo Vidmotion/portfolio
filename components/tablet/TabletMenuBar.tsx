@@ -2,11 +2,20 @@
 
 import { useTime } from '@/hooks/useTime'
 import { identity } from '@/core/registries/identity'
-
-const NAV_ITEMS = ['Projects', 'Playlist']
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { useApplicationLauncher } from '@/hooks/useApplicationLauncher'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 
 export function TabletMenuBar() {
   const { date, fullTime } = useTime()
+  const { launch } = useApplicationLauncher()
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
+  const navItems = [
+    { label: text.projects, appId: 'finder' },
+    { label: text.playlist, appId: 'spotify' },
+  ]
 
   return (
     <div
@@ -45,17 +54,35 @@ export function TabletMenuBar() {
           aria-hidden
         />
         <span style={{ fontWeight: 600 }}>{identity.name}</span>
-        {NAV_ITEMS.map((item) => (
-          <span key={item} style={{ fontWeight: 400, opacity: 0.82 }}>
-            {item}
-          </span>
+        {navItems.map((item) => (
+          <button
+            key={item.appId}
+            onClick={() =>
+              launch(item.appId, item.appId === 'finder' ? { category: null } : undefined)
+            }
+            style={{
+              font: 'inherit',
+              color: 'inherit',
+              border: 'none',
+              padding: 0,
+              background: 'transparent',
+              fontWeight: 400,
+              opacity: 0.82,
+              cursor: 'pointer',
+            }}
+          >
+            {item.label}
+          </button>
         ))}
       </div>
 
       {/* Right: date + time */}
-      <span style={{ fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-        {date} · {fullTime}
-      </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <LanguageSwitcher />
+        <span style={{ fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+          {date} · {fullTime}
+        </span>
+      </div>
     </div>
   )
 }

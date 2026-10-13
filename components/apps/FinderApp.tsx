@@ -8,8 +8,10 @@ import { useDesktopStore } from '@/store/desktopStore'
 import { projects } from '@/lib/content'
 import { categoryGradient } from '@/lib/utils'
 import { springs, staggerDelay } from '@/lib/motion'
-import { categories as CATEGORIES } from '@/core/registries/categories'
+import { categories as CATEGORIES, normalizeCategory } from '@/core/registries/categories'
 import { identity } from '@/core/registries/identity'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 import type { ProjectCategory } from '@/types'
 
 interface FinderAppProps {
@@ -17,6 +19,8 @@ interface FinderAppProps {
 }
 
 export function FinderApp({ initialCategory }: FinderAppProps) {
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
   const {
     currentCategory,
     setCategory,
@@ -36,7 +40,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
   useEffect(() => {
     if (initialCategory !== undefined && initialCategory !== appliedInitial.current) {
       appliedInitial.current = initialCategory
-      setCategory(initialCategory)
+      setCategory(normalizeCategory(initialCategory))
     }
   }, [initialCategory, setCategory])
 
@@ -54,8 +58,8 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
   }, [activeCategory, searchQuery])
 
   const finderTitle = activeCategory
-    ? (CATEGORIES.find((c) => c.id === activeCategory)?.label ?? 'All Projects')
-    : 'All Projects'
+    ? (CATEGORIES.find((c) => c.id === activeCategory)?.label ?? text.allProjects)
+    : text.allProjects
 
   const openProject = (projectId: string, title: string) => {
     openWindow('project', title, 'lg', { projectId })
@@ -95,7 +99,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
         </div>
 
         <SidebarItem
-          label="All Projects"
+          label={text.allProjects}
           count={projects.length}
           isActive={!activeCategory}
           onClick={() => setCategory(null)}
@@ -169,7 +173,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
               </svg>
               <input
                 type="search"
-                placeholder="Search"
+                placeholder={text.search}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -237,7 +241,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                 fontSize: '13px',
               }}
             >
-              No projects found
+              {text.noProjects}
             </div>
           ) : viewMode === 'grid' ? (
             <div
@@ -257,6 +261,16 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => selectProjectEverywhere(project.id)}
+                  onPointerUp={(event) => {
+                    if (event.pointerType === 'touch' || event.pointerType === 'pen')
+                      openProject(project.id, project.title)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault()
+                      openProject(project.id, project.title)
+                    }
+                  }}
                   onDoubleClick={() => openProject(project.id, project.title)}
                   style={{
                     display: 'flex',
@@ -340,13 +354,24 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ ...springs.default, delay: i * staggerDelay(filtered.length) }}
                   onClick={() => selectProjectEverywhere(project.id)}
+                  onPointerUp={(event) => {
+                    if (event.pointerType === 'touch' || event.pointerType === 'pen')
+                      openProject(project.id, project.title)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault()
+                      openProject(project.id, project.title)
+                    }
+                  }}
                   onDoubleClick={() => openProject(project.id, project.title)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                     padding: '8px 10px',
-                    background: selectedProjectId === project.id ? 'rgba(10,126,255,0.1)' : 'transparent',
+                    background:
+                      selectedProjectId === project.id ? 'rgba(10,126,255,0.1)' : 'transparent',
                     border: 'none',
                     cursor: 'default',
                     textAlign: 'left',
@@ -354,7 +379,10 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                     transition: 'background 0.1s ease',
                     fontFamily: 'var(--font-text)',
                   }}
-                  whileHover={{ backgroundColor: selectedProjectId === project.id ? undefined : 'rgba(0,0,0,0.04)' }}
+                  whileHover={{
+                    backgroundColor:
+                      selectedProjectId === project.id ? undefined : 'rgba(0,0,0,0.04)',
+                  }}
                   aria-label={`${project.title}, double-click to open`}
                 >
                   <div
@@ -381,10 +409,25 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                       {project.title}
                     </div>
                   </div>
-                  <div style={{ fontSize: '12px', color: '#a0a0a5', flexShrink: 0, textTransform: 'capitalize' }}>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: '#a0a0a5',
+                      flexShrink: 0,
+                      textTransform: 'capitalize',
+                    }}
+                  >
                     {project.category.replace('-', ' ')}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#a0a0a5', flexShrink: 0, width: '36px', textAlign: 'right' }}>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: '#a0a0a5',
+                      flexShrink: 0,
+                      width: '36px',
+                      textAlign: 'right',
+                    }}
+                  >
                     {project.year}
                   </div>
                 </motion.button>

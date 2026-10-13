@@ -6,13 +6,20 @@ export type CategoryDefinition = {
 }
 
 export const categories: CategoryDefinition[] = [
-  { id: 'film', label: 'Film' },
-  { id: 'photography', label: 'Photography' },
   { id: 'creative-direction', label: 'Creative Direction' },
-  { id: 'music', label: 'Music' },
-  { id: 'fashion', label: 'Fashion' },
-  { id: 'advertising', label: 'Advertising' },
+  { id: 'digital', label: 'Digital' },
+  { id: 'film-making', label: 'Film Making' },
 ]
+
+/** Accept old category IDs from previously persisted Finder window payloads. */
+export function normalizeCategory(id: string | null | undefined): ProjectCategory | null {
+  if (id === 'digital') return 'digital'
+  if (id === 'film' || id === 'music' || id === 'film-making') return 'film-making'
+  if (['photography', 'fashion', 'advertising', 'creative-direction'].includes(id ?? '')) {
+    return 'creative-direction'
+  }
+  return null
+}
 
 export function categoryLabel(id: ProjectCategory): string {
   return categories.find((c) => c.id === id)?.label ?? id

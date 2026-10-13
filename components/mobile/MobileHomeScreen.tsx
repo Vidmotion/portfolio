@@ -4,13 +4,18 @@ import { motion } from 'framer-motion'
 import { springs, staggerDelay } from '@/lib/motion'
 import { widgetDarkGlass } from '@/lib/utils'
 import type { ProjectCategory } from '@/types'
-import { categories } from '@/core/registries/categories'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
+import { getNotes } from '@/lib/content'
 
 interface MobileHomeScreenProps {
-  onOpenApp: (category: ProjectCategory) => void
-  // No Mobile screen exists yet for Notes/Photos — optional until one does.
+  onOpenApp: (category: ProjectCategory | null) => void
   onOpenNotes?: () => void
   onOpenPhotos?: () => void
+  onOpenPlaylist?: () => void
+  onOpenSettings?: () => void
+  onContact?: () => void
+  onFindMe?: () => void
 }
 
 // ─── Layout specification ──────────────────────────────────────────────────
@@ -124,7 +129,8 @@ function sizeSection(priority: number, tier: string, min: number, max = 1) {
     max,
     // Clamped between this section's own floor and ceiling ratios,
     // interpolating through the shared vh-normalized curve.
-    size: (px: number) => `clamp(${(px * min).toFixed(2)}px, ${vh(px)}vh, ${(px * max).toFixed(2)}px)`,
+    size: (px: number) =>
+      `clamp(${(px * min).toFixed(2)}px, ${vh(px)}vh, ${(px * max).toFixed(2)}px)`,
   }
 }
 
@@ -218,7 +224,6 @@ function AppIconTile({ spec, index, count }: { spec: GridIconSpec; index: number
         minHeight: 0,
       }}
       aria-label={spec.label}
-      role="listitem"
     >
       <div
         style={{
@@ -234,48 +239,158 @@ function AppIconTile({ spec, index, count }: { spec: GridIconSpec; index: number
         }}
       >
         {spec.whiteCircle && (
-          <div style={{ position: 'absolute', width: '73%', height: '73%', borderRadius: '50%', background: '#fdfdfd' }} />
+          <div
+            style={{
+              position: 'absolute',
+              width: '73%',
+              height: '73%',
+              borderRadius: '50%',
+              background: '#fdfdfd',
+            }}
+          />
         )}
         <img
           src={spec.iconSrc}
           alt=""
-          style={{ width: `${((spec.iconWidth / 60) * 100).toFixed(2)}%`, height: `${((spec.iconHeight / 60) * 100).toFixed(2)}%`, position: 'relative', objectFit: 'contain' }}
+          style={{
+            width: `${((spec.iconWidth / 60) * 100).toFixed(2)}%`,
+            height: `${((spec.iconHeight / 60) * 100).toFixed(2)}%`,
+            position: 'relative',
+            objectFit: 'contain',
+          }}
         />
       </div>
-      <span style={{ fontSize: layout.text.font('--font-size-base', 13), color: '#fff', fontWeight: 'var(--font-weight-regular)', textShadow: '0 1px 3px rgba(0,0,0,0.55)', letterSpacing: '-0.005em', whiteSpace: 'nowrap' }}>
+      <span
+        style={{
+          fontSize: layout.text.font('--font-size-base', 13),
+          color: '#fff',
+          fontWeight: 'var(--font-weight-regular)',
+          textShadow: '0 1px 3px rgba(0,0,0,0.55)',
+          letterSpacing: '-0.005em',
+          whiteSpace: 'nowrap',
+        }}
+      >
         {spec.label}
       </span>
     </motion.button>
   )
 }
 
-export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: MobileHomeScreenProps) {
-  // Same 6 categories, same order, same onOpenApp(id) the grid already called —
-  // only the displayed icon/label per position changes to match the reference.
-  const [film, photography, creativeDirection, music, fashion, advertising] = categories
+export function MobileHomeScreen({
+  onOpenApp,
+  onOpenNotes,
+  onOpenPhotos,
+  onOpenPlaylist,
+  onOpenSettings,
+  onContact,
+  onFindMe,
+}: MobileHomeScreenProps) {
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
 
   const gridIcons: GridIconSpec[] = [
-    { area: 'a', label: 'Projects', iconSrc: '/icons/SVG/projects.svg', iconWidth: 34, iconHeight: 34, onTap: () => onOpenApp(film.id) },
-    { area: 'b', label: 'Playlist', iconSrc: '/icons/SVG/spotify.svg', iconWidth: 26, iconHeight: 26, whiteCircle: true, onTap: () => onOpenApp(photography.id) },
-    { area: 'c', label: 'Photos', iconSrc: '/icons/SVG/photo.svg', iconWidth: 34, iconHeight: 34, onTap: () => onOpenApp(creativeDirection.id) },
-    { area: 'd', label: 'Video', iconSrc: '/icons/SVG/video.svg', iconWidth: 38, iconHeight: 24, onTap: () => onOpenApp(music.id) },
-    { area: 'e', label: 'Settings', iconSrc: '/icons/SVG/settings.svg', iconWidth: 36, iconHeight: 36, onTap: () => onOpenApp(fashion.id) },
-    { area: 'f', label: 'Find me', iconSrc: '/icons/SVG/find%20me.svg', iconWidth: 36, iconHeight: 36, onTap: () => onOpenApp(advertising.id) },
-    // Notes/Photos were never wired with a real Mobile destination before this
-    // pass (MobileShell doesn't pass onOpenNotes/onOpenPhotos) — they stay
-    // exactly as inert as they already were, just restyled.
-    { area: 'g', label: 'About', iconSrc: '/icons/SVG/about%20me.svg', iconWidth: 32, iconHeight: 32, onTap: onOpenNotes },
-    { area: 'h', label: 'Write me', iconSrc: '/icons/SVG/message%20me.svg', iconWidth: 34, iconHeight: 30, onTap: onOpenPhotos },
+    {
+      area: 'a',
+      label: text.projects,
+      iconSrc: '/icons/ui/projects.svg',
+      iconWidth: 34,
+      iconHeight: 34,
+      onTap: () => onOpenApp(null),
+    },
+    {
+      area: 'b',
+      label: text.playlist,
+      iconSrc: '/icons/ui/spotify.svg',
+      iconWidth: 26,
+      iconHeight: 26,
+      onTap: onOpenPlaylist,
+    },
+    {
+      area: 'c',
+      label: text.photos,
+      iconSrc: '/icons/ui/photo.svg',
+      iconWidth: 34,
+      iconHeight: 34,
+      onTap: onOpenPhotos,
+    },
+    {
+      area: 'd',
+      label: 'Video',
+      iconSrc: '/icons/ui/video.svg',
+      iconWidth: 38,
+      iconHeight: 24,
+      onTap: () => onOpenApp('film-making'),
+    },
+    {
+      area: 'e',
+      label: text.settings,
+      iconSrc: '/icons/ui/settings.svg',
+      iconWidth: 36,
+      iconHeight: 36,
+      onTap: onOpenSettings,
+    },
+    {
+      area: 'f',
+      label: text.contacts,
+      iconSrc: '/icons/ui/find%20me.svg',
+      iconWidth: 36,
+      iconHeight: 36,
+      onTap: onFindMe,
+    },
+    {
+      area: 'g',
+      label: text.about,
+      iconSrc: '/icons/ui/about%20me.svg',
+      iconWidth: 32,
+      iconHeight: 32,
+      onTap: onOpenNotes,
+    },
+    {
+      area: 'h',
+      label: text.write,
+      iconSrc: '/icons/ui/message%20me.svg',
+      iconWidth: 34,
+      iconHeight: 30,
+      onTap: onContact,
+    },
   ]
 
   // Dock — matches the reference's actual 4 dock icons exactly (Settings,
   // Video, Photos, Write me). Each fires the exact same handler its
   // equivalent grid icon already fires above — no new destination anywhere.
   const dockIcons: GridIconSpec[] = [
-    { area: 'da', label: 'Settings', iconSrc: '/icons/SVG/settings.svg', iconWidth: 34, iconHeight: 34, onTap: () => onOpenApp(fashion.id) },
-    { area: 'db', label: 'Video', iconSrc: '/icons/SVG/video.svg', iconWidth: 36, iconHeight: 23, onTap: () => onOpenApp(music.id) },
-    { area: 'dc', label: 'Photos', iconSrc: '/icons/SVG/photo.svg', iconWidth: 32, iconHeight: 32, onTap: () => onOpenApp(creativeDirection.id) },
-    { area: 'dd', label: 'Write me', iconSrc: '/icons/SVG/message%20me.svg', iconWidth: 32, iconHeight: 28, onTap: onOpenPhotos },
+    {
+      area: 'da',
+      label: text.settings,
+      iconSrc: '/icons/ui/settings.svg',
+      iconWidth: 34,
+      iconHeight: 34,
+      onTap: onOpenSettings,
+    },
+    {
+      area: 'db',
+      label: 'Video',
+      iconSrc: '/icons/ui/video.svg',
+      iconWidth: 36,
+      iconHeight: 23,
+      onTap: () => onOpenApp('film-making'),
+    },
+    {
+      area: 'dc',
+      label: text.photos,
+      iconSrc: '/icons/ui/photo.svg',
+      iconWidth: 32,
+      iconHeight: 32,
+      onTap: onOpenPhotos,
+    },
+    {
+      area: 'dd',
+      label: text.write,
+      iconSrc: '/icons/ui/message%20me.svg',
+      iconWidth: 32,
+      iconHeight: 28,
+      onTap: onContact,
+    },
   ]
 
   return (
@@ -295,7 +410,15 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
     >
       {/* Main content column. Top padding = top safe area; left/right margin
           is width-driven (horizontal variance across real phones is small). */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: `${layout.space.size(30)} ${vw(30)}vw 0`, minHeight: 0 }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: `${layout.space.size(30)} ${vw(30)}vw 0`,
+          minHeight: 0,
+        }}
+      >
         {/* Hero artist card — exact asset per the reference (photos-featured.jpg, not a substitute).
             flexBasis (not height) so it actually compresses on short screens
             AND participates in the flex column's own shrink negotiation. */}
@@ -316,13 +439,39 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
           <img
             src="/photos-featured.jpg"
             alt="RIRI2K"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: '65% 40%', display: 'block' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: '65% 40%',
+              display: 'block',
+            }}
           />
-          <div style={{ position: 'absolute', left: pct(22, CONTENT_W), bottom: pct(16, WIDGET_H) }}>
-            <div style={{ fontSize: layout.text.font('--font-size-2xl', 24), fontWeight: 'var(--font-weight-bold)', fontFamily: 'var(--font-display)', color: '#0a0a0a', letterSpacing: '-0.01em', lineHeight: 1 }}>
+          <div
+            style={{ position: 'absolute', left: pct(22, CONTENT_W), bottom: pct(16, WIDGET_H) }}
+          >
+            <div
+              style={{
+                fontSize: layout.text.font('--font-size-2xl', 24),
+                fontWeight: 'var(--font-weight-bold)',
+                fontFamily: 'var(--font-display)',
+                color: '#0a0a0a',
+                letterSpacing: '-0.01em',
+                lineHeight: 1,
+              }}
+            >
               RIRI2K
             </div>
-            <div style={{ fontSize: layout.text.font('--font-size-md', 15), fontWeight: 'var(--font-weight-regular)', color: '#2b2b2b', marginTop: '2px' }}>Artist</div>
+            <div
+              style={{
+                fontSize: layout.text.font('--font-size-md', 15),
+                fontWeight: 'var(--font-weight-regular)',
+                color: '#2b2b2b',
+                marginTop: '2px',
+              }}
+            >
+              Artist
+            </div>
           </div>
         </div>
 
@@ -359,7 +508,16 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
 
           {/* Now Playing / Playlist widget — fills its 2×2 grid slot exactly,
               so its size stays relative to the grid, not a fixed pixel box. */}
-          <div style={{ gridArea: 'w', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: layout.space.size(8), minHeight: 0 }}>
+          <div
+            style={{
+              gridArea: 'w',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: layout.space.size(8),
+              minHeight: 0,
+            }}
+          >
             <div
               style={{
                 width: '100%',
@@ -375,9 +533,16 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
               aria-label="Now Playing widget"
             >
               <img
-                src="/icons/SVG/Music%20Icon.svg"
+                src="/icons/ui/Music%20Icon.svg"
                 alt=""
-                style={{ position: 'absolute', top: pct(14, WIDGET_H), right: pct(14, WIDGET_W), width: pct(13, WIDGET_W), height: pct(17, WIDGET_H), opacity: 0.9 }}
+                style={{
+                  position: 'absolute',
+                  top: pct(14, WIDGET_H),
+                  right: pct(14, WIDGET_W),
+                  width: pct(13, WIDGET_W),
+                  height: pct(17, WIDGET_H),
+                  opacity: 0.9,
+                }}
               />
               <div
                 style={{
@@ -392,7 +557,16 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
               <div style={{ flex: 1, minHeight: pct(4, WIDGET_H) }} />
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: layout.text.font('--font-size-lg', 17), fontWeight: 'var(--font-weight-semibold)', color: '#fff', letterSpacing: '-0.01em' }}>Homie</span>
+                  <span
+                    style={{
+                      fontSize: layout.text.font('--font-size-lg', 17),
+                      fontWeight: 'var(--font-weight-semibold)',
+                      color: '#fff',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    Homie
+                  </span>
                   <span
                     style={{
                       fontSize: layout.text.font('--font-size-2xs', 10),
@@ -406,9 +580,21 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
                     E
                   </span>
                 </div>
-                <div style={{ fontSize: layout.text.font('--font-size-sm', 12), color: 'rgba(255,255,255,0.65)', marginTop: '1px' }}>Carlo&rsquo;s Playlist</div>
                 <div
                   style={{
+                    fontSize: layout.text.font('--font-size-sm', 12),
+                    color: 'rgba(255,255,255,0.65)',
+                    marginTop: '1px',
+                  }}
+                >
+                  Carlo&rsquo;s Playlist
+                </div>
+                <button
+                  type="button"
+                  onClick={onOpenPlaylist}
+                  style={{
+                    border: 'none',
+                    cursor: 'pointer',
                     marginTop: pct(10, WIDGET_W),
                     width: '45.5%', // 68.34 / 150 — proportional to the widget's own box, same relationship as its reference
                     aspectRatio: '68.34 / 27.57',
@@ -420,26 +606,46 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
                     gap: '6px',
                   }}
                 >
-                  <span style={{ fontSize: layout.text.font('--font-size-2xs', 10), color: '#fff' }}>▶</span>
-                  <span style={{ fontSize: layout.text.font('--font-size-base', 13), fontWeight: 'var(--font-weight-medium)', color: '#fff' }}>Play</span>
-                </div>
+                  <span
+                    style={{ fontSize: layout.text.font('--font-size-2xs', 10), color: '#fff' }}
+                  >
+                    ▶
+                  </span>
+                  <span
+                    style={{
+                      fontSize: layout.text.font('--font-size-base', 13),
+                      fontWeight: 'var(--font-weight-medium)',
+                      color: '#fff',
+                    }}
+                  >
+                    {text.play}
+                  </span>
+                </button>
               </div>
             </div>
-            <span style={{ fontSize: layout.text.font('--font-size-base', 13), color: '#fff', fontWeight: 'var(--font-weight-regular)', textShadow: '0 1px 3px rgba(0,0,0,0.55)', whiteSpace: 'nowrap' }}>
+            <span
+              style={{
+                fontSize: layout.text.font('--font-size-base', 13),
+                color: '#fff',
+                fontWeight: 'var(--font-weight-regular)',
+                textShadow: '0 1px 3px rgba(0,0,0,0.55)',
+                whiteSpace: 'nowrap',
+              }}
+            >
               Playlist
             </span>
           </div>
         </div>
 
-        {/* My Notes widget — tier 3, so its flexShrink is lower than hero's:
-            it gives up its room after the hero already has. */}
+        {/* My Notes widget — tier 3. Intrinsic minimum height protects all
+            three shared note titles when the surrounding space compresses. */}
         <div
           style={{
             width: '100%',
             flexBasis: layout.notes.size(158),
             flexGrow: 0,
             flexShrink: 2, // priority 3 — shrinks less than hero, more than search
-            minHeight: emergencyFloor('notes', 158),
+            minHeight: 'min-content',
             borderRadius: layout.notes.size(27),
             overflow: 'hidden',
             marginTop: layout.space.size(14),
@@ -447,37 +653,122 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
             flexDirection: 'column',
             ...GLASS,
           }}
-          aria-label="My Notes widget"
+          aria-label={text.myNotes}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: pct(9, CONTENT_W), padding: `${pct(15, CONTENT_W)} ${pct(20, CONTENT_W)} 0`, flexShrink: 0 }}>
-            <img src="/icons/SVG/notes.svg" alt="" style={{ width: pct(19, CONTENT_W), height: pct(16, WIDGET_H), opacity: 0.95, flexShrink: 0 }} />
-            <span style={{ fontSize: layout.text.font('--font-size-lg', 17), fontWeight: 'var(--font-weight-bold)', fontFamily: 'var(--font-display)', color: '#fff', letterSpacing: '-0.01em' }}>
-              My Notes
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: pct(9, CONTENT_W),
+              padding: `${pct(15, CONTENT_W)} ${pct(20, CONTENT_W)} 0`,
+              flexShrink: 0,
+            }}
+          >
+            <img
+              src="/icons/ui/notes.svg"
+              alt=""
+              style={{
+                width: pct(19, CONTENT_W),
+                height: pct(16, WIDGET_H),
+                opacity: 0.95,
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: layout.text.font('--font-size-lg', 17),
+                fontWeight: 'var(--font-weight-bold)',
+                fontFamily: 'var(--font-display)',
+                color: '#fff',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {text.myNotes}
             </span>
           </div>
           {/* Dotted divider — a literal row of 1px dots in the reference */}
-          <div style={{ margin: `${pct(10, CONTENT_W)} ${pct(30, CONTENT_W)} 0`, borderTop: '1.5px dotted rgba(255,255,255,0.55)', flexShrink: 0 }} />
+          <div
+            style={{
+              margin: `${pct(10, CONTENT_W)} ${pct(30, CONTENT_W)} 0`,
+              borderTop: '1.5px dotted rgba(255,255,255,0.55)',
+              flexShrink: 0,
+            }}
+          />
 
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', minHeight: 0, overflow: 'hidden' }}>
-            {[
-              { text: 'Things to do in San Francisco', thumb: '/images/mobile/note-thumb-san-francisco.jpg' },
-              { text: 'The Best Places to Visit in Paris', thumb: '/images/mobile/note-thumb-paris.jpg' },
-              { text: 'How to Write Clear and Concise Emails', thumb: null },
-            ].map((row, i, arr) => (
-              <div key={row.text} style={{ flexShrink: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: pct(14, CONTENT_W), padding: `0 ${pct(20, CONTENT_W)}` }}>
-                  <span style={{ fontSize: layout.text.font('--font-size-md', 15), color: '#fff', letterSpacing: '-0.005em', lineHeight: 1.3 }}>{row.text}</span>
-                  {row.thumb && (
-                    <img src={row.thumb} alt="" style={{ width: pct(24, CONTENT_W), height: pct(24, CONTENT_W), borderRadius: '17%', flexShrink: 0, objectFit: 'cover' }} />
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-evenly',
+              minHeight: 'min-content',
+              overflow: 'hidden',
+            }}
+          >
+            {getNotes(locale)
+              .slice(0, 3)
+              .map((note, i, arr) => (
+                <div
+                  key={note.id}
+                  style={{
+                    flex: '1 1 0',
+                    minHeight: 'min-content',
+                    display: 'flex',
+                    alignItems: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: pct(14, CONTENT_W),
+                      padding: `0 ${pct(20, CONTENT_W)}`,
+                      width: '100%',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: layout.text.font('--font-size-md', 15),
+                        color: '#fff',
+                        letterSpacing: '-0.005em',
+                        lineHeight: 1.3,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {note.title}
+                    </span>
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: pct(20, CONTENT_W),
+                        right: pct(20, CONTENT_W),
+                        height: '0.3px',
+                        background: 'rgba(255,255,255,0.4)',
+                      }}
+                    />
                   )}
                 </div>
-                {i < arr.length - 1 && <div style={{ margin: `${pct(11, CONTENT_W)} ${pct(20, CONTENT_W)} 0`, height: '0.3px', background: 'rgba(255,255,255,0.4)' }} />}
-              </div>
-            ))}
+              ))}
           </div>
         </div>
         <div style={{ textAlign: 'center', marginTop: layout.space.size(8), flexShrink: 0 }}>
-          <span style={{ fontSize: layout.text.font('--font-size-base', 13), color: '#fff', fontWeight: 'var(--font-weight-regular)', textShadow: '0 1px 3px rgba(0,0,0,0.55)' }}>Notes</span>
+          <span
+            style={{
+              fontSize: layout.text.font('--font-size-base', 13),
+              color: '#fff',
+              fontWeight: 'var(--font-weight-regular)',
+              textShadow: '0 1px 3px rgba(0,0,0,0.55)',
+            }}
+          >
+            {text.notes}
+          </span>
         </div>
 
         {/* Search pill — tier 4, the lowest flexShrink of the three glass
@@ -496,8 +787,12 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
             minHeight: emergencyFloor('search', 28),
           }}
         >
-          <div
+          <button
+            type="button"
+            onClick={() => onOpenApp(null)}
             style={{
+              border: 'none',
+              cursor: 'pointer',
               width: `${vw(114)}vw`,
               height: '100%',
               borderRadius: '9999px',
@@ -508,14 +803,34 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
               flexShrink: 0,
               ...GLASS,
             }}
-            aria-label="Search Project"
+            aria-label={text.searchProjects}
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden style={{ flexShrink: 0 }}>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 13 13"
+              fill="none"
+              aria-hidden
+              style={{ flexShrink: 0 }}
+            >
               <circle cx="5.4" cy="5.4" r="4.1" stroke="rgba(255,255,255,0.85)" strokeWidth="1.3" />
-              <path d="M8.4 8.4L11.3 11.3" stroke="rgba(255,255,255,0.85)" strokeWidth="1.3" strokeLinecap="round" />
+              <path
+                d="M8.4 8.4L11.3 11.3"
+                stroke="rgba(255,255,255,0.85)"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+              />
             </svg>
-            <span style={{ fontSize: layout.text.font('--font-size-base', 13), color: 'rgba(255,255,255,0.85)', whiteSpace: 'nowrap' }}>Search Project</span>
-          </div>
+            <span
+              style={{
+                fontSize: layout.text.font('--font-size-base', 13),
+                color: 'rgba(255,255,255,0.85)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {text.searchProjects}
+            </span>
+          </button>
         </div>
 
         {/* Flexible spacer — absorbs all slack above the reference height (844)
@@ -546,7 +861,14 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
           role="navigation"
           aria-label="Dock"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', columnGap: GRID_GAP, width: '100%' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              columnGap: GRID_GAP,
+              width: '100%',
+            }}
+          >
             {dockIcons.map((spec) => (
               <motion.button
                 key={spec.area}
@@ -568,7 +890,11 @@ export function MobileHomeScreen({ onOpenApp, onOpenNotes, onOpenPhotos }: Mobil
                 <img
                   src={spec.iconSrc}
                   alt=""
-                  style={{ width: `${((spec.iconWidth / 60) * 100).toFixed(2)}%`, height: `${((spec.iconHeight / 60) * 100).toFixed(2)}%`, objectFit: 'contain' }}
+                  style={{
+                    width: `${((spec.iconWidth / 60) * 100).toFixed(2)}%`,
+                    height: `${((spec.iconHeight / 60) * 100).toFixed(2)}%`,
+                    objectFit: 'contain',
+                  }}
                 />
               </motion.button>
             ))}

@@ -12,18 +12,18 @@ const MAGNIFICATION_DISTANCE = 120
 
 // ─── App Icons ────────────────────────────────────────────────────────────────
 // The canonical Portfolio OS icon set — the exact same SVG assets Mobile
-// uses (public/icons/SVG/), rendered as plain glyphs with no background of
+// uses (public/icons/ui/), rendered as plain glyphs with no background of
 // their own, per the same "same icon language" mapping used across Mobile,
 // Desktop and Tablet.
 
 const ICON_SRC: Record<string, string> = {
-  finder: '/icons/SVG/projects.svg',
-  photos: '/icons/SVG/photo.svg',
-  notes: '/icons/SVG/notes.svg',
-  spotify: '/icons/SVG/spotify.svg',
-  mail: '/icons/SVG/message%20me.svg',
-  settings: '/icons/SVG/settings.svg',
-  instagram: '/icons/SVG/photo.svg',
+  finder: '/icons/ui/projects.svg',
+  photos: '/icons/ui/photo.svg',
+  notes: '/icons/ui/notes.svg',
+  spotify: '/icons/ui/spotify.svg',
+  mail: '/icons/ui/message%20me.svg',
+  settings: '/icons/ui/settings.svg',
+  instagram: '/icons/ui/photo.svg',
 }
 
 function GenericAppIcon({ label }: { label: string }) {

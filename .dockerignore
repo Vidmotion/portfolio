@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.env*
+.claude
+.playwright-cli
+.DS_Store
+**/.DS_Store
+*.tsbuildinfo
+*-debug.log*
+Claude
+README.md
+DEPLOYMENT.md
+out
+build
+coverage

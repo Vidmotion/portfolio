@@ -1,9 +1,7 @@
 'use client'
 
 import { widgetDarkGlass } from '@/lib/utils'
-
-const PLAYLIST_EMBED_SRC =
-  'https://open.spotify.com/embed/playlist/1a9GX8k0hNOOy9RTQB34pk?utm_source=generator&si=ebc2bc04c7ff414c'
+import { playlist } from '@/core/registries/playlist'
 
 interface SpotifyWidgetProps {
   elevated?: boolean
@@ -30,7 +28,7 @@ export function SpotifyWidget({ elevated }: SpotifyWidgetProps) {
         data-testid="embed-iframe"
         title="Spotify playlist"
         style={{ borderRadius: '12px', border: 'none' }}
-        src={PLAYLIST_EMBED_SRC}
+        src={playlist.embedUrl}
         width="100%"
         height="152"
         frameBorder="0"

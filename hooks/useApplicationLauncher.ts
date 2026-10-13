@@ -9,7 +9,7 @@ export function useApplicationLauncher() {
   const openWindow = useWindowStore((s) => s.openWindow)
 
   const launch = useCallback(
-    (appId: string) => {
+    (appId: string, payload?: Record<string, unknown>) => {
       const app = apps.find((a) => a.id === appId)
       if (!app) return
 
@@ -19,7 +19,7 @@ export function useApplicationLauncher() {
       }
 
       if (app.app) {
-        openWindow(app.app)
+        openWindow(app.app, undefined, undefined, payload)
       }
     },
     [openWindow]
