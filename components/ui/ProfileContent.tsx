@@ -12,8 +12,16 @@ export function ProfileContent() {
   const show = useEasterEggStore((s) => s.show)
   const greeting = useLongPress(() => show('hello'))
   return (
-    <div style={{ color: '#33333a', fontFamily: 'var(--font-text)' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', marginBottom: '28px' }}>
+    <div style={{ color: 'var(--profile-text, #33333a)', fontFamily: 'var(--font-text)' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '20px',
+          alignItems: 'center',
+          marginBottom: '28px',
+        }}
+      >
         <Image
           {...greeting}
           draggable={false}
@@ -33,14 +41,14 @@ export function ProfileContent() {
             style={{
               fontSize: '24px',
               fontWeight: 600,
-              color: '#161617',
+              color: 'var(--profile-title, #161617)',
               letterSpacing: '-.025em',
             }}
           >
             {identity.name}
           </div>
           <div style={{ fontSize: '15px', lineHeight: 1.4, marginTop: '6px' }}>{profile.title}</div>
-          <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--profile-muted, #666)', marginTop: '8px' }}>
             {profile.location[locale]}
           </div>
         </div>
@@ -59,7 +67,7 @@ export function ProfileContent() {
         href={`mailto:${identity.email}`}
         style={{
           fontSize: '15px',
-          color: '#0066cc',
+          color: 'var(--profile-link, #0066cc)',
           textDecoration: 'underline',
           textUnderlineOffset: '3px',
         }}

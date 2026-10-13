@@ -1,7 +1,8 @@
 'use client'
 
 import { useId, useLayoutEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import { AppGlyph } from '@/components/ui/AppGlyph'
+import type { IconId } from '@/core/registries/icons'
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { identity } from '@/core/registries/identity'
@@ -42,10 +43,7 @@ interface MobileHomeScreenProps {
 
 type AppIcon = {
   label: string
-  file: string
-  tone: 'graphite'
-  source?: string
-  edgeToEdge?: boolean
+  icon: IconId
   action?: () => void
 }
 
@@ -73,17 +71,8 @@ function IconButton({
       whileTap={reduced ? undefined : { scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
     >
-      <span data-launch-anchor="" className={`${styles.iconTile} ${styles[app.tone]}`}>
-        <Image
-          data-app-glyph=""
-          src={app.source ?? `/icons/mobile/${app.file.replace(/\.svg$/, '.png')}`}
-          alt=""
-          width={54}
-          height={54}
-          unoptimized
-          className={`${styles.glyph} ${app.edgeToEdge ? styles.glyphFull : ''}`}
-          draggable={false}
-        />
+      <span data-launch-anchor="" className={styles.iconTile}>
+        <AppGlyph icon={app.icon} appearance="mobile" className={styles.glyph} />
       </span>
       {!dock && <span className={styles.appLabel}>{app.label}</span>}
     </motion.button>
@@ -200,7 +189,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
     const items = [
       { label: `${text.openApp} ${app.label}`, run: () => launch(element, app.action) },
     ]
-    if (app.file === 'projects.svg') {
+    if (app.icon === 'projects') {
       items.push(
         ...categories.map((category) => ({
           label: category.label,
@@ -208,10 +197,8 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
         }))
       )
     }
-    if (app.file === 'video.svg')
-      items.push({ label: text.secretAction, run: () => showEgg('action') })
-    if (app.file === 'about%20me.svg')
-      items.push({ label: text.secretHello, run: () => showEgg('hello') })
+    if (app.icon === 'film') items.push({ label: text.secretAction, run: () => showEgg('action') })
+    if (app.icon === 'about') items.push({ label: text.secretHello, run: () => showEgg('hello') })
     setMenu({
       label: app.label,
       rect: element.querySelector('[data-launch-anchor]')!.getBoundingClientRect(),
@@ -222,47 +209,38 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
   const apps: AppIcon[] = [
     {
       label: text.projects,
-      file: 'projects.svg',
-      tone: 'graphite',
+      icon: 'projects',
       action: () => props.onOpenApp(null),
     },
     {
       label: text.about,
-      file: 'about%20me.svg',
-      tone: 'graphite',
-      edgeToEdge: true,
+      icon: 'about',
       action: props.onOpenNotes,
     },
     {
       label: categoryLabel('film-making'),
-      file: 'video.svg',
-      tone: 'graphite',
+      icon: 'film',
       action: () => props.onOpenApp('film-making'),
     },
     {
       label: text.contacts,
-      file: 'find%20me.svg',
-      tone: 'graphite',
-      edgeToEdge: true,
+      icon: 'contacts',
       action: props.onFindMe,
     },
   ]
   const dock: AppIcon[] = [
-    { label: text.write, file: 'message%20me.svg', tone: 'graphite', action: props.onContact },
-    { label: text.photos, file: 'photo.svg', tone: 'graphite', action: props.onOpenPhotos },
-    { label: text.playlist, file: 'spotify.svg', tone: 'graphite', action: props.onOpenPlaylist },
-    { label: text.settings, file: 'settings.svg', tone: 'graphite', action: props.onOpenSettings },
+    { label: text.write, icon: 'mail', action: props.onContact },
+    { label: text.photos, icon: 'photos', action: props.onOpenPhotos },
+    { label: text.playlist, icon: 'spotify', action: props.onOpenPlaylist },
+    { label: text.settings, icon: 'settings', action: props.onOpenSettings },
   ]
   const pageNames = [text.widgetsPage, text.portfolioPage, text.personalPage]
   const personalApps: AppIcon[] = [
-    { label: text.photos, file: 'photo.svg', tone: 'graphite', action: props.onOpenPhotos },
-    { label: text.playlist, file: 'spotify.svg', tone: 'graphite', action: props.onOpenPlaylist },
+    { label: text.photos, icon: 'photos', action: props.onOpenPhotos },
+    { label: text.playlist, icon: 'spotify', action: props.onOpenPlaylist },
     ...identity.social.map((social) => ({
       label: social.label ?? social.platform,
-      file: `social-${social.platform}`,
-      tone: 'graphite' as const,
-      source: `/icons/social/${social.platform}.svg`,
-      edgeToEdge: social.platform === 'linkedin',
+      icon: social.platform as IconId,
       action: () => {
         window.open(social.url, '_blank', 'noopener,noreferrer')
       },
@@ -271,7 +249,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
   const renderApps = (items: AppIcon[]) =>
     items.map((app) => (
       <IconButton
-        key={app.file}
+        key={app.icon}
         app={app}
         launch={launch}
         reduced={reduced}
@@ -465,7 +443,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       <nav className={styles.dock} aria-label="Dock">
         {dock.map((app) => (
           <IconButton
-            key={app.file}
+            key={app.icon}
             app={app}
             launch={launch}
             reduced={reduced}

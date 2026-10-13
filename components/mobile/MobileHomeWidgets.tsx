@@ -9,7 +9,7 @@ import { playlist } from '@/core/registries/playlist'
 import { categories } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
 import { projects } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
+import { mobileCategoryGradient } from '@/core/registries/mobilePalette'
 import { useLocaleStore } from '@/store/localeStore'
 import { useEasterEggStore } from '@/store/easterEggStore'
 import { useLongPress } from '@/hooks/useLongPress'
@@ -17,6 +17,7 @@ import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
 import type { ProjectCategory } from '@/types'
 import type { CSSProperties } from 'react'
 import styles from './MobileHomeWidgets.module.css'
+import { AppGlyph } from '@/components/ui/AppGlyph'
 
 export type WidgetLaunch = (element: HTMLElement, action?: () => void) => void
 type WidgetProps = { launch: WidgetLaunch; open?: () => void; reduced: boolean }
@@ -159,7 +160,7 @@ export function MailWidget({ launch, open, reduced }: WidgetProps) {
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
       <span className={styles.mailIcon}>
-        <Image src="/icons/mobile/message%20me.png" width={38} height={38} alt="" unoptimized />
+        <AppGlyph icon="mail" appearance="mobile" />
       </span>
       <span>
         <small>{text.mail}</small>
@@ -195,7 +196,7 @@ export function ProjectPreviewWidget({
           >
             <span
               className={styles.projectThumb}
-              style={{ background: categoryGradient(project.category) }}
+              style={{ background: mobileCategoryGradient(project.category) }}
               aria-hidden
             />
             <span>

@@ -133,7 +133,9 @@ export function MobileUtilityView({
                 >
                   <span
                     className={styles.toggleTrack}
-                    style={{ background: setting.checked ? '#34c759' : '#c7c7cc' }}
+                    style={{
+                      background: setting.checked ? 'var(--mobile-berry)' : 'var(--mobile-powder)',
+                    }}
                   >
                     <span
                       className={styles.toggleThumb}

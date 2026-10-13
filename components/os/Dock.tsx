@@ -4,43 +4,19 @@ import { useRef, memo } from 'react'
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import { useDock } from '@/hooks/useDock'
 import { springs, ease } from '@/lib/motion'
+import { AppGlyph } from '@/components/ui/AppGlyph'
+import { appIcons } from '@/core/registries/icons'
+import type { ApplicationId } from '@/core/registries/apps'
 
 // Magnification parameters — from MOTION.md
 const BASE_SIZE = 54
 const MAX_SIZE = 72
 const MAGNIFICATION_DISTANCE = 120
 
-// ─── App Icons ────────────────────────────────────────────────────────────────
-// The canonical Portfolio OS icon set — the exact same SVG assets Mobile
-// uses (public/icons/ui/), rendered as plain glyphs with no background of
-// their own, per the same "same icon language" mapping used across Mobile,
-// Desktop and Tablet.
-
-const ICON_SRC: Record<string, string> = {
-  finder: '/icons/ui/projects.svg',
-  photos: '/icons/ui/photo.svg',
-  notes: '/icons/ui/notes.svg',
-  spotify: '/icons/ui/spotify.svg',
-  mail: '/icons/ui/message%20me.svg',
-  settings: '/icons/ui/settings.svg',
-  instagram: '/icons/ui/photo.svg',
-}
-
-function GenericAppIcon({ label }: { label: string }) {
-  return (
-    <svg viewBox="0 0 54 54" fill="none" width="100%" height="100%">
-      <rect width="54" height="54" rx="13" fill="#E5E7EB" />
-      <text x="27" y="31" textAnchor="middle" fontSize="14" fill="#6B7280" fontFamily="sans-serif">
-        {label.slice(0, 2)}
-      </text>
-    </svg>
-  )
-}
-
 // ─── DockItem ─────────────────────────────────────────────────────────────────
 
 interface DockItemProps {
-  id: string
+  id: ApplicationId
   name: string
   isRunning: boolean
   mouseX: ReturnType<typeof useMotionValue<number>>
@@ -64,7 +40,6 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
   )
 
   const size = useSpring(rawSize, springs.dock)
-  const iconSrc = ICON_SRC[id]
 
   return (
     <div
@@ -81,16 +56,24 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
         onClick={() => onLaunch(id)}
         style={{ width: size, height: size }}
         whileTap={{ scale: 0.86, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
-        className="relative flex items-center justify-center cursor-pointer select-none"
+        className="relative flex cursor-pointer items-center justify-center select-none"
         aria-label={`Open ${name}`}
         title={name}
       >
         <motion.div
-          style={{ width: '100%', height: '100%', borderRadius: '13px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '13px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
           whileHover={{ filter: 'brightness(1.06)' }}
           transition={{ duration: 0.14, ease: ease.opening }}
         >
-          {iconSrc ? <img src={iconSrc} alt="" style={{ width: '58%', height: 'auto', objectFit: 'contain' }} /> : <GenericAppIcon label={name} />}
+          <AppGlyph icon={appIcons[id]} />
         </motion.div>
       </motion.button>
 
@@ -126,7 +109,7 @@ export function Dock() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 flex justify-center items-end pointer-events-none"
+      className="pointer-events-none fixed right-0 bottom-0 left-0 flex items-end justify-center"
       style={{ zIndex: 'var(--z-dock)', paddingBottom: '16px' }}
     >
       <motion.div

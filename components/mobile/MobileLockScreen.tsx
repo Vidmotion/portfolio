@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useId } from 'react'
 import { useTime } from '@/hooks/useTime'
 import { springs } from '@/lib/motion'
 import { identity } from '@/core/registries/identity'
@@ -15,14 +16,14 @@ interface MobileLockScreenProps {
 export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
   const { bigTime, dateLong } = useTime()
   const text = uiText[useLocaleStore((state) => state.locale)]
+  const unlockLabel = useId()
 
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.98 }}
       transition={springs.default}
-      onClick={onUnlock}
       style={{
         position: 'absolute',
         inset: 0,
@@ -32,14 +33,27 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        color: '#fff',
+        color: 'var(--mobile-text)',
         padding: 0,
         fontFamily: 'var(--font-text)',
       }}
-      aria-label={text.unlock}
     >
+      <button
+        type="button"
+        onClick={onUnlock}
+        aria-labelledby={unlockLabel}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      />
       {/* Date + Time */}
       <div
+        aria-hidden="true"
         style={{
           marginTop: '92px',
           display: 'flex',
@@ -52,7 +66,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             fontSize: '17px',
             fontWeight: 500,
             letterSpacing: '0.01em',
-            textShadow: '0 2px 16px rgba(0,0,0,0.35)',
+            textShadow: 'none',
             opacity: 0.95,
           }}
         >
@@ -64,7 +78,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             fontWeight: 300,
             letterSpacing: '-0.05em',
             lineHeight: 0.95,
-            textShadow: '0 4px 30px rgba(0,0,0,0.35)',
+            textShadow: 'none',
             fontVariantNumeric: 'tabular-nums',
             marginTop: '2px',
           }}
@@ -80,15 +94,15 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
           width: 'min(300px, calc(100% - 48px))',
           padding: '16px 18px',
           borderRadius: '22px',
-          background: 'rgba(39,40,45,0.88)',
+          background: 'var(--mobile-widget-material)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
+          boxShadow: 'var(--mobile-glass-shadow)',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
         }}
-        aria-label={identity.name}
+        aria-hidden="true"
       >
         <div
           style={{
@@ -105,7 +119,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
               fontSize: '10px',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.65)',
+              color: 'var(--mobile-muted)',
               fontWeight: 600,
             }}
           >
@@ -115,7 +129,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             style={{
               fontSize: '13px',
               fontWeight: 400,
-              color: '#fff',
+              color: 'var(--mobile-text)',
               lineHeight: 1.4,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -124,7 +138,7 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             {profile.title}
           </div>
         </div>
-        <span style={{ color: '#fff', fontSize: '23px', opacity: 0.8 }}>›</span>
+        <span style={{ color: 'var(--mobile-text)', fontSize: '23px', opacity: 0.8 }}>›</span>
       </div>
 
       <div style={{ flex: 1 }} />
@@ -144,20 +158,21 @@ export function MobileLockScreen({ onUnlock }: MobileLockScreenProps) {
             width: '150px',
             height: '4px',
             borderRadius: '9999px',
-            background: 'rgba(255,255,255,0.55)',
+            background: 'var(--mobile-berry)',
           }}
         />
         <div
+          id={unlockLabel}
           style={{
             fontSize: '12px',
             letterSpacing: '0.04em',
-            color: 'rgba(255,255,255,0.8)',
-            textShadow: '0 1px 8px rgba(0,0,0,0.35)',
+            color: 'var(--mobile-muted)',
+            textShadow: 'none',
           }}
         >
-          {text.tapToOpen}
+          {text.unlock}
         </div>
       </div>
-    </motion.button>
+    </motion.div>
   )
 }

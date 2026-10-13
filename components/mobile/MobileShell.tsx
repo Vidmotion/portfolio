@@ -11,6 +11,8 @@ import { MobileUtilityView } from './MobileUtilityView'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { identity } from '@/core/registries/identity'
 import { playlist } from '@/core/registries/playlist'
+import palette from '@/styles/generated/mobile-palette.module.css'
+import theme from './MobileTheme.module.css'
 
 export function MobileShell() {
   const {
@@ -26,28 +28,17 @@ export function MobileShell() {
     setLaunchOrigin,
   } = useMobileStore()
 
-  const isLight = screen === 'lock' || screen === 'home'
-
   return (
     <div
-      style={{
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-        position: 'relative',
-        // Home Screen reference (Figma) ships its own top vignette baked into the
-        // wallpaper layer — reproduced here as a layered gradient over the photo.
-        background:
-          'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.8) 7.5%, rgba(0,0,0,0) 38.2%, rgba(0,0,0,0) 100%), url(/images/mobile/home-wallpaper.jpg) center/cover no-repeat',
-        fontFamily: 'var(--font-text)',
-      }}
+      className={`${palette.palette} ${theme.shell}`}
+      data-mobile-theme="butter"
       role="main"
       aria-label="Mobile — iOS experience"
     >
       {/* Status bar — the new Home Screen design (Figma) has no simulated status
           bar chrome; it relies on real device safe-area insets instead. Lock/App/
           Project screens keep the existing simulated bar. */}
-      {screen !== 'home' && <MobileStatusBar light={isLight} />}
+      {screen !== 'home' && <MobileStatusBar light={false} />}
 
       {screen === 'lock' && (
         <div
@@ -61,8 +52,8 @@ export function MobileShell() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            color: '#fff',
-            background: '#000',
+            color: 'var(--mobile-butter)',
+            background: 'var(--mobile-ganache)',
             borderRadius: '999px',
             zIndex: 50,
           }}

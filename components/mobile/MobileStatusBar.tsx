@@ -8,7 +8,7 @@ interface MobileStatusBarProps {
 
 export function MobileStatusBar({ light = true }: MobileStatusBarProps) {
   const { fullTime } = useTime()
-  const color = light ? '#fff' : '#161617'
+  const color = light ? '#fff' : 'var(--mobile-text, #161617)'
 
   return (
     <div
