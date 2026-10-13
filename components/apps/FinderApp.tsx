@@ -12,13 +12,15 @@ import { categories as CATEGORIES, normalizeCategory } from '@/core/registries/c
 import { identity } from '@/core/registries/identity'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import styles from './AppResponsive.module.css'
 import type { ProjectCategory } from '@/types'
 
 interface FinderAppProps {
   initialCategory?: ProjectCategory | null
+  navigationRequest?: Record<string, unknown>
 }
 
-export function FinderApp({ initialCategory }: FinderAppProps) {
+export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps) {
   const locale = useLocaleStore((s) => s.locale)
   const text = uiText[locale]
   const {
@@ -34,15 +36,23 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
   const { openWindow } = useWindowStore()
   const { selectProject: selectDesktopProject } = useDesktopStore()
 
-  // Seed the store from the category this window was opened with. Only re-applies when
-  // the window is reused for a *different* folder — sidebar clicks always win afterward.
-  const appliedInitial = useRef<ProjectCategory | null | undefined>(undefined)
+  // An explicit launch is a navigation request, even for the same folder.
+  // A plain Dock relaunch keeps the current selection and search.
+  const appliedInitial = useRef<{
+    category: ProjectCategory | null | undefined
+    request: Record<string, unknown> | undefined
+  }>({ category: undefined, request: undefined })
   useEffect(() => {
-    if (initialCategory !== undefined && initialCategory !== appliedInitial.current) {
-      appliedInitial.current = initialCategory
+    if (
+      initialCategory !== undefined &&
+      (initialCategory !== appliedInitial.current.category ||
+        navigationRequest !== appliedInitial.current.request)
+    ) {
+      appliedInitial.current = { category: initialCategory, request: navigationRequest }
       setCategory(normalizeCategory(initialCategory))
+      if (navigationRequest !== undefined) setSearchQuery('')
     }
-  }, [initialCategory, setCategory])
+  }, [initialCategory, navigationRequest, setCategory, setSearchQuery])
 
   const activeCategory = currentCategory
 
@@ -71,11 +81,11 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--font-text)' }}>
+    <div className={styles.shell}>
       {/* Sidebar */}
       <div
+        className={styles.sidebar}
         style={{
-          width: '196px',
           flexShrink: 0,
           background: 'rgba(248,248,249,0.5)',
           borderRight: '0.5px solid rgba(0,0,0,0.05)',
@@ -90,12 +100,12 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
             fontSize: '10px',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: '#b0b0b5',
+            color: '#6d6d75',
             fontWeight: 600,
             padding: '6px 10px 10px',
           }}
         >
-          Library
+          {locale === 'it' ? 'Libreria' : 'Library'}
         </div>
 
         <SidebarItem
@@ -119,22 +129,14 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
       {/* Main content */}
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
-        <div
-          style={{
-            flexShrink: 0,
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            padding: '26px 30px 20px',
-          }}
-        >
+        <div className={styles.finderHeader}>
           <div>
             <div
               style={{
                 fontSize: '11px',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: '#b0b0b5',
+                color: '#6d6d75',
                 fontWeight: 600,
               }}
             >
@@ -154,7 +156,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '6px' }}>
+          <div className={styles.finderTools}>
             {/* Search */}
             <div
               style={{
@@ -188,8 +190,15 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
               />
             </div>
 
-            <span style={{ fontSize: '13px', color: '#a0a0a5' }}>
-              {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
+            <span style={{ fontSize: '13px', color: '#6d6d75' }}>
+              {filtered.length}{' '}
+              {locale === 'it'
+                ? filtered.length === 1
+                  ? 'progetto'
+                  : 'progetti'
+                : filtered.length === 1
+                  ? 'project'
+                  : 'projects'}
             </span>
 
             {/* View toggle */}
@@ -221,7 +230,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                   aria-label={`${mode} view`}
                   aria-pressed={viewMode === mode}
                 >
-                  {mode === 'grid' ? 'Grid' : 'List'}
+                  {mode === 'grid' ? text.grid : text.list}
                 </button>
               ))}
             </div>
@@ -229,7 +238,14 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '4px 30px 30px' }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '4px var(--app-pad) var(--app-pad)',
+            minHeight: 0,
+          }}
+        >
           {filtered.length === 0 ? (
             <div
               style={{
@@ -237,21 +253,14 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '200px',
-                color: '#a0a0a5',
+                color: '#6d6d75',
                 fontSize: '13px',
               }}
             >
               {text.noProjects}
             </div>
           ) : viewMode === 'grid' ? (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(218px, 1fr))',
-                gap: '30px 24px',
-                alignContent: 'start',
-              }}
-            >
+            <div className={styles.finderGrid}>
               {filtered.map((project, i) => (
                 <motion.button
                   key={project.id}
@@ -285,7 +294,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
-                  aria-label={`${project.title}, double-click to open`}
+                  title={text.tapToOpen}
                 >
                   {/* Cover */}
                   <div
@@ -334,7 +343,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                     <div
                       style={{
                         fontSize: '12px',
-                        color: '#a0a0a5',
+                        color: '#6d6d75',
                         marginTop: '2px',
                         textTransform: 'capitalize',
                       }}
@@ -349,6 +358,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
               {filtered.map((project, i) => (
                 <motion.button
+                  className={styles.listRow}
                   key={project.id}
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -383,7 +393,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                     backgroundColor:
                       selectedProjectId === project.id ? undefined : 'rgba(0,0,0,0.04)',
                   }}
-                  aria-label={`${project.title}, double-click to open`}
+                  title={text.tapToOpen}
                 >
                   <div
                     style={{
@@ -412,7 +422,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                   <div
                     style={{
                       fontSize: '12px',
-                      color: '#a0a0a5',
+                      color: '#6d6d75',
                       flexShrink: 0,
                       textTransform: 'capitalize',
                     }}
@@ -422,7 +432,7 @@ export function FinderApp({ initialCategory }: FinderAppProps) {
                   <div
                     style={{
                       fontSize: '12px',
-                      color: '#a0a0a5',
+                      color: '#6d6d75',
                       flexShrink: 0,
                       width: '36px',
                       textAlign: 'right',

@@ -38,7 +38,7 @@ export function TabletMenuBar() {
         letterSpacing: '-0.005em',
         fontFamily: 'var(--font-text)',
       }}
-      role="banner"
+      role="toolbar"
       aria-label="Tablet menu bar"
     >
       {/* Left: brand + nav */}

@@ -15,6 +15,10 @@ export function detectPlatform(): Platform {
   if (typeof window === 'undefined') return 'desktop'
   const w = window.innerWidth
   if (w < 768) return 'mobile'
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    // A phone remains an iPhone experience after rotating to a wide viewport.
+    return Math.min(window.screen.width, window.screen.height) < 768 ? 'mobile' : 'tablet'
+  }
   if (w < 1280) return 'tablet'
   return 'desktop'
 }
@@ -42,10 +46,11 @@ export function clampWindowPosition(
 ): { x: number; y: number } {
   const vw = typeof window !== 'undefined' ? window.innerWidth : 1440
   const vh = typeof window !== 'undefined' ? window.innerHeight : 900
+  const dockSpace = vw < 1280 ? 104 : 120
 
   return {
     x: Math.max(0, Math.min(x, vw - width)),
-    y: Math.max(menuBarHeight, Math.min(y, vh - height)),
+    y: Math.max(menuBarHeight, Math.min(y, vh - dockSpace - height)),
   }
 }
 
@@ -63,10 +68,19 @@ export const MIN_WINDOW_SIZE: WindowSize = { width: 380, height: 280 }
 export function clampWindowSize(width: number, height: number, x: number, y: number): WindowSize {
   const vw = typeof window !== 'undefined' ? window.innerWidth : 1440
   const vh = typeof window !== 'undefined' ? window.innerHeight : 900
+  const dockSpace = vw < 1280 ? 104 : 120
+  const availableWidth = Math.max(1, vw - x)
+  const availableHeight = Math.max(1, vh - dockSpace - y)
 
   return {
-    width: Math.max(MIN_WINDOW_SIZE.width, Math.min(width, vw - x)),
-    height: Math.max(MIN_WINDOW_SIZE.height, Math.min(height, vh - y)),
+    width: Math.max(
+      Math.min(MIN_WINDOW_SIZE.width, availableWidth),
+      Math.min(width, availableWidth)
+    ),
+    height: Math.max(
+      Math.min(MIN_WINDOW_SIZE.height, availableHeight),
+      Math.min(height, availableHeight)
+    ),
   }
 }
 

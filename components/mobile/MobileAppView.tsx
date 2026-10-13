@@ -62,7 +62,7 @@ export function MobileAppView({
             background: 'transparent',
             border: 'none',
             fontSize: '15px',
-            color: '#0a7eff',
+            color: '#0066cc',
             display: 'flex',
             alignItems: 'center',
             gap: '3px',
@@ -72,7 +72,7 @@ export function MobileAppView({
             fontWeight: 400,
             fontFamily: 'var(--font-text)',
           }}
-          aria-label={text.back}
+          aria-label={`${text.back}: ${category ? text.projects : text.home}`}
         >
           ‹ {category ? text.projects : text.home}
         </button>

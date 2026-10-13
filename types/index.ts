@@ -54,6 +54,7 @@ export interface OSWindow {
   title: string
   app: WindowApp
   state: WindowState
+  restoreState?: 'open' | 'maximized'
   position: WindowPosition
   size: WindowSize
   zIndex: number

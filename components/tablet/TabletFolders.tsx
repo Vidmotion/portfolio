@@ -7,6 +7,7 @@ import { useDragOffset } from '@/hooks/useDragOffset'
 import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
 import { springs, staggerDelay } from '@/lib/motion'
 import { categories } from '@/core/registries/categories'
+import styles from './TabletResponsive.module.css'
 
 // Plain macOS-style folder shell, no internal glyph — the folder itself is
 // the visual identifier, distinguished only by its label underneath (same
@@ -32,8 +33,23 @@ interface DraggableTabletFolderProps {
 // the shared useDragOffset hook — only the visual markup below is Tablet's own,
 // unchanged. Constrained to the tablet screen (Desktop folders are unconstrained)
 // since an unconstrained drag would push a folder outside the iPad bezel.
-function DraggableTabletFolder({ folder, index, offset, locked, isActive, onSelect, onDragEnd, containerRef }: DraggableTabletFolderProps) {
-  const { x, y, isDragging, onDragStart, onDragEnd: handleDragEnd } = useDragOffset({ offset, onDragEnd })
+function DraggableTabletFolder({
+  folder,
+  index,
+  offset,
+  locked,
+  isActive,
+  onSelect,
+  onDragEnd,
+  containerRef,
+}: DraggableTabletFolderProps) {
+  const {
+    x,
+    y,
+    isDragging,
+    onDragStart,
+    onDragEnd: handleDragEnd,
+  } = useDragOffset({ offset, onDragEnd })
 
   return (
     <motion.button
@@ -76,7 +92,7 @@ function DraggableTabletFolder({ folder, index, offset, locked, isActive, onSele
       <MacOSFolderIcon icon={null} width={66} height={54} elevated={isDragging} />
       <span
         style={{
-          fontSize: '11px',
+          fontSize: 'var(--tablet-folder-font, 11px)',
           color: '#fff',
           fontWeight: 500,
           textShadow: '0 1px 4px rgba(0,0,0,0.4)',
@@ -92,23 +108,12 @@ function DraggableTabletFolder({ folder, index, offset, locked, isActive, onSele
 }
 
 export function TabletFolders({ containerRef }: TabletFoldersProps) {
-  const { folderOffsets, setFolderOffset, isDesktopLocked, selectedFolderId, selectFolder } = useDesktopStore()
+  const { folderOffsets, setFolderOffset, isDesktopLocked, selectedFolderId, selectFolder } =
+    useDesktopStore()
   const { openWindow } = useWindowStore()
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '58px',
-        right: '40px',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 84px)',
-        gap: '16px 8px',
-        zIndex: 20,
-      }}
-      role="group"
-      aria-label="Category folders"
-    >
+    <div className={styles.folders} role="group" aria-label="Category folders">
       {TABLET_FOLDERS.map((folder, i) => (
         <DraggableTabletFolder
           key={folder.id}

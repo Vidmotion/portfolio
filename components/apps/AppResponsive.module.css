@@ -1,0 +1,246 @@
+.shell {
+  --app-sidebar: 196px;
+  --app-pad: 30px;
+  --note-pad: 56px 72px;
+  --note-title: 38px;
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  font-family: var(--font-text);
+}
+.notes {
+  --app-sidebar: 216px;
+}
+.photos {
+  --app-sidebar: 180px;
+  --app-pad: 26px;
+}
+.sidebar {
+  width: var(--app-sidebar);
+  flex-shrink: 0;
+}
+.finderHeader {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 26px var(--app-pad) 20px;
+}
+.finderTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding-bottom: 6px;
+}
+.finderGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(218px, 100%), 1fr));
+  gap: 30px 24px;
+  align-content: start;
+}
+.note {
+  padding: var(--note-pad);
+  max-width: 680px;
+  overflow-wrap: anywhere;
+}
+.note h1 {
+  font-size: var(--note-title);
+}
+.settings {
+  --settings-pad: 30px 36px 40px;
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--settings-pad);
+  background: rgba(252, 252, 253, 0.82);
+  font-family: var(--font-text);
+}
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+  gap: 6px;
+}
+.photo {
+  aspect-ratio: 1;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: #dcdcdc;
+  cursor: pointer;
+  position: relative;
+}
+.photo img {
+  object-fit: cover;
+}
+.photoHeader {
+  padding: 26px var(--app-pad) 16px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid #0000000d;
+}
+.photoHeader h2 {
+  font: 600 26px var(--font-display);
+  letter-spacing: -0.025em;
+  color: #161617;
+}
+.photoHeader p,
+.empty {
+  color: #6d6d75;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.photoContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--app-pad);
+}
+.photoNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 0 6px 1px;
+  border: 0;
+  background: transparent;
+  color: #46464a;
+  font: 13px var(--font-text);
+  text-align: left;
+  cursor: pointer;
+}
+.photoNav[aria-current] {
+  background: #0a7eff1a;
+  color: #0066cc;
+  font-weight: 600;
+}
+.sectionLabel {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6d6d75;
+  font-weight: 600;
+  padding: 0 12px 8px;
+  margin-top: 16px;
+}
+.lightbox {
+  margin: auto;
+  border: 0;
+  padding: 60px 20px 20px;
+  border-radius: 18px;
+  background: #161617;
+  color: white;
+  width: min(90vw, 760px);
+  max-height: 90dvh;
+}
+.lightbox::backdrop {
+  background: #000c;
+  backdrop-filter: blur(8px);
+}
+.lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.lightbox img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(90dvh - 140px);
+  object-fit: contain;
+  border-radius: 10px;
+}
+.lightboxControls {
+  display: flex;
+  gap: 12px;
+}
+.lightboxControls button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #ffffff1f;
+  color: white;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.lightboxClose {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff1f;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+.music {
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: safe center;
+  align-items: safe center;
+  padding: 20px;
+  background: #0a0a0b;
+}
+@container app-window (max-width:680px) {
+  .shell {
+    --app-sidebar: 156px;
+    --app-pad: 18px;
+    --note-pad: 28px 24px;
+    --note-title: 30px;
+  }
+  .finderHeader {
+    padding-top: 18px;
+  }
+}
+@container app-window (max-width:500px) {
+  .shell {
+    --app-sidebar: 124px;
+    --app-pad: 12px;
+    --note-pad: 20px 16px;
+    --note-title: 25px;
+  }
+  .finderTools {
+    gap: 6px;
+  }
+  .finderHeader {
+    padding-bottom: 12px;
+  }
+  .finderHeader input {
+    max-width: 90px;
+  }
+  .listRow {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .listRow > div:nth-child(2) {
+    flex-basis: calc(100% - 52px) !important;
+  }
+  .settings {
+    --settings-pad: 20px;
+  }
+}
+
+.project {
+  --project-side: 48px;
+  --project-bottom: 40px;
+  --project-title: 54px;
+  --project-body: 60px 56px 40px;
+  overflow-wrap: anywhere;
+}
+@container app-window (max-width:560px) {
+  .project {
+    --project-side: 24px;
+    --project-bottom: 24px;
+    --project-title: 36px;
+    --project-body: 32px 24px;
+  }
+}

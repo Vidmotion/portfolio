@@ -9,6 +9,7 @@ import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
 import { uiText } from '@/core/registries/locale'
 import { useLocaleStore } from '@/store/localeStore'
+import styles from './TabletResponsive.module.css'
 
 interface DraggableCardProps {
   id: string
@@ -32,6 +33,7 @@ function DraggableCard({ id, locked, containerRef, children }: DraggableCardProp
 
   return (
     <motion.div
+      className={styles.card}
       drag={!locked}
       dragMomentum={false}
       dragElastic={0.04}
@@ -63,30 +65,18 @@ export function TabletWidgetStrip({
   const isDesktopLocked = useDesktopStore((s) => s.isDesktopLocked)
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '60px',
-        left: '42px',
-        width: '208px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '18px',
-        fontFamily: 'var(--font-text)',
-        zIndex: 20,
-      }}
-    >
+    <div className={styles.strip}>
       {/* Clock */}
       <DraggableCard id="clock" locked={isDesktopLocked} containerRef={containerRef}>
         <div
           style={{
-            height: '150px',
+            height: 'var(--tablet-clock-height, 150px)',
             borderRadius: '26px',
             background: 'rgba(248,248,252,0.9)',
             backdropFilter: 'blur(40px) saturate(150%)',
             WebkitBackdropFilter: 'blur(40px) saturate(150%)',
             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7), 0 14px 36px rgba(0,0,0,0.12)',
-            padding: '20px',
+            padding: 'var(--tablet-widget-padding, 20px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -106,7 +96,7 @@ export function TabletWidgetStrip({
           </div>
           <div
             style={{
-              fontSize: '46px',
+              fontSize: 'var(--tablet-clock-size, 46px)',
               fontWeight: 300,
               letterSpacing: '-0.04em',
               color: '#161617',

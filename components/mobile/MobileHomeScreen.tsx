@@ -291,7 +291,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 1.045 }}
       transition={appTransition}
     >
-      <header className={styles.header}>
+      <header className={styles.header} role="presentation">
         <motion.span style={{ opacity: homePage === 0 ? todayOpacity : 0 }}>
           {homePage === 0 ? text.widgetsPage : ''}
         </motion.span>
@@ -366,7 +366,6 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               <motion.button
                 type="button"
                 className={styles.profile}
-                aria-label={`${text.about} — ${identity.name}`}
                 {...profileHold}
                 onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
                 whileTap={reduced ? undefined : { scale: 0.98 }}
@@ -414,7 +413,6 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             >
               <motion.button
                 className={`${styles.profile} ${styles.summary}`}
-                aria-label={text.about}
                 onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
                 whileTap={reduced ? undefined : { scale: 0.98 }}
               >

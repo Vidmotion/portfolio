@@ -13,7 +13,7 @@ export function ProfileContent() {
   const greeting = useLongPress(() => show('hello'))
   return (
     <div style={{ color: '#33333a', fontFamily: 'var(--font-text)' }}>
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '28px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', marginBottom: '28px' }}>
         <Image
           {...greeting}
           draggable={false}
@@ -28,7 +28,7 @@ export function ProfileContent() {
             WebkitTouchCallout: 'none',
           }}
         />
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: '1 1 150px' }}>
           <div
             style={{
               fontSize: '24px',

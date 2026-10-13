@@ -5,6 +5,7 @@ import { getProjectBySlug } from '@/lib/content'
 import { categoryGradient } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
 import { springs, staggerDelay, galleryFade } from '@/lib/motion'
+import styles from './AppResponsive.module.css'
 
 interface ProjectAppProps {
   projectId: string
@@ -35,6 +36,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
 
   return (
     <div
+      className={styles.project}
       style={{
         height: '100%',
         overflowY: 'auto',
@@ -76,7 +78,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
             bottom: 0,
             left: 0,
             right: 0,
-            padding: '0 48px 40px',
+            padding: '0 var(--project-side) var(--project-bottom)',
           }}
         >
           <p
@@ -94,7 +96,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '54px',
+              fontSize: 'var(--project-title)',
               fontWeight: 600,
               color: '#fff',
               letterSpacing: '-0.035em',
@@ -120,7 +122,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
       </motion.div>
 
       {/* Body */}
-      <div style={{ padding: '60px 56px 40px', maxWidth: '660px' }}>
+      <div style={{ padding: 'var(--project-body)', maxWidth: '660px' }}>
         {/* Description */}
         <motion.p
           initial={{ opacity: 0, y: 8 }}
@@ -168,9 +170,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
             transition={{ delay: 0.35 }}
             style={{ marginBottom: '48px' }}
           >
-            <div
-              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}
-            >
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               {project.gallery.slice(1, 3).map((_, i) => (
                 <motion.div
                   key={i}

@@ -1,0 +1,34 @@
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.control {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  cursor: default;
+}
+.control::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--control-color);
+  border: 0.5px solid #0000000f;
+}
+@media (pointer: coarse) {
+  .controls {
+    gap: 0;
+  }
+  .control {
+    width: 44px;
+    height: 44px;
+  }
+}

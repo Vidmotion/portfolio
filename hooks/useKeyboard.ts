@@ -14,6 +14,7 @@ export function useGlobalKeyboard() {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      if (e.defaultPrevented || (e.target as HTMLElement).closest('dialog[open]')) return
       // ⌘+Space — Spotlight (global, no window required)
       if ((e.metaKey || e.ctrlKey) && e.key === ' ') {
         e.preventDefault()
@@ -30,7 +31,10 @@ export function useGlobalKeyboard() {
 
       // Escape — close overlays first, then focused window
       if (e.key === 'Escape') {
-        if (quickLookOpen) { closeQuickLook(); return }
+        if (quickLookOpen) {
+          closeQuickLook()
+          return
+        }
         if (spotlightOpen || commandOpen) return // handled by those components
         const focused = getFocusedWindow()
         if (focused) closeWindow(focused.id)
@@ -40,7 +44,7 @@ export function useGlobalKeyboard() {
       // Space — Quick Look on selected project (only when no overlay is open)
       if (e.key === ' ' && !spotlightOpen && !commandOpen && !quickLookOpen) {
         const target = e.target as HTMLElement
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+        if (target.closest('input, textarea, select, button, a, [contenteditable="true"]')) return
         if (selectedProjectId) {
           e.preventDefault()
           openQuickLook(selectedProjectId)
@@ -67,10 +71,16 @@ export function useGlobalKeyboard() {
       }
     },
     [
-      getFocusedWindow, closeWindow, minimizeWindow,
-      openSpotlight, spotlightOpen,
-      openCommand, commandOpen,
-      openQuickLook, closeQuickLook, quickLookOpen,
+      getFocusedWindow,
+      closeWindow,
+      minimizeWindow,
+      openSpotlight,
+      spotlightOpen,
+      openCommand,
+      commandOpen,
+      openQuickLook,
+      closeQuickLook,
+      quickLookOpen,
       selectedProjectId,
     ]
   )

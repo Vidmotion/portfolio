@@ -23,10 +23,15 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) onClose()
     }
-    const keyHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const keyHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
     window.addEventListener('mousedown', handler)
     window.addEventListener('keydown', keyHandler)
-    return () => { window.removeEventListener('mousedown', handler); window.removeEventListener('keydown', keyHandler) }
+    return () => {
+      window.removeEventListener('mousedown', handler)
+      window.removeEventListener('keydown', keyHandler)
+    }
   }, [onClose])
 
   // Clamp position so menu doesn't overflow viewport
@@ -38,16 +43,25 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
   const items = [
     {
       label: 'Restore Original Layout',
-      onClick: () => { resetLayout(); onClose() },
+      onClick: () => {
+        resetLayout()
+        onClose()
+      },
     },
     {
       label: 'Arrange Automatically',
-      onClick: () => { resetLayout(); onClose() },
+      onClick: () => {
+        resetLayout()
+        onClose()
+      },
     },
     { divider: true },
     {
       label: isDesktopLocked ? 'Unlock Desktop' : 'Lock Desktop',
-      onClick: () => { setDesktopLocked(!isDesktopLocked); onClose() },
+      onClick: () => {
+        setDesktopLocked(!isDesktopLocked)
+        onClose()
+      },
     },
     { divider: true },
     {
@@ -56,9 +70,12 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
       onClick: () => {
         resetLayout()
         if (typeof window !== 'undefined') {
-          ;['portfolio-os-desktop', 'portfolio-os-dock', 'portfolio-os-windows', 'portfolio-os-settings'].forEach(
-            (key) => localStorage.removeItem(key)
-          )
+          ;[
+            'portfolio-os-desktop',
+            'portfolio-os-dock',
+            'portfolio-os-windows',
+            'portfolio-os-settings',
+          ].forEach((key) => localStorage.removeItem(key))
           window.location.reload()
         }
         onClose()
@@ -73,6 +90,27 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
       role="menu"
       aria-label="Desktop context menu"
       tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          onClose()
+          return
+        }
+        if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+        event.preventDefault()
+        const items = Array.from(
+          event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')
+        )
+        const current = items.indexOf(document.activeElement as HTMLButtonElement)
+        const next =
+          event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? items.length - 1
+              : (current + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length
+        items[next]?.focus()
+      }}
       initial={{ opacity: 0, scale: 0.95, y: -4 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -4 }}
@@ -80,14 +118,17 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
       style={{
         position: 'fixed',
         left: clampedX,
-        top: clampedY,
+        top: Math.max(8, clampedY),
+        maxHeight: 'calc(100dvh - 16px)',
+        overflowY: 'auto',
         width: `${menuW}px`,
         zIndex: 'var(--z-context-menu)',
         borderRadius: '12px',
         background: 'rgba(252,252,253,0.92)',
         backdropFilter: 'blur(40px) saturate(180%)',
         WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 0 0 0.5px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.2)',
+        boxShadow:
+          'inset 0 1px 0 rgba(255,255,255,0.8), 0 0 0 0.5px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.2)',
         padding: '5px 0',
         fontFamily: 'var(--font-text)',
         overflow: 'hidden',
@@ -95,10 +136,17 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
     >
       {items.map((item, i) => {
         if ('divider' in item && item.divider) {
-          return <div key={`div-${i}`} style={{ height: '0.5px', background: 'rgba(0,0,0,0.08)', margin: '4px 0' }} />
+          return (
+            <div
+              role="separator"
+              key={`div-${i}`}
+              style={{ height: '0.5px', background: 'rgba(0,0,0,0.08)', margin: '4px 0' }}
+            />
+          )
         }
         return (
           <button
+            role="menuitem"
             key={item.label}
             onClick={item.onClick}
             style={{
@@ -115,8 +163,14 @@ export function DesktopContextMenu({ x, y, onClose }: ContextMenuProps) {
               letterSpacing: '-0.01em',
               fontFamily: 'var(--font-text)',
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = item.danger ? 'rgba(255,59,48,0.08)' : 'rgba(10,126,255,0.08)' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+            onMouseEnter={(e) => {
+              ;(e.currentTarget as HTMLButtonElement).style.background = item.danger
+                ? 'rgba(255,59,48,0.08)'
+                : 'rgba(10,126,255,0.08)'
+            }}
+            onMouseLeave={(e) => {
+              ;(e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+            }}
           >
             {item.label}
           </button>

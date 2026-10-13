@@ -27,7 +27,6 @@ export function MusicWidget({ launch, open, reduced }: WidgetProps) {
     <motion.button
       className={styles.music}
       style={{ '--playlist-cover': `url("${playlist.cover}")` } as CSSProperties}
-      aria-label={`${text.playlist} — ${playlist.title}`}
       onClick={(event) => launch(event.currentTarget, open)}
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
@@ -67,7 +66,7 @@ export function PortraitWidget({
     <motion.button
       className={`${styles.portrait} ${wide ? styles.widePortrait : ''}`}
       {...hold}
-      aria-label={`${text.portrait} — ${identity.name}`}
+      aria-label={`${wide ? text.photos : text.portrait} ${identity.name}`}
       onClick={(event) => launch(event.currentTarget, open)}
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
@@ -118,7 +117,6 @@ export function ExpertiseWidget({ launch, open, reduced }: WidgetProps) {
   return (
     <motion.button
       className={styles.expertise}
-      aria-label={uiText[locale].expertise}
       onClick={(event) => launch(event.currentTarget, open)}
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
@@ -140,7 +138,6 @@ export function HelloWidget({ launch, open, reduced }: WidgetProps) {
     <motion.button
       className={styles.hello}
       {...hold}
-      aria-label={uiText[locale].write}
       onClick={(event) => launch(event.currentTarget, open)}
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >
@@ -158,7 +155,6 @@ export function MailWidget({ launch, open, reduced }: WidgetProps) {
   return (
     <motion.button
       className={styles.mail}
-      aria-label={`${text.write}: ${identity.email}`}
       onClick={(event) => launch(event.currentTarget, open)}
       whileTap={reduced ? undefined : { scale: 0.98 }}
     >

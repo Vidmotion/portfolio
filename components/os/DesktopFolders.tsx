@@ -22,8 +22,22 @@ interface DraggableFolderProps {
   onDragEnd: (offset: { x: number; y: number }) => void
 }
 
-function DraggableFolder({ folder, index, offset, locked, onSelect, onOpen, onDragEnd }: DraggableFolderProps) {
-  const { x, y, isDragging, onDragStart, onDragEnd: handleDragEnd } = useDragOffset({ offset, onDragEnd })
+function DraggableFolder({
+  folder,
+  index,
+  offset,
+  locked,
+  onSelect,
+  onOpen,
+  onDragEnd,
+}: DraggableFolderProps) {
+  const {
+    x,
+    y,
+    isDragging,
+    onDragStart,
+    onDragEnd: handleDragEnd,
+  } = useDragOffset({ offset, onDragEnd })
 
   return (
     <motion.button
@@ -34,10 +48,30 @@ function DraggableFolder({ folder, index, offset, locked, onSelect, onOpen, onDr
       dragMomentum={false}
       dragElastic={0.04}
       dragTransition={{ bounceStiffness: 340, bounceDamping: 24 }}
-      style={{ x, y, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '9px', padding: '6px 4px', background: 'transparent', border: 'none', cursor: 'default', borderRadius: '12px', touchAction: 'none', fontFamily: 'var(--font-text)' }}
+      style={{
+        x,
+        y,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '9px',
+        padding: '6px 4px',
+        background: 'transparent',
+        border: 'none',
+        cursor: 'default',
+        borderRadius: '12px',
+        touchAction: 'none',
+        fontFamily: 'var(--font-text)',
+      }}
       onDragStart={onDragStart}
       onDragEnd={handleDragEnd}
       onDoubleClick={onOpen}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          onOpen()
+        }
+      }}
       onClick={onSelect}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}
@@ -49,7 +83,17 @@ function DraggableFolder({ folder, index, offset, locked, onSelect, onOpen, onDr
       aria-label={`Open ${folder.label} folder`}
     >
       <MacOSFolderIcon icon={null} elevated={isDragging} />
-      <span style={{ fontSize: '12px', color: '#fff', fontWeight: 500, textShadow: '0 1px 4px rgba(0,0,0,0.6)', textAlign: 'center', lineHeight: '1.2', letterSpacing: '-0.005em' }}>
+      <span
+        style={{
+          fontSize: '12px',
+          color: '#fff',
+          fontWeight: 500,
+          textShadow: '0 1px 4px rgba(0,0,0,0.6)',
+          textAlign: 'center',
+          lineHeight: '1.2',
+          letterSpacing: '-0.005em',
+        }}
+      >
         {folder.label}
       </span>
     </motion.button>
@@ -62,7 +106,16 @@ export function DesktopFolders() {
 
   return (
     <div
-      style={{ position: 'fixed', top: '60px', right: '34px', zIndex: 'var(--z-desktop-icons)', display: 'grid', gridTemplateColumns: 'repeat(2, 90px)', gap: '18px 6px', fontFamily: 'var(--font-text)' }}
+      style={{
+        position: 'fixed',
+        top: '60px',
+        right: '34px',
+        zIndex: 'var(--z-desktop-icons)',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 90px)',
+        gap: '18px 6px',
+        fontFamily: 'var(--font-text)',
+      }}
       role="group"
       aria-label="Desktop folders"
     >
@@ -74,7 +127,10 @@ export function DesktopFolders() {
           offset={folderOffsets[folder.id] ?? { x: 0, y: 0 }}
           locked={isDesktopLocked}
           onSelect={() => selectFolder(folder.id)}
-          onOpen={() => { selectFolder(folder.id); openWindow('finder', undefined, undefined, { category: folder.id }) }}
+          onOpen={() => {
+            selectFolder(folder.id)
+            openWindow('finder', undefined, undefined, { category: folder.id })
+          }}
           onDragEnd={(off) => setFolderOffset(folder.id, off)}
         />
       ))}

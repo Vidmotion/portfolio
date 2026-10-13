@@ -7,6 +7,7 @@ import { ProfileContent } from '@/components/ui/ProfileContent'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
+import { photos } from '@/core/registries/photos'
 import { uiText } from '@/core/registries/locale'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
@@ -43,7 +44,7 @@ export function MobileUtilityView({
       className={styles.view}
       style={{ transformOrigin, pointerEvents: present ? 'auto' : 'none' }}
     >
-      <header className={styles.header}>
+      <header className={styles.header} role="presentation">
         <button onClick={onBack} className={styles.back} aria-label={`‹ ${text.home}`}>
           <ChevronLeft size={22} aria-hidden />
           {text.home}
@@ -54,18 +55,20 @@ export function MobileUtilityView({
         {utility === 'about' && <ProfileContent />}
         {utility === 'photos' && (
           <div className={styles.photos}>
-            <figure className={styles.portraitPhoto}>
-              <Image
-                src={profile.portrait}
-                alt={identity.name}
-                width={480}
-                height={480}
-                sizes="(max-width: 600px) 100vw, 480px"
-              />
-              <figcaption>
-                {text.portrait} · {identity.name}
-              </figcaption>
-            </figure>
+            {photos.map((photo) => (
+              <figure key={photo.id} className={styles.portraitPhoto}>
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={480}
+                  height={480}
+                  sizes="(max-width: 600px) 100vw, 480px"
+                />
+                <figcaption>
+                  {text.portrait} · {identity.name}
+                </figcaption>
+              </figure>
+            ))}
             <p>{text.noPhotos}</p>
           </div>
         )}

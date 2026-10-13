@@ -16,7 +16,7 @@ export function LanguageSwitcher({ size = 'compact' }: { size?: 'compact' | 'reg
           key={code}
           type="button"
           lang={code}
-          aria-label={code === 'en' ? 'English' : 'Italiano'}
+          aria-label={code === 'en' ? 'EN — English' : 'IT — Italiano'}
           aria-pressed={locale === code}
           onClick={() => setLocale(code)}
           style={{

@@ -3,27 +3,52 @@
 // Notes is READ-ONLY in v1. Users read MDX content — they do not create or edit notes.
 // Note Editor and Writing Mode are v2 scope.
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getNotes } from '@/lib/content'
 import { springs } from '@/lib/motion'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import styles from './AppResponsive.module.css'
 import { ProfileContent } from '@/components/ui/ProfileContent'
 
-export function NotesApp() {
+export function NotesApp({
+  initialNoteId,
+  navigationRequest,
+}: {
+  initialNoteId?: string
+  navigationRequest?: Record<string, unknown>
+}) {
   const locale = useLocaleStore((s) => s.locale)
   const notes = getNotes(locale)
   const text = uiText[locale]
-  const [selectedNoteId, setSelectedNoteId] = useState(notes[0]?.id ?? null)
+  const [selectedNoteId, setSelectedNoteId] = useState(initialNoteId ?? notes[0]?.id ?? null)
+  const [query, setQuery] = useState('')
+  const appliedInitial = useRef({ id: initialNoteId, request: navigationRequest })
+  useEffect(() => {
+    if (
+      initialNoteId &&
+      (appliedInitial.current.id !== initialNoteId ||
+        appliedInitial.current.request !== navigationRequest)
+    ) {
+      appliedInitial.current = { id: initialNoteId, request: navigationRequest }
+      setSelectedNoteId(initialNoteId)
+      setQuery('')
+    }
+  }, [initialNoteId, navigationRequest])
+  const filteredNotes = notes.filter((note) =>
+    `${note.title} ${note.excerpt} ${note.content}`
+      .toLocaleLowerCase()
+      .includes(query.trim().toLocaleLowerCase())
+  )
   const selectedNote = notes.find((n) => n.id === selectedNoteId)
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--font-text)' }}>
+    <div className={`${styles.shell} ${styles.notes}`}>
       {/* Sidebar — 216px */}
       <div
+        className={styles.sidebar}
         style={{
-          width: '216px',
           flexShrink: 0,
           borderRight: '0.5px solid rgba(0,0,0,0.06)',
           padding: '12px 0',
@@ -52,11 +77,28 @@ export function NotesApp() {
             <circle cx="4.5" cy="4.5" r="3.5" stroke="#a0a0a5" strokeWidth="1" />
             <path d="M7.5 7.5l1.5 1.5" stroke="#a0a0a5" strokeWidth="1" strokeLinecap="round" />
           </svg>
-          <span style={{ fontSize: '12px', color: '#c0c0c5' }}>{text.search}</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={text.search}
+            aria-label={text.search}
+            style={{
+              minWidth: 0,
+              width: '100%',
+              background: 'transparent',
+              border: 0,
+              color: '#161617',
+              fontSize: '12px',
+            }}
+          />
         </div>
 
         {/* Note list */}
-        {notes.map((note) => (
+        {filteredNotes.length === 0 && (
+          <p style={{ padding: '12px', fontSize: '12px', color: '#6d6d75' }}>{text.selectNote}</p>
+        )}
+        {filteredNotes.map((note) => (
           <button
             key={note.id}
             onClick={() => setSelectedNoteId(note.id)}
@@ -91,7 +133,7 @@ export function NotesApp() {
             <span
               style={{
                 fontSize: '11px',
-                color: '#a0a0a5',
+                color: '#6d6d75',
                 marginTop: '2px',
                 lineHeight: 1.3,
                 overflow: 'hidden',
@@ -110,6 +152,7 @@ export function NotesApp() {
       <div
         style={{
           flex: 1,
+          minWidth: 0,
           overflowY: 'auto',
           background: '#fff',
         }}
@@ -122,7 +165,7 @@ export function NotesApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={springs.default}
-              style={{ padding: '56px 72px', maxWidth: '680px' }}
+              className={styles.note}
               role="article"
               aria-label={selectedNote.title}
             >
@@ -132,7 +175,7 @@ export function NotesApp() {
                   fontSize: '11px',
                   letterSpacing: '0.18em',
                   textTransform: 'uppercase',
-                  color: '#b0b0b5',
+                  color: '#6d6d75',
                   fontWeight: 600,
                 }}
               >
@@ -143,7 +186,7 @@ export function NotesApp() {
               <h1
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '38px',
+                  fontSize: 'var(--note-title)',
                   fontWeight: 600,
                   color: '#161617',
                   letterSpacing: '-0.03em',
@@ -167,7 +210,7 @@ export function NotesApp() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                color: '#a0a0a5',
+                color: '#6d6d75',
                 fontSize: '13px',
               }}
             >

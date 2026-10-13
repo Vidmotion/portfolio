@@ -18,9 +18,12 @@ export function usePlatform(): Platform {
     update()
 
     window.addEventListener('resize', onResize)
+    const pointer = window.matchMedia('(pointer: coarse)')
+    pointer.addEventListener('change', onResize)
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
+      pointer.removeEventListener('change', onResize)
     }
   }, [])
 

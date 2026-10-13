@@ -6,8 +6,19 @@ import { useSettingsStore } from '@/store/settingsStore'
 import { identity } from '@/core/registries/identity'
 import { wallpapers as WALLPAPER_OPTIONS } from '@/core/registries/wallpapers'
 import type { Wallpaper } from '@/types'
+import styles from './AppResponsive.module.css'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
 
-function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+function Toggle({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean
+  onChange: (v: boolean) => void
+  label: string
+}) {
   return (
     <button
       role="switch"
@@ -42,7 +53,15 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
   )
 }
 
-function Row({ label, description, children }: { label: string; description?: string; children: React.ReactNode }) {
+function Row({
+  label,
+  description,
+  children,
+}: {
+  label: string
+  description?: string
+  children: React.ReactNode
+}) {
   return (
     <div
       style={{
@@ -55,9 +74,13 @@ function Row({ label, description, children }: { label: string; description?: st
       }}
     >
       <div>
-        <div style={{ fontSize: '13px', fontWeight: 500, color: '#161617', letterSpacing: '-0.005em' }}>{label}</div>
+        <div
+          style={{ fontSize: '13px', fontWeight: 500, color: '#161617', letterSpacing: '-0.005em' }}
+        >
+          {label}
+        </div>
         {description && (
-          <div style={{ fontSize: '12px', color: '#a0a0a5', marginTop: '2px' }}>{description}</div>
+          <div style={{ fontSize: '12px', color: '#6d6d75', marginTop: '2px' }}>{description}</div>
         )}
       </div>
       {children}
@@ -72,7 +95,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         fontSize: '11px',
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
-        color: '#b0b0b5',
+        color: '#6d6d75',
         fontWeight: 600,
         marginTop: '28px',
         marginBottom: '4px',
@@ -84,17 +107,28 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function SettingsApp() {
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
+  const it = locale === 'it'
   const { wallpaper, setWallpaper } = useDesktopStore()
   const { magnificationEnabled, setMagnification } = useDockStore()
   const { settings, setReducedMotion, setHighContrast } = useSettingsStore()
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', padding: '30px 36px 40px', fontFamily: 'var(--font-text)', background: 'rgba(252,252,253,0.82)' }}>
-      <div style={{ fontSize: '24px', fontWeight: 600, color: '#161617', letterSpacing: '-0.02em' }}>Settings</div>
+    <div className={styles.settings}>
+      <div
+        style={{ fontSize: '24px', fontWeight: 600, color: '#161617', letterSpacing: '-0.02em' }}
+      >
+        {text.settings}
+      </div>
 
-      <SectionLabel>Appearance</SectionLabel>
-      <Row label="Wallpaper" description="Changes the desktop background">
+      <SectionLabel>{it ? 'Aspetto' : 'Appearance'}</SectionLabel>
+      <Row
+        label={it ? 'Sfondo' : 'Wallpaper'}
+        description={it ? 'Cambia lo sfondo' : 'Changes the background'}
+      >
         <select
+          aria-label={it ? 'Sfondo' : 'Wallpaper'}
           value={wallpaper}
           onChange={(e) => setWallpaper(e.target.value as Wallpaper)}
           style={{
@@ -114,16 +148,47 @@ export function SettingsApp() {
           ))}
         </select>
       </Row>
-      <Row label="Dock Magnification" description="Icons grow as the pointer approaches">
-        <Toggle checked={magnificationEnabled} onChange={setMagnification} label="Dock magnification" />
+      <Row
+        label={it ? 'Ingrandimento del Dock' : 'Dock Magnification'}
+        description={
+          it ? 'Le icone crescono avvicinando il puntatore' : 'Icons grow as the pointer approaches'
+        }
+      >
+        <Toggle
+          checked={magnificationEnabled}
+          onChange={setMagnification}
+          label={it ? 'Ingrandimento del Dock' : 'Dock magnification'}
+        />
       </Row>
 
-      <SectionLabel>Accessibility</SectionLabel>
-      <Row label="Reduce Motion" description={`Minimizes animations across ${identity.productName}`}>
-        <Toggle checked={settings.accessibility.reducedMotion} onChange={setReducedMotion} label="Reduce motion" />
+      <SectionLabel>{it ? 'Accessibilità' : 'Accessibility'}</SectionLabel>
+      <Row
+        label={text.reduceMotion}
+        description={
+          it
+            ? `Riduce le animazioni di ${identity.productName}`
+            : `Minimizes animations across ${identity.productName}`
+        }
+      >
+        <Toggle
+          checked={settings.accessibility.reducedMotion}
+          onChange={setReducedMotion}
+          label={text.reduceMotion}
+        />
       </Row>
-      <Row label="Increase Contrast" description="Boosts contrast for text and UI elements">
-        <Toggle checked={settings.accessibility.highContrast} onChange={setHighContrast} label="Increase contrast" />
+      <Row
+        label={text.contrast}
+        description={
+          it
+            ? 'Aumenta il contrasto di testo e interfaccia'
+            : 'Boosts contrast for text and UI elements'
+        }
+      >
+        <Toggle
+          checked={settings.accessibility.highContrast}
+          onChange={setHighContrast}
+          label={text.contrast}
+        />
       </Row>
     </div>
   )

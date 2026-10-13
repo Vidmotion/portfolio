@@ -1,5 +1,8 @@
 'use client'
 
+import type { CSSProperties } from 'react'
+import styles from './WindowControls.module.css'
+
 interface WindowControlsProps {
   onClose?: () => void
   onMinimize?: () => void
@@ -21,21 +24,13 @@ export function WindowControls({
   ]
 
   return (
-    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }} role="group" aria-label="Window controls">
+    <div className={styles.controls} role="group" aria-label="Window controls">
       {CONTROLS.map(({ label, color, onClick }) => (
         <button
           key={label}
           onClick={onClick}
-          style={{
-            width: '12px',
-            height: '12px',
-            borderRadius: '50%',
-            background: color,
-            border: '0.5px solid rgba(0,0,0,0.06)',
-            cursor: 'default',
-            padding: 0,
-            flexShrink: 0,
-          }}
+          className={styles.control}
+          style={{ '--control-color': color } as CSSProperties}
           aria-label={label}
         />
       ))}

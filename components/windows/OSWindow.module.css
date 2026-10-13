@@ -1,0 +1,11 @@
+.window {
+  --window-dock-space: 120px;
+}
+.content {
+  container: app-window / inline-size;
+}
+@media (max-width: 1279px) {
+  .window {
+    --window-dock-space: 104px;
+  }
+}

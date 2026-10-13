@@ -13,6 +13,8 @@ export function SpotifyWidget({ elevated }: SpotifyWidgetProps) {
       className="glass-widget-squircle"
       style={{
         width: '370px',
+        maxWidth: '100%',
+        flexShrink: 0,
         height: '176px',
         borderRadius: '26px',
         ...widgetDarkGlass(elevated),

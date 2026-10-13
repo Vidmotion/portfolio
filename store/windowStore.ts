@@ -1,12 +1,26 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { OSWindow, WindowApp, WindowPosition, WindowSize, WindowSizePreset } from '@/types'
-import { generateId, getWindowSize, defaultWindowPosition, clampWindowPosition, clampWindowSize } from '@/lib/utils'
+import {
+  generateId,
+  getWindowSize,
+  defaultWindowPosition,
+  clampWindowPosition,
+  clampWindowSize,
+} from '@/lib/utils'
 import { apps } from '@/core/registries/apps'
 
 /** Apps that only ever have one open instance — reopening focuses the existing window.
  *  Derived from the Application registry: every app with a window (`app` field set). */
 const SINGLETON_APPS: WindowApp[] = apps.filter((a) => a.app).map((a) => a.app!)
+
+function focusRemaining(windows: OSWindow[]): OSWindow[] {
+  if (windows.some((win) => win.state !== 'minimized' && win.isFocused)) return windows
+  const next = windows
+    .filter((win) => win.state !== 'minimized')
+    .sort((a, b) => b.zIndex - a.zIndex)[0]
+  return windows.map((win) => ({ ...win, isFocused: win.id === next?.id }))
+}
 
 interface WindowStore {
   windows: OSWindow[]
@@ -26,6 +40,7 @@ interface WindowStore {
   moveWindow: (id: string, position: WindowPosition) => void
   resizeWindow: (id: string, size: WindowSize) => void
   closeAllWindows: () => void
+  fitToViewport: () => void
   getFocusedWindow: () => OSWindow | undefined
 }
 
@@ -59,7 +74,7 @@ export const useWindowStore = create<WindowStore>()(
                     // A relaunch with no payload (e.g. clicking the Dock icon of an
                     // already-open app) should just bring it forward, not reset its state.
                     payload: payload !== undefined ? payload : w.payload,
-                    state: w.state === 'maximized' ? w.state : 'open',
+                    state: w.state === 'minimized' ? (w.restoreState ?? 'open') : w.state,
                   }
                 : w
             ),
@@ -73,7 +88,7 @@ export const useWindowStore = create<WindowStore>()(
         // (tablet/mobile) never spawns larger than the space it opens into —
         // on a real desktop viewport this is a no-op since the presets already fit.
         const preset = getWindowSize(resolvedSizePreset)
-        const size = clampWindowSize(preset.width, preset.height, 0, 0)
+        const size = clampWindowSize(preset.width, preset.height, 0, 28)
         const rawPosition = defaultWindowPosition(size.width, size.height)
         const position = clampWindowPosition(rawPosition.x, rawPosition.y, size.width, size.height)
         const { highestZIndex, windows } = get()
@@ -101,7 +116,7 @@ export const useWindowStore = create<WindowStore>()(
 
       closeWindow: (id) => {
         set((state) => ({
-          windows: state.windows.filter((w) => w.id !== id),
+          windows: focusRemaining(state.windows.filter((w) => w.id !== id)),
         }))
       },
 
@@ -111,9 +126,7 @@ export const useWindowStore = create<WindowStore>()(
           return {
             highestZIndex: nextZ,
             windows: state.windows.map((w) =>
-              w.id === id
-                ? { ...w, isFocused: true, zIndex: nextZ }
-                : { ...w, isFocused: false }
+              w.id === id ? { ...w, isFocused: true, zIndex: nextZ } : { ...w, isFocused: false }
             ),
           }
         })
@@ -121,8 +134,18 @@ export const useWindowStore = create<WindowStore>()(
 
       minimizeWindow: (id) => {
         set((state) => ({
-          windows: state.windows.map((w) =>
-            w.id === id ? { ...w, state: 'minimized' as const, isFocused: false } : w
+          windows: focusRemaining(
+            state.windows.map((w) =>
+              w.id === id
+                ? {
+                    ...w,
+                    restoreState:
+                      w.state === 'maximized' ? ('maximized' as const) : ('open' as const),
+                    state: 'minimized' as const,
+                    isFocused: false,
+                  }
+                : w
+            )
           ),
         }))
       },
@@ -131,7 +154,7 @@ export const useWindowStore = create<WindowStore>()(
         const { focusWindow } = get()
         set((state) => ({
           windows: state.windows.map((w) =>
-            w.id === id ? { ...w, state: 'open' as const } : w
+            w.id === id ? { ...w, state: w.restoreState ?? ('open' as const) } : w
           ),
         }))
         focusWindow(id)
@@ -141,7 +164,12 @@ export const useWindowStore = create<WindowStore>()(
       maximizeWindow: (id) => {
         set((state) => ({
           windows: state.windows.map((w) =>
-            w.id === id ? { ...w, state: w.state === 'maximized' ? ('open' as const) : ('maximized' as const) } : w
+            w.id === id
+              ? {
+                  ...w,
+                  state: w.state === 'maximized' ? ('open' as const) : ('maximized' as const),
+                }
+              : w
           ),
         }))
         get().focusWindow(id)
@@ -160,6 +188,31 @@ export const useWindowStore = create<WindowStore>()(
       },
 
       closeAllWindows: () => set({ windows: [] }),
+
+      fitToViewport: () => {
+        set((state) => {
+          let changed = false
+          const windows = state.windows.map((win) => {
+            const size = clampWindowSize(win.size.width, win.size.height, 0, 28)
+            const position = clampWindowPosition(
+              win.position.x,
+              win.position.y,
+              size.width,
+              size.height
+            )
+            if (
+              size.width === win.size.width &&
+              size.height === win.size.height &&
+              position.x === win.position.x &&
+              position.y === win.position.y
+            )
+              return win
+            changed = true
+            return { ...win, size, position }
+          })
+          return changed ? { windows } : state
+        })
+      },
 
       getFocusedWindow: () => get().windows.find((w) => w.isFocused),
     }),

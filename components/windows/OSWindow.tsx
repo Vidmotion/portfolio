@@ -8,6 +8,7 @@ import { windowVariants, springs } from '@/lib/motion'
 import { clampWindowPosition, clampWindowSize, WIDGET_DARK_GLASS } from '@/lib/utils'
 import type { OSWindow as OSWindowType } from '@/types'
 import { MENU_BAR_HEIGHT } from '@/components/os/MenuBar'
+import styles from './OSWindow.module.css'
 
 interface OSWindowProps {
   window: OSWindowType
@@ -15,12 +16,22 @@ interface OSWindowProps {
 }
 
 export function OSWindow({ window: win, children }: OSWindowProps) {
-  const { closeWindow, focusWindow, minimizeWindow, maximizeWindow, moveWindow, resizeWindow } = useWindowStore()
+  const { closeWindow, focusWindow, minimizeWindow, maximizeWindow, moveWindow, resizeWindow } =
+    useWindowStore()
   const isDragging = useRef(false)
   const dragStart = useRef({ mouseX: 0, mouseY: 0, winX: 0, winY: 0 })
   const resizeStart = useRef({ mouseX: 0, mouseY: 0, width: 0, height: 0 })
   const [dragging, setDragging] = useState(false)
   const [resizing, setResizing] = useState(false)
+  const interactionCleanup = useRef<(() => void) | null>(null)
+  useEffect(() => {
+    const cancel = () => interactionCleanup.current?.()
+    window.addEventListener('resize', cancel)
+    return () => {
+      window.removeEventListener('resize', cancel)
+      interactionCleanup.current?.()
+    }
+  }, [])
 
   // MotionValues for drag/resize — decoupled from store during interaction
   const motionX = useMotionValue(win.position.x)
@@ -52,7 +63,8 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
   // window implementation with Desktop instead of a touch-only reimplementation.
   const onDragStart = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if ((e.target as HTMLElement).closest('button')) return
+      if (e.button !== 0 || !e.isPrimary || (e.target as HTMLElement).closest('button')) return
+      interactionCleanup.current?.()
       e.preventDefault()
       isDragging.current = true
       setDragging(true)
@@ -65,12 +77,18 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       focusWindow(win.id)
 
       const onMove = (ev: PointerEvent) => {
-        if (!isDragging.current) return
+        if (!isDragging.current || ev.pointerId !== e.pointerId) return
         const dx = ev.clientX - dragStart.current.mouseX
         const dy = ev.clientY - dragStart.current.mouseY
         const rawX = dragStart.current.winX + dx
         const rawY = dragStart.current.winY + dy
-        const clamped = clampWindowPosition(rawX, rawY, win.size.width, win.size.height, MENU_BAR_HEIGHT)
+        const clamped = clampWindowPosition(
+          rawX,
+          rawY,
+          win.size.width,
+          win.size.height,
+          MENU_BAR_HEIGHT
+        )
         motionX.set(clamped.x)
         motionY.set(clamped.y)
       }
@@ -81,16 +99,22 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         moveWindow(win.id, { x: motionX.get(), y: motionY.get() })
         window.removeEventListener('pointermove', onMove)
         window.removeEventListener('pointerup', onUp)
+        window.removeEventListener('pointercancel', onUp)
+        interactionCleanup.current = null
       }
 
       window.addEventListener('pointermove', onMove)
       window.addEventListener('pointerup', onUp)
+      window.addEventListener('pointercancel', onUp)
+      interactionCleanup.current = onUp
     },
     [win.id, win.size, motionX, motionY, focusWindow, moveWindow]
   )
 
   const onResizeStart = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0 || !e.isPrimary) return
+      interactionCleanup.current?.()
       e.preventDefault()
       e.stopPropagation()
       focusWindow(win.id)
@@ -103,6 +127,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       }
 
       const onMove = (ev: PointerEvent) => {
+        if (ev.pointerId !== e.pointerId) return
         const dx = ev.clientX - resizeStart.current.mouseX
         const dy = ev.clientY - resizeStart.current.mouseY
         const next = clampWindowSize(
@@ -120,20 +145,23 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         resizeWindow(win.id, { width: motionWidth.get(), height: motionHeight.get() })
         window.removeEventListener('pointermove', onMove)
         window.removeEventListener('pointerup', onUp)
+        window.removeEventListener('pointercancel', onUp)
+        interactionCleanup.current = null
       }
 
       window.addEventListener('pointermove', onMove)
       window.addEventListener('pointerup', onUp)
+      window.addEventListener('pointercancel', onUp)
+      interactionCleanup.current = onUp
     },
     [win.id, motionX, motionY, motionWidth, motionHeight, focusWindow, resizeWindow]
   )
-
-  if (win.state === 'minimized') return null
 
   const isMaximized = win.state === 'maximized'
 
   return (
     <motion.div
+      className={styles.window}
       key={win.id}
       initial="closed"
       animate="open"
@@ -146,11 +174,13 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         x: isMaximized ? 0 : motionX,
         y: isMaximized ? MENU_BAR_HEIGHT : motionY,
         width: isMaximized ? '100vw' : motionWidth,
-        height: isMaximized ? `calc(100vh - ${MENU_BAR_HEIGHT}px)` : motionHeight,
+        height: isMaximized
+          ? `calc(100dvh - ${MENU_BAR_HEIGHT}px - var(--window-dock-space))`
+          : motionHeight,
         zIndex: win.zIndex,
         borderRadius: isMaximized ? 0 : '18px',
         overflow: 'hidden',
-        display: 'flex',
+        display: win.state === 'minimized' ? 'none' : 'flex',
         flexDirection: 'column',
         background: 'rgba(252,252,253,0.82)',
         backdropFilter: 'blur(48px) saturate(180%)',
@@ -163,6 +193,8 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       onPointerDown={onFocus}
       transition={springs.largeWindow}
       aria-label={`${win.title} window`}
+      aria-hidden={win.state === 'minimized'}
+      inert={win.state === 'minimized'}
       role="dialog"
     >
       {/* Title bar — the one part of the window that gets the shared dark glass
@@ -171,7 +203,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       <div
         onPointerDown={onDragStart}
         onDoubleClick={() => maximizeWindow(win.id)}
-        className="flex items-center shrink-0 select-none"
+        className="flex shrink-0 items-center select-none"
         style={{
           height: '44px',
           padding: '0 16px',
@@ -184,7 +216,8 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
           touchAction: 'none',
           fontFamily: 'var(--font-text)',
         }}
-        role="banner"
+        role="toolbar"
+        aria-label={`${win.title} window toolbar`}
       >
         <WindowControls
           onClose={() => closeWindow(win.id)}
@@ -213,7 +246,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className={`min-h-0 flex-1 overflow-hidden ${styles.content}`}>{children}</div>
 
       {/* Resize handle */}
       {!isMaximized && (
@@ -232,7 +265,12 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
           }}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" style={{ display: 'block' }}>
-            <path d="M15 15L15 11M15 15L11 15" stroke="rgba(0,0,0,0.18)" strokeWidth="1.4" strokeLinecap="round" />
+            <path
+              d="M15 15L15 11M15 15L11 15"
+              stroke="rgba(0,0,0,0.18)"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
           </svg>
         </div>
       )}

@@ -1,365 +1,160 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { albums } from '@/lib/content'
-import { springs, staggerDelay, duration, ease } from '@/lib/motion'
-
-const PHOTO_GRADIENTS = [
-  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-  'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
-]
-
-const ALBUM_GRADIENTS: Record<string, string> = {
-  'salt-and-iron': 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)',
-  coastlines: 'linear-gradient(135deg, #1a6b8a 0%, #5da0a0 100%)',
-  greyscale: 'linear-gradient(135deg, #555 0%, #999 100%)',
-}
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { photos } from '@/core/registries/photos'
+import { uiText } from '@/core/registries/locale'
+import { useLocaleStore } from '@/store/localeStore'
+import { springs, staggerDelay } from '@/lib/motion'
+import styles from './AppResponsive.module.css'
 
 export function PhotosApp() {
-  const [selectedAlbum, setSelectedAlbum] = useState(albums[0])
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-  const [sidebarMode, setSidebarMode] = useState<'all' | 'albums' | 'favourites'>('albums')
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
+  const [mode, setMode] = useState<'all' | 'portraits' | 'favourites'>('portraits')
+  const [favourites, setFavourites] = useState<string[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const dialog = useRef<HTMLDialogElement>(null)
+  const selected = photos.find((photo) => photo.id === selectedId)
+  const visible =
+    mode === 'favourites' ? photos.filter((photo) => favourites.includes(photo.id)) : photos
+  const labels = {
+    all: locale === 'it' ? 'Tutte le foto' : 'All Photos',
+    favourites: locale === 'it' ? 'Preferiti' : 'Favourites',
+    portraits: locale === 'it' ? 'Ritratti' : 'Portraits',
+  }
+
+  useEffect(() => {
+    if (selected && dialog.current && !dialog.current.open) dialog.current.showModal()
+    if (!selected && dialog.current?.open) dialog.current.close()
+  }, [selected])
+
+  const close = () => setSelectedId(null)
+  const toggleFavourite = () => {
+    if (!selected) return
+    setFavourites((current) =>
+      current.includes(selected.id)
+        ? current.filter((id) => id !== selected.id)
+        : [...current, selected.id]
+    )
+  }
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--font-text)' }}>
-      {/* Sidebar — 180px with macOS Photos sections */}
-      <div
+    <div className={`${styles.shell} ${styles.photos}`}>
+      <nav
+        className={styles.sidebar}
         style={{
-          width: '180px',
-          flexShrink: 0,
-          borderRight: '0.5px solid rgba(0,0,0,0.06)',
-          padding: '16px 0',
-          background: 'rgba(248,248,249,0.5)',
+          borderRight: '.5px solid #0000000f',
+          background: 'rgba(248,248,249,.5)',
+          overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'auto',
         }}
-        role="navigation"
-        aria-label="Photos sidebar"
+        aria-label={text.photos}
       >
-        {/* Library section */}
-        <p
-          style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            color: '#b0b0b5',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            padding: '0 12px 8px',
-          }}
-        >
-          Library
-        </p>
-
-        <PhotosSidebarItem
-          label="All Photos"
-          isActive={sidebarMode === 'all'}
-          onClick={() => setSidebarMode('all')}
-        />
-        <PhotosSidebarItem
-          label="Favourites"
-          isActive={sidebarMode === 'favourites'}
-          onClick={() => setSidebarMode('favourites')}
-        />
-
-        <div style={{ height: '16px' }} />
-
-        {/* Albums section */}
-        <p
-          style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            color: '#b0b0b5',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            padding: '0 12px 8px',
-          }}
-        >
-          Albums
-        </p>
-
-        {albums.map((album) => (
+        <p className={styles.sectionLabel}>{locale === 'it' ? 'Libreria' : 'Library'}</p>
+        {(['all', 'favourites'] as const).map((value) => (
           <button
-            key={album.id}
-            onClick={() => { setSelectedAlbum(album); setSidebarMode('albums') }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 10px',
-              borderRadius: '8px',
-              margin: '0 6px 1px',
-              background: sidebarMode === 'albums' && selectedAlbum.id === album.id
-                ? 'rgba(10,126,255,0.1)'
-                : 'transparent',
-              border: 'none',
-              cursor: 'default',
-              textAlign: 'left',
-              fontFamily: 'var(--font-text)',
-            }}
-            aria-current={sidebarMode === 'albums' && selectedAlbum.id === album.id ? 'page' : undefined}
+            key={value}
+            className={styles.photoNav}
+            aria-current={mode === value ? 'page' : undefined}
+            onClick={() => setMode(value)}
           >
-            <div
-              style={{
-                width: '26px',
-                height: '26px',
-                borderRadius: '5px',
-                background: ALBUM_GRADIENTS[album.id] ?? '#ECECEC',
-                flexShrink: 0,
-              }}
-              aria-hidden
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p
-                style={{
-                  fontSize: '12px',
-                  fontWeight: sidebarMode === 'albums' && selectedAlbum.id === album.id ? 600 : 400,
-                  color: sidebarMode === 'albums' && selectedAlbum.id === album.id ? '#0a7eff' : '#46464a',
-                  letterSpacing: '-0.005em',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {album.title}
-              </p>
-              <p
-                style={{
-                  fontSize: '10px',
-                  color: sidebarMode === 'albums' && selectedAlbum.id === album.id ? '#0a7eff' : '#a0a0a5',
-                }}
-              >
-                {album.count}
-              </p>
-            </div>
+            {labels[value]}
           </button>
         ))}
-      </div>
-
-      {/* Photo grid */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Header */}
-        <div
-          style={{
-            padding: '26px 26px 16px',
-            flexShrink: 0,
-            background: 'rgba(255,255,255,0.6)',
-            borderBottom: '0.5px solid rgba(0,0,0,0.05)',
-          }}
+        <p className={styles.sectionLabel}>{text.albums}</p>
+        <button
+          className={styles.photoNav}
+          aria-current={mode === 'portraits' ? 'page' : undefined}
+          onClick={() => setMode('portraits')}
         >
-          <h2
-            style={{
-              fontSize: '26px',
-              fontWeight: 600,
-              color: '#161617',
-              letterSpacing: '-0.025em',
-              fontFamily: 'var(--font-display)',
-            }}
-          >
-            {sidebarMode === 'albums' ? selectedAlbum.title : sidebarMode === 'all' ? 'All Photos' : 'Favourites'}
-          </h2>
-          <p style={{ fontSize: '13px', color: '#a0a0a5', marginTop: '2px' }}>
-            {sidebarMode === 'albums' ? `${selectedAlbum.count} photos` : ''}
+          {labels.portraits}
+        </button>
+      </nav>
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+        <div className={styles.photoHeader}>
+          <h2>{labels[mode]}</h2>
+          <p>
+            {visible.length} {text.photos.toLocaleLowerCase()}
           </p>
         </div>
-
-        {/* Grid */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '26px 26px 30px' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '6px',
-            }}
-            role="list"
-            aria-label={`${selectedAlbum.title} photo grid`}
-          >
-            {Array.from({ length: selectedAlbum.count }).map((_, i) => (
+        <div className={styles.photoContent}>
+          <div className={styles.photoGrid} role="group" aria-label={labels[mode]}>
+            {visible.map((photo, index) => (
               <motion.button
-                key={`${selectedAlbum.id}-${i}`}
+                key={photo.id}
+                className={styles.photo}
+                onClick={() => setSelectedId(photo.id)}
+                aria-label={`${text.portrait} — ${photo.alt}`}
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ ...springs.default, delay: i * staggerDelay(selectedAlbum.count) }}
-                whileHover={{ scale: 1.02, zIndex: 1 }}
-                onClick={() => setLightboxIndex(i)}
-                style={{
-                  aspectRatio: '1',
-                  borderRadius: '6px',
-                  background: PHOTO_GRADIENTS[i % PHOTO_GRADIENTS.length],
-                  overflow: 'hidden',
-                  border: 'none',
-                  cursor: 'default',
-                  padding: 0,
-                  position: 'relative',
-                }}
-                role="listitem"
-                aria-label={`Photo ${i + 1}`}
-              />
+                transition={{ ...springs.default, delay: index * staggerDelay(visible.length) }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Image src={photo.src} alt="" fill sizes="(max-width: 768px) 180px, 260px" />
+              </motion.button>
             ))}
           </div>
+          <p className={styles.empty}>
+            {mode === 'favourites' && visible.length === 0
+              ? locale === 'it'
+                ? 'Apri una foto e aggiungila ai preferiti.'
+                : 'Open a photo to add it to your favourites.'
+              : text.noPhotos}
+          </p>
         </div>
       </div>
-
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: duration.open, ease: ease.opening }}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(0,0,0,0.85)',
-              zIndex: 10,
-            }}
-            onClick={() => setLightboxIndex(null)}
-            role="dialog"
-            aria-label="Photo lightbox"
-            aria-modal
-          >
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-              transition={springs.largeWindow}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: '80%',
-                maxWidth: '580px',
-                aspectRatio: '4/3',
-                borderRadius: '18px',
-                background: PHOTO_GRADIENTS[lightboxIndex % PHOTO_GRADIENTS.length],
-                overflow: 'hidden',
-                boxShadow: '0 40px 80px rgba(0,0,0,0.5)',
-              }}
-            />
-
-            <button
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.15)',
-                color: '#fff',
-                fontSize: '18px',
-                border: 'none',
-                cursor: 'default',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onClick={() => setLightboxIndex(null)}
-              aria-label="Close lightbox"
-            >
-              ×
-            </button>
-
-            {lightboxIndex > 0 && (
-              <button
-                style={{
-                  position: 'absolute',
-                  left: '16px',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  fontSize: '22px',
-                  border: 'none',
-                  cursor: 'default',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={(e) => { e.stopPropagation(); setLightboxIndex((idx) => (idx ?? 1) - 1) }}
-                aria-label="Previous photo"
-              >
-                ‹
-              </button>
-            )}
-
-            {lightboxIndex < selectedAlbum.count - 1 && (
-              <button
-                style={{
-                  position: 'absolute',
-                  right: '16px',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  fontSize: '22px',
-                  border: 'none',
-                  cursor: 'default',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={(e) => { e.stopPropagation(); setLightboxIndex((idx) => (idx ?? 0) + 1) }}
-                aria-label="Next photo"
-              >
-                ›
-              </button>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
-// ─── Sidebar Item ─────────────────────────────────────────────────────────────
-
-function PhotosSidebarItem({
-  label,
-  isActive,
-  onClick,
-}: {
-  label: string
-  isActive: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '7px 10px',
-        borderRadius: '8px',
-        margin: '0 6px 1px',
-        background: isActive ? 'rgba(10,126,255,0.1)' : 'transparent',
-        border: 'none',
-        cursor: 'default',
-        fontFamily: 'var(--font-text)',
-        width: 'calc(100% - 12px)',
-        textAlign: 'left',
-      }}
-      aria-current={isActive ? 'page' : undefined}
-    >
-      <span
-        style={{
-          fontSize: '13px',
-          fontWeight: isActive ? 600 : 400,
-          color: isActive ? '#0a7eff' : '#46464a',
-          letterSpacing: '-0.005em',
+      <dialog
+        ref={dialog}
+        className={styles.lightbox}
+        aria-label={text.photos}
+        onCancel={(event) => {
+          event.preventDefault()
+          close()
+        }}
+        onKeyDown={(event) => {
+          event.stopPropagation()
+          if (event.key === 'Tab') {
+            event.preventDefault()
+            const buttons = Array.from(
+              event.currentTarget.querySelectorAll<HTMLButtonElement>('button')
+            )
+            const current = buttons.indexOf(document.activeElement as HTMLButtonElement)
+            buttons[
+              (current + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length
+            ]?.focus()
+          }
+          if (event.key === 'Escape') {
+            event.preventDefault()
+            close()
+          }
+        }}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) close()
         }}
       >
-        {label}
-      </span>
-    </button>
+        {selected && (
+          <>
+            <Image
+              src={selected.src}
+              alt={selected.alt}
+              width={selected.width}
+              height={selected.height}
+              sizes="(max-width: 768px) 90vw, 760px"
+            />
+            <button className={styles.lightboxClose} onClick={close} aria-label={text.close}>
+              ×
+            </button>
+            <div className={styles.lightboxControls}>
+              <button onClick={toggleFavourite} aria-pressed={favourites.includes(selected.id)}>
+                {favourites.includes(selected.id) ? '♥' : '♡'} {labels.favourites}
+              </button>
+            </div>
+          </>
+        )}
+      </dialog>
+    </div>
   )
 }
