@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocaleStore } from '@/store/localeStore'
 
 function pad(n: number): string {
   return n.toString().padStart(2, '0')
@@ -17,12 +18,12 @@ function fmtFull(d: Date): string {
   return `${h}:${m} ${ampm}`
 }
 
-function fmtDate(d: Date): string {
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+function fmtDate(d: Date, locale: string): string {
+  return d.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
-function fmtDateLong(d: Date): string {
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+function fmtDateLong(d: Date, locale: string): string {
+  return d.toLocaleDateString(locale, { weekday: 'long', month: 'long', day: 'numeric' })
 }
 
 export interface TimeValues {
@@ -37,13 +38,14 @@ export interface TimeValues {
 }
 
 const INITIAL: TimeValues = {
-  bigTime: '12:00',
-  fullTime: '12:00 PM',
-  date: 'Mon Jun 30',
-  dateLong: 'Monday, June 30',
+  bigTime: '—',
+  fullTime: '—',
+  date: '—',
+  dateLong: '—',
 }
 
 export function useTime(): TimeValues {
+  const locale = useLocaleStore((s) => s.locale) === 'it' ? 'it-IT' : 'en-US'
   const [now, setNow] = useState<Date | null>(null)
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function useTime(): TimeValues {
   return {
     bigTime: fmt12(now),
     fullTime: fmtFull(now),
-    date: fmtDate(now),
-    dateLong: fmtDateLong(now),
+    date: fmtDate(now, locale),
+    dateLong: fmtDateLong(now, locale),
   }
 }

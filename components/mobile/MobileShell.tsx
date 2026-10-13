@@ -79,6 +79,7 @@ export function MobileShell() {
             key="home"
             onOpenApp={openApp}
             onPrepareLaunch={setLaunchOrigin}
+            onOpenProject={openProject}
             onOpenNotes={() => openUtility('about')}
             onOpenPhotos={() => openUtility('photos')}
             onOpenSettings={() => openUtility('settings')}

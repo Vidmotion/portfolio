@@ -4,18 +4,29 @@ import Image from 'next/image'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
 import { useLocaleStore } from '@/store/localeStore'
+import { useLongPress } from '@/hooks/useLongPress'
+import { useEasterEggStore } from '@/store/easterEggStore'
 
 export function ProfileContent() {
   const locale = useLocaleStore((s) => s.locale)
+  const show = useEasterEggStore((s) => s.show)
+  const greeting = useLongPress(() => show('hello'))
   return (
     <div style={{ color: '#33333a', fontFamily: 'var(--font-text)' }}>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '28px' }}>
         <Image
+          {...greeting}
+          draggable={false}
           src={profile.portrait}
           alt={identity.name}
           width={96}
           height={96}
-          style={{ borderRadius: '18px', flexShrink: 0, objectFit: 'cover' }}
+          style={{
+            borderRadius: '18px',
+            flexShrink: 0,
+            objectFit: 'cover',
+            WebkitTouchCallout: 'none',
+          }}
         />
         <div style={{ minWidth: 0 }}>
           <div

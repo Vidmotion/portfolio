@@ -4,15 +4,19 @@ import type { ProjectCategory } from '@/types'
 export type MobileScreen = 'lock' | 'home' | 'app' | 'project' | 'utility'
 export type MobileUtility = 'about' | 'photos' | 'settings' | 'contacts'
 export type MobileLaunchOrigin = { x: number; y: number }
+export type MobileHomePage = 0 | 1 | 2
 
 interface MobileStore {
   screen: MobileScreen
   activeCategory: ProjectCategory | null
   activeProjectId: string | null
   activeUtility: MobileUtility | null
-  homePage: 0 | 1
+  homePage: MobileHomePage
+  projectReturnScreen: 'home' | 'app'
+  todayScrollTop: number
+  setTodayScrollTop: (top: number) => void
   launchOrigin: MobileLaunchOrigin | null
-  setHomePage: (page: 0 | 1) => void
+  setHomePage: (page: MobileHomePage) => void
   setLaunchOrigin: (origin: MobileLaunchOrigin) => void
 
   unlock: () => void
@@ -28,7 +32,10 @@ export const useMobileStore = create<MobileStore>((set, get) => ({
   activeCategory: null,
   activeProjectId: null,
   activeUtility: null,
-  homePage: 0,
+  homePage: 1,
+  projectReturnScreen: 'app',
+  todayScrollTop: 0,
+  setTodayScrollTop: (todayScrollTop) => set({ todayScrollTop }),
   launchOrigin: null,
   setHomePage: (homePage) => set({ homePage }),
   setLaunchOrigin: (launchOrigin) => set({ launchOrigin }),
@@ -40,11 +47,16 @@ export const useMobileStore = create<MobileStore>((set, get) => ({
 
   openUtility: (utility) => set({ screen: 'utility', activeUtility: utility }),
 
-  openProject: (projectId) => set({ screen: 'project', activeProjectId: projectId }),
+  openProject: (projectId) =>
+    set({
+      screen: 'project',
+      activeProjectId: projectId,
+      projectReturnScreen: get().screen === 'home' ? 'home' : 'app',
+    }),
 
   goBack: () => {
     const { screen } = get()
-    if (screen === 'project') set({ screen: 'app', activeProjectId: null })
+    if (screen === 'project') set({ screen: get().projectReturnScreen, activeProjectId: null })
     else if (screen === 'app') {
       if (get().activeCategory) set({ activeCategory: null })
       else set({ screen: 'home' })

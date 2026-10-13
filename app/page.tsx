@@ -10,6 +10,7 @@ import { usePlatform } from '@/hooks/usePlatform'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useAccessibilityPreferences } from '@/hooks/useAccessibilityPreferences'
+import { EasterEggLayer } from '@/components/ui/EasterEggLayer'
 
 export default function Home() {
   const [booted, setBooted] = useState(false)
@@ -44,6 +45,7 @@ export default function Home() {
           <MobileShell />
         </div>
       )}
+      {booted && <EasterEggLayer />}
     </MotionConfig>
   )
 }

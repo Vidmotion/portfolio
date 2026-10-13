@@ -67,6 +67,8 @@ export function MobileAppView({
             alignItems: 'center',
             gap: '3px',
             padding: 0,
+            minHeight: '44px',
+            minWidth: '64px',
             fontWeight: 400,
             fontFamily: 'var(--font-text)',
           }}

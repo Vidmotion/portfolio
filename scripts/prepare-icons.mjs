@@ -25,6 +25,19 @@ for (const name of names) {
   // Figma's embedded HTML backdrop layers are not portable app glyphs.
   // Mobile copies retain every vector path, gradient and SVG shadow.
   let mobileVersion = screenVersion.replace(/<foreignObject\b[\s\S]*?<\/foreignObject>/g, '')
+  if (name === 'video.svg') {
+    // Carlo requested the camera to share the silver finish of his other glyphs.
+    // Only the generated mobile finish changes; both camera paths remain intact.
+    mobileVersion = mobileVersion
+      .replace(
+        '<defs>',
+        '<defs><linearGradient id="mobile-camera-silver" x1="0" y1="0" x2="0" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#efeff2"/><stop offset="1" stop-color="#b4b6bd"/></linearGradient>'
+      )
+      .replace(
+        '<g data-figma-bg-blur-radius="2">',
+        '<g data-figma-bg-blur-radius="2" fill="url(#mobile-camera-silver)">'
+      )
+  }
   const opticalBox = metrics[name]
   if (opticalBox && createHash('sha256').update(original).digest('hex') === opticalBox.sourceHash) {
     const [, , width, height] = opticalBox.mobile.split(' ')
@@ -37,11 +50,15 @@ for (const name of names) {
   }
   await writeFile(new URL(encodeURIComponent(name), mobileDestination), mobileVersion)
   // WebKit's SVG filter rendering differs from Chromium on Retina displays.
-  // Export author-owned vectors once at 4x the largest mobile tile (66px).
+  // Export author-owned vectors once at 4x the largest mobile tile (72px).
   // The original SVGs remain the editable masters; no runtime rasterization is needed.
   await sharp(Buffer.from(mobileVersion), { density: 144 })
-    .resize({ width: 264, height: 264, fit: 'inside' })
+    .resize({ width: 288, height: 288, fit: 'inside' })
     .png()
-    .toFile(fileURLToPath(new URL(encodeURIComponent(name.replace(/\.svg$/, '.png')), mobileDestination)))
+    .toFile(
+      fileURLToPath(new URL(encodeURIComponent(name.replace(/\.svg$/, '.png')), mobileDestination))
+    )
 }
-console.log(`Prepared ${names.length} screen SVGs and mobile Retina exports from the original icon set.`)
+console.log(
+  `Prepared ${names.length} screen SVGs and mobile Retina exports from the original icon set.`
+)

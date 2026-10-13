@@ -2,18 +2,29 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
 import Image from 'next/image'
-import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
-import { ArrowUpRight, ChevronRight, Play } from 'lucide-react'
+import { animate, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
+import { ChevronRight } from 'lucide-react'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
-import { playlist } from '@/core/registries/playlist'
 import { categories, categoryLabel } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
-import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
 import { useLocaleStore } from '@/store/localeStore'
-import { useMobileStore, type MobileLaunchOrigin } from '@/store/mobileStore'
+import { useMobileStore, type MobileLaunchOrigin, type MobileHomePage } from '@/store/mobileStore'
 import { useMobileMotion } from './useMobileMotion'
+import { useLongPress } from '@/hooks/useLongPress'
+import { useEasterEggStore } from '@/store/easterEggStore'
+import { MobileQuickActions, type QuickMenu } from './MobileQuickActions'
+import { StudioClock } from './StudioClock'
+import {
+  MusicWidget,
+  PortraitWidget,
+  FolderWidget,
+  ExpertiseWidget,
+  HelloWidget,
+  MailWidget,
+  ProjectPreviewWidget,
+} from './MobileHomeWidgets'
 import type { ProjectCategory } from '@/types'
 import styles from './MobileHomeScreen.module.css'
 
@@ -26,12 +37,14 @@ interface MobileHomeScreenProps {
   onContact?: () => void
   onFindMe?: () => void
   onPrepareLaunch: (origin: MobileLaunchOrigin) => void
+  onOpenProject: (id: string) => void
 }
 
 type AppIcon = {
   label: string
   file: string
-  tone: 'graphite' | 'paper'
+  tone: 'graphite'
+  source?: string
   edgeToEdge?: boolean
   action?: () => void
 }
@@ -41,24 +54,29 @@ function IconButton({
   launch,
   reduced,
   dock = false,
+  onQuickActions,
 }: {
   app: AppIcon
   launch: (element: HTMLElement, action?: () => void) => void
   reduced: boolean
   dock?: boolean
+  onQuickActions: (element: HTMLElement, app: AppIcon) => void
 }) {
+  const hold = useLongPress((element) => onQuickActions(element, app))
   return (
     <motion.button
       type="button"
       className={dock ? styles.dockButton : styles.appButton}
       aria-label={app.label}
+      {...hold}
       onClick={(event) => launch(event.currentTarget, app.action)}
-      whileTap={reduced ? undefined : { scale: 0.9 }}
+      whileTap={reduced ? undefined : { scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
     >
       <span data-launch-anchor="" className={`${styles.iconTile} ${styles[app.tone]}`}>
         <Image
-          src={`/icons/mobile/${app.file.replace(/\.svg$/, '.png')}`}
+          data-app-glyph=""
+          src={app.source ?? `/icons/mobile/${app.file.replace(/\.svg$/, '.png')}`}
           alt=""
           width={54}
           height={54}
@@ -75,21 +93,37 @@ function IconButton({
 export function MobileHomeScreen(props: MobileHomeScreenProps) {
   const locale = useLocaleStore((state) => state.locale)
   const text = uiText[locale]
-  const { homePage, setHomePage } = useMobileStore()
+  const homePage = useMobileStore((s) => s.homePage)
+  const setHomePage = useMobileStore((s) => s.setHomePage)
   const { reduced, present, appTransition, pageSpring } = useMobileMotion()
   const viewport = useRef<HTMLDivElement>(null)
+  const today = useRef<HTMLElement>(null)
+  const measuredWidth = useRef(0)
+  const animatedWidth = useRef(0)
   const dragging = useRef(false)
   const releaseFrame = useRef(0)
   const [width, setWidth] = useState(0)
+  const [menu, setMenu] = useState<QuickMenu | null>(null)
+  const showEgg = useEasterEggStore((s) => s.show)
+  const profileHold = useLongPress(() => showEgg('hello'))
   const x = useMotionValue(0)
+  useLayoutEffect(() => {
+    if (today.current) today.current.scrollTop = useMobileStore.getState().todayScrollTop
+  }, [])
+  const indicatorX = useTransform(() =>
+    width ? Math.max(0, Math.min(2, -x.get() / width)) * 44 : 44
+  )
 
   useLayoutEffect(() => {
     const element = viewport.current
     if (!element) return
     const resize = () => {
       const nextWidth = element.clientWidth
+      if (nextWidth === measuredWidth.current) return
+      measuredWidth.current = nextWidth
       setWidth(nextWidth)
-      x.set(-useMobileStore.getState().homePage * nextWidth)
+      // Resizing is a layout correction, not a gesture. Reset inherited velocity.
+      x.jump(-useMobileStore.getState().homePage * nextWidth)
     }
     resize()
     const observer = new ResizeObserver(resize)
@@ -97,7 +131,15 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
     return () => observer.disconnect()
   }, [x])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // The first measurement schedules a render. Do not overwrite its offset
+    // with an animation based on the initial, unmeasured width.
+    if (!width) return
+    if (animatedWidth.current !== width) {
+      animatedWidth.current = width
+      x.jump(-homePage * width)
+      return
+    }
     const animation = animate(x, -homePage * width, reduced ? { duration: 0 } : pageSpring)
     return () => animation.stop()
   }, [homePage, width, x, reduced, pageSpring])
@@ -105,6 +147,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
 
   const launch = (element: HTMLElement, action?: () => void) => {
     if (dragging.current || !action) return
+    if (today.current) useMobileStore.getState().setTodayScrollTop(today.current.scrollTop)
     const rect = (element.querySelector('[data-launch-anchor]') ?? element).getBoundingClientRect()
     props.onPrepareLaunch({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 })
     action()
@@ -116,7 +159,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
         : info.offset.x > width * 0.16 || info.velocity.x > 450
           ? -1
           : 0
-    const next = Math.max(0, Math.min(1, homePage + direction)) as 0 | 1
+    const next = Math.max(0, Math.min(2, homePage + direction)) as MobileHomePage
     setHomePage(next)
     if (next === homePage) animate(x, -next * width, reduced ? { duration: 0 } : pageSpring)
     releaseFrame.current = requestAnimationFrame(() => {
@@ -128,6 +171,29 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       event.preventDefault()
       event.stopPropagation()
     }
+  }
+  const quickActions = (element: HTMLElement, app: AppIcon) => {
+    if (dragging.current) return
+    const items = [
+      { label: `${text.openApp} ${app.label}`, run: () => launch(element, app.action) },
+    ]
+    if (app.file === 'projects.svg') {
+      items.push(
+        ...categories.map((category) => ({
+          label: category.label,
+          run: () => launch(element, () => props.onOpenApp(category.id)),
+        }))
+      )
+    }
+    if (app.file === 'video.svg')
+      items.push({ label: text.secretAction, run: () => showEgg('action') })
+    if (app.file === 'about%20me.svg')
+      items.push({ label: text.secretHello, run: () => showEgg('hello') })
+    setMenu({
+      label: app.label,
+      rect: element.querySelector('[data-launch-anchor]')!.getBoundingClientRect(),
+      items,
+    })
   }
 
   const apps: AppIcon[] = [
@@ -141,7 +207,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
     {
       label: categoryLabel('film-making'),
       file: 'video.svg',
-      tone: 'paper',
+      tone: 'graphite',
       action: () => props.onOpenApp('film-making'),
     },
     {
@@ -158,6 +224,30 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
     { label: text.playlist, file: 'spotify.svg', tone: 'graphite', action: props.onOpenPlaylist },
     { label: text.settings, file: 'settings.svg', tone: 'graphite', action: props.onOpenSettings },
   ]
+  const pageNames = [text.widgetsPage, text.portfolioPage, text.personalPage]
+  const personalApps: AppIcon[] = [
+    { label: text.photos, file: 'photo.svg', tone: 'graphite', action: props.onOpenPhotos },
+    { label: text.playlist, file: 'spotify.svg', tone: 'graphite', action: props.onOpenPlaylist },
+    ...identity.social.map((social) => ({
+      label: social.label ?? social.platform,
+      file: `social-${social.platform}`,
+      tone: 'graphite' as const,
+      source: `/icons/social/${social.platform}.svg`,
+      action: () => {
+        window.open(social.url, '_blank', 'noopener,noreferrer')
+      },
+    })),
+  ]
+  const renderApps = (items: AppIcon[]) =>
+    items.map((app) => (
+      <IconButton
+        key={app.file}
+        app={app}
+        launch={launch}
+        reduced={reduced}
+        onQuickActions={quickActions}
+      />
+    ))
 
   return (
     <motion.div
@@ -171,7 +261,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
       transition={appTransition}
     >
       <header className={styles.header}>
-        <span>{homePage === 0 ? text.portfolioPage : text.personalPage}</span>
+        <span>{pageNames[homePage]}</span>
         <LanguageSwitcher />
       </header>
 
@@ -187,7 +277,12 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
           if (event.target !== event.currentTarget) return
           if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
             event.preventDefault()
-            setHomePage(event.key === 'ArrowRight' ? 1 : 0)
+            setHomePage(
+              Math.max(
+                0,
+                Math.min(2, homePage + (event.key === 'ArrowRight' ? 1 : -1))
+              ) as MobileHomePage
+            )
           }
         }}
       >
@@ -195,8 +290,8 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
           className={styles.track}
           style={{ x }}
           drag="x"
-          dragConstraints={{ left: -width, right: 0 }}
-          dragElastic={0.12}
+          dragConstraints={{ left: -width * 2, right: 0 }}
+          dragElastic={reduced ? 0 : 0.1}
           dragMomentum={false}
           onDragStart={() => {
             dragging.current = true
@@ -208,28 +303,33 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
           }}
         >
           <section
-            className={styles.page}
-            aria-label={text.portfolioPage}
+            className={`${styles.page} ${styles.today}`}
+            ref={today}
+            aria-label={text.widgetsPage}
             aria-hidden={homePage !== 0}
             inert={homePage !== 0}
+          >
+            <MailWidget launch={launch} open={props.onContact} reduced={reduced} />
+            <MusicWidget launch={launch} open={props.onOpenPlaylist} reduced={reduced} />
+            <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} wide />
+            <ProjectPreviewWidget launch={launch} open={props.onOpenProject} reduced={reduced} />
+          </section>
+
+          <section
+            className={styles.page}
+            aria-label={text.portfolioPage}
+            aria-hidden={homePage !== 1}
+            inert={homePage !== 1}
           >
             <motion.button
               type="button"
               className={styles.profile}
               aria-label={`${text.about} — ${identity.name}`}
+              {...profileHold}
               onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
               whileTap={reduced ? undefined : { scale: 0.98 }}
               transition={appTransition}
             >
-              <Image
-                src={profile.portrait}
-                alt={identity.name}
-                width={88}
-                height={88}
-                sizes="88px"
-                className={styles.portrait}
-                draggable={false}
-              />
               <span className={styles.profileCopy}>
                 <strong>{identity.name}</strong>
                 <span className={styles.profession}>{profile.title}</span>
@@ -237,31 +337,23 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               </span>
               <ChevronRight size={17} className={styles.profileArrow} aria-hidden />
             </motion.button>
-
-            <nav className={styles.apps} aria-label={text.apps}>
-              {apps.map((app) => (
-                <IconButton key={app.file} app={app} launch={launch} reduced={reduced} />
-              ))}
-            </nav>
-
-            <div className={styles.workWidget}>
-              <span className={styles.widgetHeading}>{text.exploreWork}</span>
-              <div className={styles.folders}>
-                {categories.map((folder) => (
-                  <motion.button
-                    type="button"
-                    key={folder.id}
-                    aria-label={`Open ${folder.label} folder`}
-                    onClick={(event) =>
-                      launch(event.currentTarget, () => props.onOpenApp(folder.id))
-                    }
-                    whileTap={reduced ? undefined : { scale: 0.95 }}
-                    transition={appTransition}
-                  >
-                    <MacOSFolderIcon icon={null} width={52} height={43} />
-                    <span>{folder.label}</span>
-                  </motion.button>
-                ))}
+            <div className={styles.splitGrid}>
+              <div className={styles.widgetSlot}>
+                <StudioClock />
+                <span className={styles.widgetCaption}>{text.studioTime}</span>
+              </div>
+              <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                {renderApps(apps)}
+              </nav>
+            </div>
+            <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
+              <div className={styles.widgetSlot}>
+                <FolderWidget launch={launch} open={props.onOpenApp} reduced={reduced} />
+                <span className={styles.widgetCaption}>{text.exploreWork}</span>
+              </div>
+              <div className={styles.widgetSlot}>
+                <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
+                <span className={styles.widgetCaption}>{text.portrait}</span>
               </div>
             </div>
           </section>
@@ -269,79 +361,67 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
           <section
             className={styles.page}
             aria-label={text.personalPage}
-            aria-hidden={homePage !== 1}
-            inert={homePage !== 1}
+            aria-hidden={homePage !== 2}
+            inert={homePage !== 2}
           >
             <motion.button
-              type="button"
-              className={styles.musicWidget}
-              aria-label={`${text.playlist} — ${playlist.title}`}
-              onClick={(event) => launch(event.currentTarget, props.onOpenPlaylist)}
+              className={`${styles.profile} ${styles.summary}`}
+              aria-label={text.about}
+              onClick={(event) => launch(event.currentTarget, props.onOpenNotes)}
               whileTap={reduced ? undefined : { scale: 0.98 }}
-              transition={appTransition}
             >
-              <span className={styles.widgetHeading}>{text.onRepeat}</span>
-              <span className={styles.musicBody}>
-                <Image
-                  src={playlist.cover}
-                  alt=""
-                  width={96}
-                  height={96}
-                  className={styles.cover}
-                  draggable={false}
-                />
-                <span className={styles.musicCopy}>
-                  <strong>{playlist.title}</strong>
-                  <span>{text.myPlaylist}</span>
-                  <span className={styles.play}>
-                    <Play size={14} fill="currentColor" aria-hidden />
-                    {text.play}
-                  </span>
-                </span>
-              </span>
+              <span className={styles.widgetHeading}>{text.about}</span>
+              <span>{profile.summary[locale]}</span>
             </motion.button>
-            <div className={styles.linksWidget}>
-              <span className={styles.widgetHeading}>{text.find}</span>
-              {identity.social.map((social) => (
-                <a
-                  key={social.platform}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>{social.label ?? social.platform}</span>
-                  <ArrowUpRight size={18} aria-hidden />
-                </a>
-              ))}
+            <div className={styles.splitGrid}>
+              <ExpertiseWidget launch={launch} open={props.onOpenNotes} reduced={reduced} />
+              <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                {renderApps(personalApps)}
+              </nav>
+            </div>
+            <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
+              <div className={styles.widgetSlot}>
+                <HelloWidget launch={launch} open={props.onContact} reduced={reduced} />
+                <span className={styles.widgetCaption}>{text.mail}</span>
+              </div>
+              <div className={styles.widgetSlot}>
+                <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
+                <span className={styles.widgetCaption}>{text.portrait}</span>
+              </div>
             </div>
           </section>
         </motion.div>
       </div>
 
       <nav className={styles.pagination} aria-label={text.homePages}>
-        {[text.portfolioPage, text.personalPage].map((label, index) => (
-          <button
-            type="button"
-            key={index}
-            aria-label={label}
-            aria-current={homePage === index ? 'page' : undefined}
-            onClick={() => setHomePage(index as 0 | 1)}
-          >
-            <motion.span
-              animate={{
-                width: homePage === index ? 20 : 6,
-                opacity: homePage === index ? 1 : 0.38,
-              }}
-              transition={reduced ? { duration: 0 } : { duration: 0.2 }}
-            />
-          </button>
-        ))}
+        <div className={styles.pageControl}>
+          <motion.span className={styles.activeDot} style={{ x: indicatorX }} aria-hidden />
+          {pageNames.map((label, index) => (
+            <button
+              type="button"
+              key={index}
+              aria-label={label}
+              aria-current={homePage === index ? 'page' : undefined}
+              onClick={() => setHomePage(index as MobileHomePage)}
+            >
+              <span aria-hidden />
+            </button>
+          ))}
+        </div>
       </nav>
       <nav className={styles.dock} aria-label="Dock">
         {dock.map((app) => (
-          <IconButton key={app.file} app={app} launch={launch} reduced={reduced} dock />
+          <IconButton
+            key={app.file}
+            app={app}
+            launch={launch}
+            reduced={reduced}
+            dock
+            onQuickActions={quickActions}
+          />
         ))}
       </nav>
+      {menu && <MobileQuickActions menu={menu} close={() => setMenu(null)} reduced={reduced} />}
     </motion.div>
   )
 }
