@@ -11,6 +11,7 @@ export const appIcons = {
   settings: 'settings',
   mail: 'mail',
   instagram: 'instagram',
+  linkedin: 'linkedin',
 } satisfies Record<ApplicationId, IconId>
 
 export function iconSource(id: IconId) {

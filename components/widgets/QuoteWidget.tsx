@@ -1,17 +1,15 @@
 'use client'
 
 import { widgetDarkGlass } from '@/lib/utils'
-
-const QUOTE = {
-  text: 'Light first.\nThe rest follows.',
-  attribution: 'MANIFESTO',
-}
+import { uiText } from '@/core/registries/locale'
+import { useLocaleStore } from '@/store/localeStore'
 
 interface QuoteWidgetProps {
   elevated?: boolean
 }
 
 export function QuoteWidget({ elevated }: QuoteWidgetProps) {
+  const text = uiText[useLocaleStore((state) => state.locale)]
   return (
     <div
       className="glass-widget-squircle"
@@ -26,19 +24,19 @@ export function QuoteWidget({ elevated }: QuoteWidgetProps) {
         justifyContent: 'space-between',
         fontFamily: 'var(--font-text)',
       }}
-      aria-label="Manifesto quote"
+      aria-label={text.updates}
     >
       {/* Accent bar */}
       <div style={{ width: '22px', height: '1.5px', background: 'rgba(255,255,255,0.20)', borderRadius: '1px' }} aria-hidden />
 
       {/* Quote text */}
       <p style={{ margin: 0, fontSize: '15px', fontWeight: 400, color: 'rgba(255,255,255,0.90)', lineHeight: 1.5, letterSpacing: '-0.015em', whiteSpace: 'pre-line', fontFamily: 'var(--font-display)' }}>
-        {QUOTE.text}
+        {text.websiteUpdate}
       </p>
 
       {/* Attribution */}
       <div style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', fontWeight: 600 }}>
-        {QUOTE.attribution}
+        {text.updates}
       </div>
     </div>
   )

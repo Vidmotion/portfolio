@@ -62,8 +62,8 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
       >
         <motion.div
           style={{
-            width: id === 'notes' ? '72%' : '100%',
-            height: id === 'notes' ? '72%' : '100%',
+            width: '100%',
+            height: '100%',
             borderRadius: '13px',
             overflow: 'hidden',
             display: 'flex',
@@ -73,7 +73,7 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
           whileHover={{ filter: 'brightness(1.06)' }}
           transition={{ duration: 0.14, ease: ease.opening }}
         >
-          <AppGlyph icon={appIcons[id]} />
+          <AppGlyph icon={appIcons[id]} scale={id === 'notes' || id === 'linkedin' ? 0.72 : undefined} />
         </motion.div>
       </motion.button>
 
@@ -137,9 +137,9 @@ export function Dock() {
         role="toolbar"
         aria-label="Dock"
       >
-        {apps.map((app, index) => {
-          // Insert separator before last 2 items (mail) like the design
-          const showSep = index === apps.length - 1 && apps.length > 4
+        {apps.map((app) => {
+          // Keep the social links together after the dock separator.
+          const showSep = app.id === 'instagram' || (app.id === 'linkedin' && !apps.some((item) => item.id === 'instagram'))
           return (
             <div key={app.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               {showSep && (

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { icons, iconSource, type IconId } from '@/core/registries/icons'
 
 /** Shared masters, optical scale and Retina rendering across the three shells. */
-export function AppGlyph({ icon, className }: { icon: IconId; className?: string }) {
+export function AppGlyph({ icon, className, scale }: { icon: IconId; className?: string; scale?: number }) {
   return (
     <Image
       data-app-glyph=""
@@ -17,8 +17,8 @@ export function AppGlyph({ icon, className }: { icon: IconId; className?: string
       draggable={false}
       className={className}
       style={{
-        width: `${icons[icon].scale * 100}%`,
-        height: `${icons[icon].scale * 100}%`,
+        width: `${(scale ?? icons[icon].scale) * 100}%`,
+        height: `${(scale ?? icons[icon].scale) * 100}%`,
         maxWidth: '100%',
         maxHeight: '100%',
         objectFit: 'contain',

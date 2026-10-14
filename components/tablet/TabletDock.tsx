@@ -64,7 +64,7 @@ export function TabletDock({ onLaunch }: TabletDockProps) {
           }}
           aria-label={app.label}
         >
-          <AppGlyph icon={appIcons[app.id]} />
+          <AppGlyph icon={appIcons[app.id]} scale={app.id === 'linkedin' ? 0.72 : undefined} />
         </motion.button>
       ))}
     </div>

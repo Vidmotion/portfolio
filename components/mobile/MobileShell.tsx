@@ -2,7 +2,6 @@
 
 import { AnimatePresence } from 'framer-motion'
 import { useMobileStore } from '@/store/mobileStore'
-import { MobileStatusBar } from './MobileStatusBar'
 import { MobileLockScreen } from './MobileLockScreen'
 import { MobileHomeScreen } from './MobileHomeScreen'
 import { MobileAppView } from './MobileAppView'
@@ -26,8 +25,6 @@ export function MobileShell() {
     setLaunchOrigin,
   } = useMobileStore()
 
-  const isLight = screen === 'lock' || screen === 'home' || screen === 'project'
-
   return (
     <div
       style={{
@@ -44,11 +41,6 @@ export function MobileShell() {
       role="main"
       aria-label="Mobile — iOS experience"
     >
-      {/* Status bar — the new Home Screen design (Figma) has no simulated status
-          bar chrome; it relies on real device safe-area insets instead. Lock/App/
-          Project screens keep the existing simulated bar. */}
-      {screen !== 'home' && <MobileStatusBar light={isLight} frosted={screen === 'project'} />}
-
       {screen === 'lock' && (
         <div
           style={{

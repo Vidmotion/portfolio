@@ -20,6 +20,7 @@ import { useHomeSwipe } from './useHomeSwipe'
 import {
   MusicWidget,
   PortraitWidget,
+  UpdateWidget,
   FolderWidget,
   ExpertiseWidget,
   HelloWidget,
@@ -371,8 +372,8 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
                   <span className={styles.widgetCaption}>{text.exploreWork}</span>
                 </div>
                 <div className={styles.widgetSlot}>
-                  <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
-                  <span className={styles.widgetCaption}>{text.portrait}</span>
+                  <UpdateWidget />
+                  <span className={styles.widgetCaption}>{text.updates}</span>
                 </div>
               </div>
             </div>

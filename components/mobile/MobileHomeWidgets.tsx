@@ -88,6 +88,16 @@ export function PortraitWidget({
   )
 }
 
+export function UpdateWidget() {
+  const text = uiText[useLocaleStore((state) => state.locale)]
+  return (
+    <div className={styles.update} role="note" aria-label={text.updates}>
+      <span className={styles.updateAccent} aria-hidden />
+      <p>{text.websiteUpdate}</p>
+    </div>
+  )
+}
+
 export function FolderWidget({
   launch,
   open,
@@ -106,7 +116,9 @@ export function FolderWidget({
           onClick={(event) => launch(event.currentTarget, () => open(category.id))}
           whileTap={reduced ? undefined : { scale: 0.98 }}
         >
-          <MacOSFolderIcon icon={null} width={24} height={20} />
+          <span className={styles.folderIcon} aria-hidden>
+            <MacOSFolderIcon icon={null} width={24} height={20} tone="graphite" />
+          </span>
           <span>{category.label}</span>
         </motion.button>
       ))}

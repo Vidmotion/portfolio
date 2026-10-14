@@ -54,7 +54,7 @@ export function MobileAppView({
       <div
         style={{
           flexShrink: 0,
-          padding: '62px 24px 16px',
+          padding: 'max(16px, calc(env(safe-area-inset-top) + 12px)) 24px 16px',
           borderBottom: '0.5px solid rgba(0,0,0,0.06)',
         }}
       >

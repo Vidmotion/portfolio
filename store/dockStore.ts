@@ -47,6 +47,15 @@ export const useDockStore = create<DockStore>()(
     }),
     {
       name: 'portfolio-os-dock',
+      version: 1,
+      migrate: (persistedState): Pick<DockStore, 'pinnedIds' | 'magnificationEnabled'> => {
+        const state = persistedState as DockStore
+        const pinnedIds = state.pinnedIds ?? [...desktopDock]
+        return {
+          ...state,
+          pinnedIds: pinnedIds.includes('linkedin') ? pinnedIds : [...pinnedIds, 'linkedin'],
+        }
+      },
       partialize: (state) => ({
         // runningIds is session-transient — never persist a stale "running" dot.
         pinnedIds: state.pinnedIds,

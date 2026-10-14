@@ -88,7 +88,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
           onClick={onBack}
           style={{
             position: 'absolute',
-            top: '56px',
+            top: 'max(16px, calc(env(safe-area-inset-top) + 12px))',
             left: '18px',
             width: '44px',
             height: '44px',

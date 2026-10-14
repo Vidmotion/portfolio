@@ -1,7 +1,7 @@
 import type { WindowApp, WindowSizePreset } from '@/types'
 import { identity } from '@/core/registries/identity'
 
-export type ApplicationId = 'finder' | 'photos' | 'notes' | 'spotify' | 'settings' | 'mail' | 'instagram'
+export type ApplicationId = 'finder' | 'photos' | 'notes' | 'spotify' | 'settings' | 'mail' | 'instagram' | 'linkedin'
 
 export type ApplicationDefinition = {
   id: ApplicationId
@@ -20,4 +20,5 @@ export const apps: ApplicationDefinition[] = [
   { id: 'settings', name: 'Settings', app: 'settings', defaultWindowSize: 'md' },
   { id: 'mail', name: 'Mail', href: `mailto:${identity.email}` },
   { id: 'instagram', name: 'Instagram', href: identity.social.find((s) => s.platform === 'instagram')!.url },
+  { id: 'linkedin', name: 'LinkedIn', href: identity.social.find((s) => s.platform === 'linkedin')!.url },
 ]
