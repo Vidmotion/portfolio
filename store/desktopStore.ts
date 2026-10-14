@@ -39,7 +39,7 @@ export const DEFAULT_WIDGETS: Widget[] = [
 export const useDesktopStore = create<DesktopStore>()(
   persist(
     (set) => ({
-      wallpaper: 'auto',
+      wallpaper: 'morning',
       widgets: DEFAULT_WIDGETS,
       selectedFolderId: null,
       selectedProjectId: null,
@@ -82,6 +82,15 @@ export const useDesktopStore = create<DesktopStore>()(
     }),
     {
       name: 'portfolio-os-desktop',
+      version: 1,
+      migrate: (persistedState) => {
+        const state = persistedState as DesktopStore
+        // Move the previous time-based default to Morning, preserving chosen themes and layout.
+        return {
+          ...state,
+          wallpaper: !state.wallpaper || state.wallpaper === 'auto' ? 'morning' : state.wallpaper,
+        }
+      },
       partialize: (state) => ({
         wallpaper: state.wallpaper,
         widgets: state.widgets,

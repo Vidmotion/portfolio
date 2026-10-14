@@ -62,8 +62,8 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
       >
         <motion.div
           style={{
-            width: '100%',
-            height: '100%',
+            width: id === 'notes' ? '72%' : '100%',
+            height: id === 'notes' ? '72%' : '100%',
             borderRadius: '13px',
             overflow: 'hidden',
             display: 'flex',
