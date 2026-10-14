@@ -21,14 +21,15 @@ interface DockItemProps {
   isRunning: boolean
   mouseX: ReturnType<typeof useMotionValue<number>>
   onLaunch: (id: string) => void
+  tablet: boolean
 }
 
-const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch }: DockItemProps) {
+const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch, tablet }: DockItemProps) {
   const ref = useRef<HTMLButtonElement>(null)
 
   const distance = useTransform(mouseX, (val) => {
     const el = ref.current
-    if (!el) return Infinity
+    if (!el || tablet) return Infinity
     const rect = el.getBoundingClientRect()
     return Math.abs(val - (rect.left + rect.width / 2))
   })
@@ -55,9 +56,9 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
         ref={ref}
         onClick={() => onLaunch(id)}
         style={{ width: size, height: size }}
-        whileTap={{ scale: 0.86, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+        whileTap={{ scale: tablet ? 0.92 : 0.86, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
         className="relative flex cursor-pointer items-center justify-center select-none"
-        aria-label={`Open ${name}`}
+        aria-label={tablet ? name : `Open ${name}`}
         title={name}
       >
         <motion.div
@@ -103,7 +104,7 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch 
 
 // ─── Dock ─────────────────────────────────────────────────────────────────────
 
-export function Dock() {
+export function Dock({ tablet = false }: { tablet?: boolean }) {
   const { apps, launchApp } = useDock()
   const mouseX = useMotionValue(Infinity)
 
@@ -132,10 +133,10 @@ export function Dock() {
             '0 24px 64px rgba(0,0,0,0.20)',
           ].join(', '),
         }}
-        onMouseMove={(e) => mouseX.set(e.clientX)}
+        onMouseMove={(e) => { if (!tablet) mouseX.set(e.clientX) }}
         onMouseLeave={() => mouseX.set(Infinity)}
-        role="toolbar"
-        aria-label="Dock"
+        role={tablet ? 'navigation' : 'toolbar'}
+        aria-label={tablet ? 'Tablet dock' : 'Dock'}
       >
         {apps.map((app) => {
           // Keep the social links together after the dock separator.
@@ -160,6 +161,7 @@ export function Dock() {
                 isRunning={app.isRunning}
                 mouseX={mouseX}
                 onLaunch={launchApp}
+                tablet={tablet}
               />
             </div>
           )

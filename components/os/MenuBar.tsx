@@ -34,7 +34,7 @@ function useNavItems(): NavItem[] {
   ]
 }
 
-export function MenuBar() {
+export function MenuBar({ tablet = false }: { tablet?: boolean }) {
   const { fullTime, date } = useTime()
   const navItems = useNavItems()
   const [pressed, setPressed] = useState<string | null>(null)
@@ -49,7 +49,7 @@ export function MenuBar() {
     <div
       className="fixed top-0 right-0 left-0 flex items-center justify-between"
       style={{
-        height: `${MENU_BAR_HEIGHT}px`,
+        height: `${tablet ? 44 : MENU_BAR_HEIGHT}px`,
         zIndex: 'var(--z-menu-bar)',
         padding: '0 16px',
         fontFamily: 'var(--font-text)',
@@ -61,9 +61,11 @@ export function MenuBar() {
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
         borderBottom: '0.5px solid rgba(255,255,255,0.08)',
       }}
+      role={tablet ? 'toolbar' : undefined}
+      aria-label={tablet ? 'Tablet menu bar' : undefined}
     >
       {/* Left side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: tablet ? '8px' : '20px' }}>
         {/* Apple-style logo dot */}
         <div
           style={{
@@ -95,9 +97,10 @@ export function MenuBar() {
               color: pressed === item.label ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.78)',
               background: pressed === item.label ? 'rgba(255,255,255,0.14)' : 'transparent',
               border: 'none',
-              padding: '1px 7px',
+              padding: tablet ? '1px 5px' : '1px 7px',
+              minHeight: tablet ? '40px' : undefined,
               borderRadius: '4px',
-              cursor: 'default',
+              cursor: tablet ? 'pointer' : 'default',
               letterSpacing: '-0.005em',
               fontSize: '13px',
               fontFamily: 'var(--font-text)',
@@ -110,7 +113,7 @@ export function MenuBar() {
       </div>
 
       {/* Right side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#fff' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: tablet ? '8px' : '16px', color: '#fff' }}>
         <LanguageSwitcher />
         {/* WiFi icon */}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-label="WiFi connected">

@@ -4,6 +4,7 @@ import type { OSWindow, WindowApp, WindowPosition, WindowSize, WindowSizePreset 
 import {
   generateId,
   getWindowSize,
+  getOsMenuBarHeight,
   defaultWindowPosition,
   clampWindowPosition,
   clampWindowSize,
@@ -88,7 +89,7 @@ export const useWindowStore = create<WindowStore>()(
         // (tablet/mobile) never spawns larger than the space it opens into —
         // on a real desktop viewport this is a no-op since the presets already fit.
         const preset = getWindowSize(resolvedSizePreset)
-        const size = clampWindowSize(preset.width, preset.height, 0, 28)
+        const size = clampWindowSize(preset.width, preset.height, 0, getOsMenuBarHeight())
         const rawPosition = defaultWindowPosition(size.width, size.height)
         const position = clampWindowPosition(rawPosition.x, rawPosition.y, size.width, size.height)
         const { highestZIndex, windows } = get()
@@ -193,7 +194,7 @@ export const useWindowStore = create<WindowStore>()(
         set((state) => {
           let changed = false
           const windows = state.windows.map((win) => {
-            const size = clampWindowSize(win.size.width, win.size.height, 0, 28)
+            const size = clampWindowSize(win.size.width, win.size.height, 0, getOsMenuBarHeight())
             const position = clampWindowPosition(
               win.position.x,
               win.position.y,

@@ -20,6 +20,8 @@ interface DraggableFolderProps {
   onSelect: () => void
   onOpen: () => void
   onDragEnd: (offset: { x: number; y: number }) => void
+  tablet?: boolean
+  containerRef?: React.RefObject<HTMLDivElement | null>
 }
 
 function DraggableFolder({
@@ -30,6 +32,8 @@ function DraggableFolder({
   onSelect,
   onOpen,
   onDragEnd,
+  tablet,
+  containerRef,
 }: DraggableFolderProps) {
   const {
     x,
@@ -46,6 +50,7 @@ function DraggableFolder({
       transition={{ ...springs.default, delay: index * staggerDelay(FOLDERS.length) }}
       drag={!locked}
       dragMomentum={false}
+      dragConstraints={containerRef}
       dragElastic={0.04}
       dragTransition={{ bounceStiffness: 340, bounceDamping: 24 }}
       style={{
@@ -65,14 +70,14 @@ function DraggableFolder({
       }}
       onDragStart={onDragStart}
       onDragEnd={handleDragEnd}
-      onDoubleClick={onOpen}
+      onDoubleClick={tablet ? undefined : onOpen}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
           event.preventDefault()
           onOpen()
         }
       }}
-      onClick={onSelect}
+      onClick={tablet ? onOpen : onSelect}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}
       whileDrag={{
@@ -100,24 +105,29 @@ function DraggableFolder({
   )
 }
 
-export function DesktopFolders() {
+export function DesktopFolders({ tabletLayout, containerRef }: {
+  tabletLayout?: { x: number; y: number; columns: number }
+  containerRef?: React.RefObject<HTMLDivElement | null>
+}) {
   const { selectFolder, setFolderOffset, folderOffsets, isDesktopLocked } = useDesktopStore()
   const { openWindow } = useWindowStore()
 
   return (
     <div
       style={{
-        position: 'fixed',
-        top: '60px',
-        right: '34px',
+        position: tabletLayout ? 'absolute' : 'fixed',
+        top: tabletLayout?.y ?? '60px',
+        right: tabletLayout ? undefined : '34px',
+        left: tabletLayout?.x,
         zIndex: 'var(--z-desktop-icons)',
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 90px)',
+        gridTemplateColumns: `repeat(${tabletLayout?.columns ?? 2}, 90px)`,
         gap: '18px 6px',
+        pointerEvents: 'auto',
         fontFamily: 'var(--font-text)',
       }}
       role="group"
-      aria-label="Desktop folders"
+      aria-label={tabletLayout ? 'Category folders' : 'Desktop folders'}
     >
       {FOLDERS.map((folder, i) => (
         <DraggableFolder
@@ -126,6 +136,8 @@ export function DesktopFolders() {
           index={i}
           offset={folderOffsets[folder.id] ?? { x: 0, y: 0 }}
           locked={isDesktopLocked}
+          tablet={Boolean(tabletLayout)}
+          containerRef={containerRef}
           onSelect={() => selectFolder(folder.id)}
           onOpen={() => {
             selectFolder(folder.id)

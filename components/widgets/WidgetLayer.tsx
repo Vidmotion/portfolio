@@ -30,36 +30,81 @@ function renderWidget(type: WidgetType, elevated: boolean): React.ReactNode {
 
 interface DraggableWidgetProps {
   widget: Widget
+  position: { x: number; y: number }
+  anchor?: { x: number; y: number }
+  bounds?: { width: number; height: number }
   locked: boolean
   containerRef: React.RefObject<HTMLDivElement | null>
   onDragEnd: (position: { x: number; y: number }) => void
 }
 
-function DraggableWidget({ widget, locked, containerRef, onDragEnd }: DraggableWidgetProps) {
+function DraggableWidget({
+  widget,
+  position,
+  anchor,
+  bounds,
+  locked,
+  containerRef,
+  onDragEnd,
+}: DraggableWidgetProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  useLayoutEffect(() => {
+    const card = cardRef.current
+    if (!anchor || !card) return
+    const measure = () =>
+      setDimensions((size) =>
+        size.width === card.offsetWidth && size.height === card.offsetHeight
+          ? size
+          : { width: card.offsetWidth, height: card.offsetHeight }
+      )
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(card)
+    return () => observer.disconnect()
+  }, [anchor])
+  const constraints =
+    anchor && bounds
+      ? {
+          left: -anchor.x,
+          top: -anchor.y,
+          right: Math.max(-anchor.x, bounds.width - anchor.x - dimensions.width),
+          bottom: Math.max(-anchor.y, bounds.height - anchor.y - dimensions.height),
+        }
+      : undefined
+  const offset = constraints
+    ? {
+        x: Math.max(constraints.left, Math.min(position.x, constraints.right)),
+        y: Math.max(constraints.top, Math.min(position.y, constraints.bottom)),
+      }
+    : position
   const {
     x,
     y,
     isDragging,
     onDragStart,
     onDragEnd: handleDragEnd,
-  } = useDragOffset({ offset: widget.position, onDragEnd })
+  } = useDragOffset({ offset, onDragEnd })
 
   return (
     // CRITICAL: Never use `filter` on this wrapper — it breaks backdrop-filter on all children.
     // Elevation is scale + the widget's own shadow escalating (via the `elevated` prop) — never
     // opacity/blur/brightness/contrast, so the material itself never visibly changes while dragging.
     <motion.div
+      ref={cardRef}
+      data-widget-id={widget.id}
+      data-widget-type={widget.type}
       drag={!locked}
       dragMomentum={false}
-      dragConstraints={containerRef}
+      dragConstraints={constraints ?? containerRef}
       dragElastic={0.04}
       dragTransition={{ bounceStiffness: 260, bounceDamping: 22 }}
       style={{
         x,
         y,
         position: 'absolute',
-        left: 0,
-        top: 0,
+        left: anchor?.x ?? 0,
+        top: anchor?.y ?? 0,
         touchAction: 'none',
         cursor: 'default',
         pointerEvents: 'auto',
@@ -77,11 +122,21 @@ function DraggableWidget({ widget, locked, containerRef, onDragEnd }: DraggableW
   )
 }
 
-export function WidgetLayer() {
-  const { widgets, moveWidget, isDesktopLocked } = useDesktopStore()
+export type WidgetLayout = Partial<Record<WidgetType, { x: number; y: number }>>
+
+export function WidgetLayer({
+  layout,
+  bounds,
+}: {
+  layout?: WidgetLayout
+  bounds?: { width: number; height: number }
+}) {
+  const { widgets, moveWidget, isDesktopLocked, tabletWidgetOffsets, setTabletWidgetOffset } =
+    useDesktopStore()
   const containerRef = useRef<HTMLDivElement>(null)
   const [fit, setFit] = useState(1)
   useLayoutEffect(() => {
+    if (layout) return
     const measure = () => {
       const cards = Array.from(containerRef.current?.children ?? []) as HTMLElement[]
       const bottom = Math.max(
@@ -103,7 +158,7 @@ export function WidgetLayer() {
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
-  }, [widgets])
+  }, [widgets, layout])
 
   return (
     <div
@@ -113,20 +168,31 @@ export function WidgetLayer() {
         inset: 0,
         pointerEvents: 'none',
         zIndex: 'var(--z-widgets)',
-        transform: `scale(${fit})`,
+        transform: layout ? undefined : `scale(${fit})`,
         transformOrigin: '0 28px',
       }}
-      aria-label="Desktop widgets"
+      aria-label={layout ? 'Tablet widgets' : 'Desktop widgets'}
     >
-      {widgets.map((widget) => (
-        <DraggableWidget
-          key={widget.id}
-          widget={widget}
-          locked={isDesktopLocked}
-          containerRef={containerRef}
-          onDragEnd={(pos) => moveWidget(widget.id, pos)}
-        />
-      ))}
+      {widgets.map((widget) => {
+        const anchor = layout?.[widget.type]
+        const offset = tabletWidgetOffsets[widget.id] ??
+          tabletWidgetOffsets[widget.type] ?? { x: 0, y: 0 }
+        const position = anchor ? offset : widget.position
+        return (
+          <DraggableWidget
+            key={widget.id}
+            widget={widget}
+            position={position}
+            anchor={anchor}
+            bounds={bounds}
+            locked={isDesktopLocked}
+            containerRef={containerRef}
+            onDragEnd={(pos) =>
+              anchor ? setTabletWidgetOffset(widget.id, pos) : moveWidget(widget.id, pos)
+            }
+          />
+        )
+      })}
     </div>
   )
 }

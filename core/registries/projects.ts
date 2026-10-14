@@ -206,6 +206,55 @@ const definitions: ProjectDefinition[] = [
     },
   },
   {
+    id: 'studio-macaluso',
+    title: 'Studio Macaluso',
+    category: 'digital',
+    client: 'Studio di Odontoiatria Macaluso',
+    agency: 'Vidmotion',
+    featured: true,
+    slug: 'studio-macaluso',
+    year: 2026,
+    status: 'in-progress',
+    cover: '/images/projects/logos/studio-macaluso.png',
+    preview: { background: '#ffffff', logoWidth: 66, logoHeight: 26 },
+    tags: ['Next.js', 'Three.js', 'UX/UI', 'Responsive design', 'Scroll animation'],
+    images: [
+      { src: '/images/projects/studio-macaluso/overview.webp', width: 1600, height: 900, caption: { en: 'The digital experience — desktop and mobile', it: 'L’esperienza digitale — desktop e mobile' } },
+      { src: '/images/projects/studio-macaluso/cinematic-opening.webp', width: 1600, height: 900, caption: { en: 'From Milan to the practice: the opening sequence', it: 'Da Milano allo studio: la sequenza di apertura' } },
+      { src: '/images/projects/studio-macaluso/practice-and-services.webp', width: 1600, height: 900, caption: { en: 'The practice, the people and the care pathways', it: 'Lo studio, le persone e i percorsi di cura' } },
+      { src: '/images/projects/studio-macaluso/aligners-3d.webp', width: 1600, height: 900, caption: { en: 'Illustrative 3D aligner model and scroll interaction', it: 'Modello 3D illustrativo degli allineatori e interazione con lo scroll' } },
+      { src: '/images/projects/studio-macaluso/illustrative-comparison.webp', width: 1600, height: 900, caption: { en: 'Illustrative comparison — not a clinical case or an outcome guarantee', it: 'Confronto illustrativo — non è un caso clinico né una promessa di risultato' } },
+      { src: '/images/projects/studio-macaluso/mobile-experience.webp', width: 1600, height: 900, caption: { en: 'The same visual identity on mobile', it: 'La stessa identità visiva su mobile' } },
+      { src: '/images/projects/studio-macaluso/booking-demo.webp', width: 1600, height: 900, caption: { en: 'Four-step booking demo, with calendar integration still pending', it: 'Demo di prenotazione in quattro passaggi, con agenda ancora da integrare' } },
+    ],
+    copy: {
+      en: {
+        subtitle: 'A narrative digital experience for a multidisciplinary dental practice.',
+        summary: 'A website prototype combining a cinematic opening, a shared service layout, illustrative 3D aligners and a guided booking demo.',
+        description: 'The project presentation introduces a website for Studio di Odontoiatria Macaluso in Milan. A city-to-practice opening leads into the team and services, while an illustrative 3D aligner model gives the treatment section a tangible, scroll-driven language. Desktop and mobile share the same visual identity and a guided path towards contact. The project is in development: the booking flow is a demonstration, with calendar integration and content confirmation still to complete.',
+        role: '',
+        deliverables: ['Responsive interface', 'Cinematic opening and parallax', 'Illustrative 3D aligner experience', 'Four-step booking demo'],
+        sections: [
+          { title: 'From place to people', body: 'The opening connects Milan to the physical practice before introducing the team and care pathways. A consistent grid and tone link the practice presentation to the different services.' },
+          { title: 'A clear prototype scope', body: 'The 3D model and comparison are illustrative, rather than a patient simulation or a clinical result. The booking demonstration does not send data or confirm appointments; the connection to the practice calendar is a later integration.' },
+        ],
+        links: [],
+      },
+      it: {
+        subtitle: 'Un’esperienza digitale narrativa per uno studio odontoiatrico multidisciplinare.',
+        summary: 'Una bozza di sito che unisce apertura cinematografica, una griglia comune per i servizi, allineatori 3D illustrativi e una demo di prenotazione guidata.',
+        description: 'La presentazione introduce un sito per lo Studio di Odontoiatria Macaluso di Milano. Un’apertura dalla città alla sede accompagna la scoperta del team e dei servizi, mentre un modello 3D illustrativo degli allineatori rende la sezione dedicata al trattamento più concreta e interattiva attraverso lo scroll. Desktop e mobile condividono identità visiva e percorso verso il contatto. Il progetto è in sviluppo: la prenotazione è dimostrativa, con integrazione dell’agenda e conferma dei contenuti ancora da completare.',
+        role: '',
+        deliverables: ['Interfaccia responsive', 'Apertura cinematografica e parallax', 'Esperienza illustrativa degli allineatori 3D', 'Demo di prenotazione in quattro passaggi'],
+        sections: [
+          { title: 'Dal luogo alle persone', body: 'L’apertura collega Milano alla sede reale, prima di presentare il team e i percorsi di cura. Una griglia e una voce comuni uniscono la presentazione dello studio alle diverse specialità.' },
+          { title: 'Il perimetro della bozza', body: 'Modello 3D e confronto sono illustrativi: non rappresentano una simulazione personalizzata o un risultato clinico. La demo di prenotazione non invia dati e non conferma appuntamenti; il collegamento all’agenda dello studio è un’integrazione successiva.' },
+        ],
+        links: [],
+      },
+    },
+  },
+  {
     id: 'pop',
     title: 'POP — People of Pizza',
     category: 'creative-direction',
@@ -1323,7 +1372,7 @@ function localize(locale: Locale): Project[] {
         alt: `${project.title} — ${caption[locale]}`,
       })),
     credits: [
-      { role: copy[locale].role, name: 'Carlo Desantis' },
+      ...(copy[locale].role ? [{ role: copy[locale].role, name: 'Carlo Desantis' }] : []),
       ...(project.agency
         ? [{ role: locale === 'it' ? 'Agenzia' : 'Agency', name: project.agency }]
         : []),

@@ -5,9 +5,8 @@ import { motion, useMotionValue } from 'framer-motion'
 import { WindowControls } from '@/components/ui/WindowControls'
 import { useWindowStore } from '@/store/windowStore'
 import { windowVariants, springs } from '@/lib/motion'
-import { clampWindowPosition, clampWindowSize, WIDGET_DARK_GLASS } from '@/lib/utils'
+import { clampWindowPosition, clampWindowSize, WIDGET_DARK_GLASS, getOsMenuBarHeight } from '@/lib/utils'
 import type { OSWindow as OSWindowType } from '@/types'
-import { MENU_BAR_HEIGHT } from '@/components/os/MenuBar'
 import styles from './OSWindow.module.css'
 
 interface OSWindowProps {
@@ -16,6 +15,7 @@ interface OSWindowProps {
 }
 
 export function OSWindow({ window: win, children }: OSWindowProps) {
+  const menuBarHeight = getOsMenuBarHeight()
   const { closeWindow, focusWindow, minimizeWindow, maximizeWindow, moveWindow, resizeWindow } =
     useWindowStore()
   const isDragging = useRef(false)
@@ -87,7 +87,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
           rawY,
           win.size.width,
           win.size.height,
-          MENU_BAR_HEIGHT
+          menuBarHeight
         )
         motionX.set(clamped.x)
         motionY.set(clamped.y)
@@ -108,7 +108,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
       window.addEventListener('pointercancel', onUp)
       interactionCleanup.current = onUp
     },
-    [win.id, win.size, motionX, motionY, focusWindow, moveWindow]
+    [win.id, win.size, motionX, motionY, focusWindow, moveWindow, menuBarHeight]
   )
 
   const onResizeStart = useCallback(
@@ -172,10 +172,10 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         top: 0,
         left: 0,
         x: isMaximized ? 0 : motionX,
-        y: isMaximized ? MENU_BAR_HEIGHT : motionY,
+        y: isMaximized ? menuBarHeight : motionY,
         width: isMaximized ? '100vw' : motionWidth,
         height: isMaximized
-          ? `calc(100dvh - ${MENU_BAR_HEIGHT}px - var(--window-dock-space))`
+          ? `calc(100dvh - ${menuBarHeight}px - var(--window-dock-space))`
           : motionHeight,
         zIndex: win.zIndex,
         borderRadius: isMaximized ? 0 : '18px',

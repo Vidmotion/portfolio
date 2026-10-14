@@ -46,12 +46,16 @@ export function getWindowSize(preset: WindowSizePreset): WindowSize {
   return WINDOW_SIZES[preset]
 }
 
+export function getOsMenuBarHeight() {
+  return detectPlatform() === 'tablet' ? 44 : 28
+}
+
 export function clampWindowPosition(
   x: number,
   y: number,
   width: number,
   height: number,
-  menuBarHeight = 28
+  menuBarHeight = getOsMenuBarHeight()
 ): { x: number; y: number } {
   const vw = typeof window !== 'undefined' ? window.innerWidth : 1440
   const vh = typeof window !== 'undefined' ? window.innerHeight : 900

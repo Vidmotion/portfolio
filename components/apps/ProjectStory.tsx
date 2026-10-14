@@ -24,8 +24,12 @@ export function ProjectStory({
       <p className={styles.description}>{project.description}</p>
 
       <section className={styles.section}>
-        <h2>{text.myRole}</h2>
-        <p>{project.role}</p>
+        {project.role && (
+          <>
+            <h2>{text.myRole}</h2>
+            <p>{project.role}</p>
+          </>
+        )}
         <dl className={styles.meta}>
           {project.client && (
             <>
