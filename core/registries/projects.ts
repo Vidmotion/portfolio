@@ -232,7 +232,7 @@ const definitions: ProjectDefinition[] = [
         subtitle: 'A narrative digital experience for a multidisciplinary dental practice.',
         summary: 'A website prototype combining a cinematic opening, a shared service layout, illustrative 3D aligners and a guided booking demo.',
         description: 'The project presentation introduces a website for Studio di Odontoiatria Macaluso in Milan. A city-to-practice opening leads into the team and services, while an illustrative 3D aligner model gives the treatment section a tangible, scroll-driven language. Desktop and mobile share the same visual identity and a guided path towards contact. The project is in development: the booking flow is a demonstration, with calendar integration and content confirmation still to complete.',
-        role: '',
+        role: 'UX/UI design and website development, including scroll animation and the 3D experience.',
         deliverables: ['Responsive interface', 'Cinematic opening and parallax', 'Illustrative 3D aligner experience', 'Four-step booking demo'],
         sections: [
           { title: 'From place to people', body: 'The opening connects Milan to the physical practice before introducing the team and care pathways. A consistent grid and tone link the practice presentation to the different services.' },
@@ -244,7 +244,7 @@ const definitions: ProjectDefinition[] = [
         subtitle: 'Un’esperienza digitale narrativa per uno studio odontoiatrico multidisciplinare.',
         summary: 'Una bozza di sito che unisce apertura cinematografica, una griglia comune per i servizi, allineatori 3D illustrativi e una demo di prenotazione guidata.',
         description: 'La presentazione introduce un sito per lo Studio di Odontoiatria Macaluso di Milano. Un’apertura dalla città alla sede accompagna la scoperta del team e dei servizi, mentre un modello 3D illustrativo degli allineatori rende la sezione dedicata al trattamento più concreta e interattiva attraverso lo scroll. Desktop e mobile condividono identità visiva e percorso verso il contatto. Il progetto è in sviluppo: la prenotazione è dimostrativa, con integrazione dell’agenda e conferma dei contenuti ancora da completare.',
-        role: '',
+        role: 'Design UX/UI e sviluppo del sito, incluse animazioni legate allo scroll ed esperienza 3D.',
         deliverables: ['Interfaccia responsive', 'Apertura cinematografica e parallax', 'Esperienza illustrativa degli allineatori 3D', 'Demo di prenotazione in quattro passaggi'],
         sections: [
           { title: 'Dal luogo alle persone', body: 'L’apertura collega Milano alla sede reale, prima di presentare il team e i percorsi di cura. Una griglia e una voce comuni uniscono la presentazione dello studio alle diverse specialità.' },
