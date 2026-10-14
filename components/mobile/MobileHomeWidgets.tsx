@@ -8,8 +8,9 @@ import { profile } from '@/core/registries/profile'
 import { playlist } from '@/core/registries/playlist'
 import { categories } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
-import { projects } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { getProjects } from '@/lib/content'
+import { categoryGradient, projectMeta } from '@/lib/utils'
 import { useLocaleStore } from '@/store/localeStore'
 import { useEasterEggStore } from '@/store/easterEggStore'
 import { useLongPress } from '@/hooks/useLongPress'
@@ -180,7 +181,9 @@ export function ProjectPreviewWidget({
   open: (id: string) => void
   reduced: boolean
 }) {
-  const text = uiText[useLocaleStore((s) => s.locale)]
+  const locale = useLocaleStore((s) => s.locale)
+  const text = uiText[locale]
+  const projects = getProjects(locale)
   return (
     <div className={styles.previews}>
       <span className={styles.heading}>{text.projectPreviews}</span>
@@ -196,12 +199,18 @@ export function ProjectPreviewWidget({
           >
             <span
               className={styles.projectThumb}
-              style={{ background: categoryGradient(project.category) }}
+              style={{
+                background: categoryGradient(project.category),
+                position: 'relative',
+                overflow: 'hidden',
+              }}
               aria-hidden
-            />
+            >
+              <ProjectArtwork project={project} sizes="64px" />
+            </span>
             <span>
               <strong>{project.title}</strong>
-              <small>{project.year}</small>
+              <small>{projectMeta(project, locale)}</small>
             </span>
             <ChevronRight size={16} aria-hidden />
           </motion.button>

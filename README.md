@@ -34,6 +34,17 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Project Status
 
-- [x] Documentation Phase — Product Bible + Creative Bible
-- [ ] Design Phase — Figma workspace (in progress)
-- [ ] Implementation Phase — pending Design Phase completion
+The three device experiences are implemented. The portfolio includes real project
+copy in English and Italian; additional original photo/video material is being added.
+
+## Shared portfolio content
+
+Edit `core/registries/projects.ts` to update a project's text, credits, links or
+images for Desktop, Tablet and Mobile together. Each case contains English and
+Italian copy and one shared media collection. `ProjectStory` renders the complete
+case in all three experiences; previews and search use the same localized selectors.
+
+The shared biography is in `core/registries/profile.ts`. English is the landing
+language. Omit unconfirmed project years, and keep pre-launch work marked as
+`in-progress`. Add real media under `public/images/projects/` with its dimensions
+and localized captions; avoid demo work or invented production credits.

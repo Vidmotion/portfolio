@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useSpotlightStore } from '@/store/spotlightStore'
 import { useWindowStore } from '@/store/windowStore'
 import { useApplicationLauncher } from '@/hooks/useApplicationLauncher'
-import { projects, getNotes } from '@/lib/content'
+import { getProjects, getNotes } from '@/lib/content'
 import { useLocaleStore } from '@/store/localeStore'
 import type { Locale } from '@/types'
 import { categoryGradient } from '@/lib/utils'
@@ -24,10 +24,11 @@ function getResults(query: string, locale: Locale): ResultItem[] {
 
   const results: ResultItem[] = []
 
-  for (const p of projects) {
+  for (const p of getProjects(locale)) {
     if (
       p.title.toLowerCase().includes(q) ||
       p.category.includes(q) ||
+      p.summary.toLowerCase().includes(q) ||
       p.tags.some((t) => t.toLowerCase().includes(q))
     ) {
       results.push({ kind: 'project', id: p.id, title: p.title, category: p.category })

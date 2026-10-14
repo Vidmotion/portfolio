@@ -5,13 +5,14 @@ import { motion } from 'framer-motion'
 import { useFinderStore } from '@/store/finderStore'
 import { useWindowStore } from '@/store/windowStore'
 import { useDesktopStore } from '@/store/desktopStore'
-import { projects } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
+import { getProjects } from '@/lib/content'
+import { categoryGradient, projectMeta } from '@/lib/utils'
 import { springs, staggerDelay } from '@/lib/motion'
 import { categories as CATEGORIES, normalizeCategory } from '@/core/registries/categories'
 import { identity } from '@/core/registries/identity'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
 import styles from './AppResponsive.module.css'
 import type { ProjectCategory } from '@/types'
 
@@ -22,6 +23,7 @@ interface FinderAppProps {
 
 export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps) {
   const locale = useLocaleStore((s) => s.locale)
+  const projects = getProjects(locale)
   const text = uiText[locale]
   const {
     currentCategory,
@@ -61,11 +63,15 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       list = list.filter(
-        (p) => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.summary.toLowerCase().includes(q) ||
+          p.tags.some((tag) => tag.toLowerCase().includes(q))
       )
     }
     return list
-  }, [activeCategory, searchQuery])
+  }, [activeCategory, searchQuery, projects])
 
   const finderTitle = activeCategory
     ? (CATEGORIES.find((c) => c.id === activeCategory)?.label ?? text.allProjects)
@@ -308,6 +314,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       boxShadow: '0 1px 2px rgba(0,0,0,0.04),0 10px 26px rgba(0,0,0,0.1)',
                     }}
                   >
+                    <ProjectArtwork project={project} sizes="300px" />
                     <span
                       style={{
                         position: 'absolute',
@@ -348,7 +355,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                         textTransform: 'capitalize',
                       }}
                     >
-                      {project.category.replace('-', ' ')} · {project.year}
+                      {projectMeta(project, locale)}
                     </div>
                   </div>
                 </motion.button>
@@ -402,8 +409,12 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       borderRadius: '5px',
                       background: categoryGradient(project.category),
                       flexShrink: 0,
+                      position: 'relative',
+                      overflow: 'hidden',
                     }}
-                  />
+                  >
+                    <ProjectArtwork project={project} sizes="80px" />
+                  </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
                       style={{

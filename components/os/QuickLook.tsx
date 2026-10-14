@@ -3,15 +3,18 @@
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuickLookStore } from '@/store/quickLookStore'
-import { projects } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
+import { getProjectBySlug } from '@/lib/content'
+import { categoryGradient, projectMeta } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
+import { useLocaleStore } from '@/store/localeStore'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
 import { springs, duration } from '@/lib/motion'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 export function QuickLook() {
   const { isOpen, projectId, close } = useQuickLookStore()
-  const project = projects.find((p) => p.id === projectId)
+  const locale = useLocaleStore((s) => s.locale)
+  const project = projectId ? getProjectBySlug(projectId, locale) : undefined
   const panelRef = useRef<HTMLDivElement>(null)
 
   useFocusTrap(panelRef, isOpen && !!project)
@@ -93,6 +96,7 @@ export function QuickLook() {
                 position: 'relative',
               }}
             >
+              <ProjectArtwork project={project} sizes="480px" />
               <div
                 style={{
                   position: 'absolute',
@@ -138,7 +142,7 @@ export function QuickLook() {
                   margin: 0,
                 }}
               >
-                {project.description}
+                {project.summary}
               </p>
               <div style={{ display: 'flex', gap: '6px', marginTop: '16px', flexWrap: 'wrap' }}>
                 {project.tags.map((tag) => (
@@ -169,10 +173,11 @@ export function QuickLook() {
                 }}
               >
                 <span style={{ fontSize: '12px', color: '#a0a0a5' }}>
-                  {project.year}
-                  {project.client ? ` · ${project.client}` : ''}
+                  {projectMeta(project, locale)}
                 </span>
-                <span style={{ fontSize: '11px', color: '#999' }}>Press Space or Esc to close</span>
+                <span style={{ fontSize: '11px', color: '#999' }}>
+                  {locale === 'it' ? 'Spazio o Esc per chiudere' : 'Space or Esc to close'}
+                </span>
               </div>
             </div>
           </motion.div>

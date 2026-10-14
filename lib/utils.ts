@@ -1,7 +1,16 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import type { CSSProperties } from 'react'
-import type { Platform, ProjectCategory, WindowSizePreset, WindowSize } from '@/types'
+import type {
+  Platform,
+  Project,
+  ProjectCategory,
+  WindowSizePreset,
+  WindowSize,
+  Locale,
+} from '@/types'
+import { categoryLabel } from '@/core/registries/categories'
+import { uiText } from '@/core/registries/locale'
 
 // ─── Tailwind Class Merging ───────────────────────────────────────────────────
 
@@ -94,6 +103,15 @@ export const CATEGORY_GRADIENTS: Record<string, string> = {
 
 export function categoryGradient(category: ProjectCategory | string): string {
   return CATEGORY_GRADIENTS[category] ?? 'linear-gradient(135deg, #ECECEC, #CCC)'
+}
+
+export function projectMeta(project: Project, locale: Locale): string {
+  return [
+    categoryLabel(project.category),
+    project.status === 'in-progress' ? uiText[locale].inDevelopment : project.year,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 }
 
 // macOS Sonoma dark widget material — shared by every desktop widget so glass

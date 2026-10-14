@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { galleryFade } from '@/lib/motion'
 import { getProjectBySlug } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
-import { categoryLabel } from '@/core/registries/categories'
+import { categoryGradient, projectMeta } from '@/lib/utils'
 import { useMobileMotion } from './useMobileMotion'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { ProjectStory } from '@/components/apps/ProjectStory'
 
 interface MobileProjectViewProps {
   projectId: string
@@ -15,8 +15,9 @@ interface MobileProjectViewProps {
 }
 
 export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps) {
-  const project = getProjectBySlug(projectId)
-  const text = uiText[useLocaleStore((state) => state.locale)]
+  const locale = useLocaleStore((state) => state.locale)
+  const project = getProjectBySlug(projectId, locale)
+  const text = uiText[locale]
   const { reduced, appTransition } = useMobileMotion()
 
   if (!project) {
@@ -66,8 +67,10 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
           display: 'flex',
           alignItems: 'flex-end',
           flexShrink: 0,
+          overflow: 'hidden',
         }}
       >
+        <ProjectArtwork project={project} />
         <div
           style={{
             position: 'absolute',
@@ -121,7 +124,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               fontWeight: 500,
             }}
           >
-            {categoryLabel(project.category)} · {project.year}
+            {projectMeta(project, locale)}
           </div>
           <div
             style={{
@@ -139,84 +142,8 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
         </div>
       </div>
 
-      {/* Body */}
       <div style={{ padding: '28px 24px 44px' }}>
-        <p
-          style={{
-            fontSize: '17px',
-            lineHeight: 1.65,
-            color: '#2a2a2c',
-            margin: '0 0 26px',
-            letterSpacing: '-0.015em',
-          }}
-        >
-          {project.description}
-        </p>
-
-        {/* Gallery */}
-        {project.gallery.slice(0, 3).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              width: '100%',
-              aspectRatio: '4/3',
-              borderRadius: '16px',
-              marginBottom: '14px',
-              background: gradient,
-              opacity: galleryFade(i),
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04),0 8px 20px rgba(0,0,0,0.07)',
-            }}
-            aria-hidden="true"
-          />
-        ))}
-
-        {/* Credits */}
-        <div
-          style={{
-            marginTop: '24px',
-            paddingTop: '24px',
-            borderTop: '0.5px solid rgba(0,0,0,0.08)',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '10px',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: '#b0b0b5',
-              fontWeight: 600,
-              marginBottom: '14px',
-            }}
-          >
-            {text.credits}
-          </div>
-
-          {project.credits.map((credit, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '10px 0',
-                borderBottom: '0.5px solid rgba(0,0,0,0.05)',
-              }}
-            >
-              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{credit.role}</span>
-              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 500 }}>
-                {credit.name}
-              </span>
-            </div>
-          ))}
-
-          {project.client && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '14px' }}>
-              <span style={{ fontSize: '13px', color: '#a0a0a5' }}>{text.client}</span>
-              <span style={{ fontSize: '13px', color: '#161617', fontWeight: 600 }}>
-                {project.client}
-              </span>
-            </div>
-          )}
-        </div>
+        <ProjectStory project={project} locale={locale} mobile />
       </div>
     </motion.div>
   )

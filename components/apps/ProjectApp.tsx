@@ -2,17 +2,21 @@
 
 import { motion } from 'framer-motion'
 import { getProjectBySlug } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
-import { categoryLabel } from '@/core/registries/categories'
-import { springs, staggerDelay, galleryFade } from '@/lib/motion'
+import { categoryGradient, projectMeta } from '@/lib/utils'
+import { springs } from '@/lib/motion'
 import styles from './AppResponsive.module.css'
+import { useLocaleStore } from '@/store/localeStore'
+import { uiText } from '@/core/registries/locale'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { ProjectStory } from './ProjectStory'
 
 interface ProjectAppProps {
   projectId: string
 }
 
 export function ProjectApp({ projectId }: ProjectAppProps) {
-  const project = getProjectBySlug(projectId)
+  const locale = useLocaleStore((s) => s.locale)
+  const project = getProjectBySlug(projectId, locale)
 
   if (!project) {
     return (
@@ -27,7 +31,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
           fontSize: '13px',
         }}
       >
-        Project not found.
+        {uiText[locale].projectNotFound}
       </div>
     )
   }
@@ -58,6 +62,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
           flexShrink: 0,
         }}
       >
+        <ProjectArtwork project={project} />
         {/* Bottom gradient */}
         <div
           style={{
@@ -91,7 +96,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
               marginBottom: '10px',
             }}
           >
-            {categoryLabel(project.category)} — {project.year}
+            {projectMeta(project, locale)}
           </p>
           <h1
             style={{
@@ -121,166 +126,14 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
         </motion.div>
       </motion.div>
 
-      {/* Body */}
-      <div style={{ padding: 'var(--project-body)', maxWidth: '660px' }}>
-        {/* Description */}
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, ...springs.default }}
-          style={{
-            fontSize: '22px',
-            color: '#2a2a2c',
-            lineHeight: 1.6,
-            letterSpacing: '-0.018em',
-            marginBottom: '48px',
-            fontFamily: 'var(--font-display)',
-          }}
-        >
-          {project.description}
-        </motion.p>
-
-        {/* Gallery hero image */}
-        {project.gallery.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.28, ...springs.default }}
-            style={{ marginBottom: '48px' }}
-          >
-            <div
-              style={{
-                width: '100%',
-                aspectRatio: '16/9',
-                borderRadius: '16px',
-                background: coverGradient,
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              }}
-              aria-label="Project hero image"
-            />
-          </motion.div>
-        )}
-
-        {/* Additional gallery grid */}
-        {project.gallery.length > 1 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.35 }}
-            style={{ marginBottom: '48px' }}
-          >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              {project.gallery.slice(1, 3).map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35 + i * staggerDelay(2), ...springs.default }}
-                  style={{
-                    aspectRatio: '4/3',
-                    borderRadius: '12px',
-                    background: coverGradient,
-                    opacity: galleryFade(i),
-                    overflow: 'hidden',
-                  }}
-                  aria-label={`Gallery image ${i + 2}`}
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Credits */}
-        {project.credits.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, ...springs.default }}
-            style={{
-              borderTop: '0.5px solid rgba(0,0,0,0.08)',
-              paddingTop: '32px',
-              marginBottom: '32px',
-            }}
-          >
-            <p
-              style={{
-                fontSize: '10px',
-                fontWeight: 600,
-                color: '#b0b0b5',
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                marginBottom: '20px',
-              }}
-            >
-              Credits
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {project.credits.map((credit, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between',
-                    gap: '16px',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      color: '#a0a0a5',
-                      letterSpacing: '0.01em',
-                      flexShrink: 0,
-                      minWidth: '160px',
-                    }}
-                  >
-                    {credit.role}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#2a2a2c',
-                      letterSpacing: '-0.008em',
-                    }}
-                  >
-                    {credit.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Tags */}
-        {project.tags.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.55 }}
-            style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}
-          >
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  color: '#5e5e63',
-                  background: 'rgba(0,0,0,0.05)',
-                  borderRadius: '6px',
-                  padding: '4px 9px',
-                  letterSpacing: '0.01em',
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </motion.div>
-        )}
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, ...springs.default }}
+        style={{ padding: 'var(--project-body)', maxWidth: '660px' }}
+      >
+        <ProjectStory project={project} locale={locale} />
+      </motion.div>
     </div>
   )
 }

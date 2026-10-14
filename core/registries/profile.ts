@@ -3,40 +3,52 @@ import type { Locale, NoteEntry } from '@/types'
 
 /** Professional copy drafted from Carlo's supplied CV and cover letter. */
 export const profile = {
-  title: 'Communication & Creative Project Manager',
-  portrait: '/images/profile/carlo-desantis.jpeg',
-  location: { en: 'Milan, Italy', it: 'Milano, Italia' },
+  title: 'Creative & Digital Designer',
+  location: {
+    en: 'Milan, Italy',
+    it: 'Milano, Italia',
+  },
   summary: {
-    en: 'I connect communication, creative production and digital development, managing projects from the first brief to delivery.',
-    it: 'Collego comunicazione, produzione creativa e sviluppo digitale, seguendo i progetti dal primo brief alla consegna.',
+    en: 'I connect brand communication, UX/UI and web development with photo and video production, taking projects from the brief to the work people see and use.',
+    it: 'Collego comunicazione di brand, UX/UI e sviluppo web alla produzione foto e video, portando i progetti dal brief a ciò che le persone vedono e utilizzano.',
   },
   bio: {
     en: [
-      'I work across communication and creative projects, bringing together client relationships, project management and hands-on execution. Based in Milan, I coordinate clients, creative and technical teams from briefing and planning through production and delivery.',
-      'Alongside my agency work, I develop concepts and produce photography, video and branded content for advertising, social campaigns and music. My development background also connects creative direction with UX/UI design and digital implementation.',
-      'AI is part of my practical workflow: I use it for ideation, visual exploration, prototyping, coding and audiovisual production, refining the results through design, production and development skills.',
+      'I’m Carlo Desantis, a creative and digital designer based in Milan. I work across brand communication, interface design, web development and visual content, combining creative thinking with hands-on production.',
+      'My work ranges from the new ECR Group website and TakeCare’s product experience to digital projects for Temakinho, POP and Zendra Systems. I also contribute to advertising productions and develop photo and video content for music artists.',
+      'In agency and independent projects, I bring together clients, creative teams and developers around a clear brief, workable priorities and delivery. I can take responsibility for a website’s design and implementation, contribute to a brand’s creative direction, or support a production on set.',
+      'I use AI for research, exploration, prototyping and production, alongside design and development tools. The value I bring is connecting the idea, the people involved and the work needed to make it happen.',
     ],
     it: [
-      'Lavoro nella comunicazione e nei progetti creativi, unendo relazione con i clienti, gestione del progetto e realizzazione concreta. Da Milano coordino clienti, team creativi e tecnici dal brief e dalla pianificazione fino alla produzione e alla consegna.',
-      'Accanto al lavoro in agenzia, sviluppo concept e produco fotografia, video e branded content per advertising, campagne social e musica. Il mio background nello sviluppo collega anche direzione creativa, UX/UI e realizzazione digitale.',
-      'L’AI fa parte del mio workflow operativo: la utilizzo per ideazione, esplorazione visiva, prototipazione, codice e produzione audiovisiva, rifinendo i risultati con competenze di design, produzione e sviluppo.',
+      'Sono Carlo Desantis, creative e digital designer con base a Milano. Lavoro tra comunicazione di brand, progettazione di interfacce, sviluppo web e contenuti visivi, unendo pensiero creativo e realizzazione concreta.',
+      'I miei progetti spaziano dal nuovo sito di ECR Group all’esperienza di prodotto di TakeCare, fino ai lavori digitali per Temakinho, POP e Zendra Systems. Contribuisco inoltre a produzioni pubblicitarie e sviluppo contenuti foto e video per artisti musicali.',
+      'Nei progetti di agenzia e indipendenti metto in relazione clienti, team creativi e sviluppatori attraverso un brief chiaro, priorità concrete e attenzione alla consegna. Posso seguire design e implementazione di un sito, contribuire alla direzione creativa di un brand o supportare una produzione sul set.',
+      'Utilizzo l’AI per ricerca, esplorazione, prototipazione e produzione, insieme agli strumenti di design e sviluppo. Il mio contributo è collegare l’idea, le persone coinvolte e il lavoro necessario per realizzarla.',
     ],
   },
+  portrait: '/images/profile/carlo-desantis.jpeg',
   expertise: {
     en: [
-      'Communication & clients',
-      'Project management',
-      'Creative & content',
-      'Digital & development',
+      'Brand & communication',
+      'Digital design & development',
+      'Photo, video & production',
+      'Project & client coordination',
       'AI tools & workflows',
     ],
     it: [
-      'Comunicazione e clienti',
-      'Project management',
-      'Creatività e contenuti',
-      'Digitale e sviluppo',
+      'Brand e comunicazione',
+      'Design e sviluppo digitale',
+      'Foto, video e produzione',
+      'Coordinamento di progetti e clienti',
       'Strumenti e workflow AI',
     ],
+  },
+  seo: {
+    title: 'Carlo Desantis — Creative & Digital Designer',
+    description: {
+      en: 'Brand communication, UX/UI, web development and visual content. Selected work by Carlo Desantis, a creative and digital designer based in Milan.',
+      it: 'Comunicazione di brand, UX/UI, sviluppo web e contenuti visivi. Progetti selezionati di Carlo Desantis, creative e digital designer a Milano.',
+    },
   },
 } as const
 

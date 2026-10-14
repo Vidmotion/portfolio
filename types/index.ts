@@ -15,17 +15,38 @@ export interface ProjectCredit {
   name: string
 }
 
+export interface ProjectImage {
+  src: string
+  width: number
+  height: number
+  alt: string
+  caption: string
+}
+
+export interface ProjectSection {
+  title: string
+  body: string
+}
+
 export interface Project {
   id: string
   slug: string
   title: string
   category: ProjectCategory
-  year: number
+  year?: number
   client?: string
+  agency?: string
+  status?: 'in-progress'
+  summary: string
+  subtitle: string
   description: string
+  role: string
+  sections: ProjectSection[]
+  deliverables: string[]
+  links: { label: string; href: string }[]
   coverAspectRatio?: '16:9' | '4:3' | '3:2' | '1:1'
   cover: string
-  gallery: string[]
+  gallery: ProjectImage[]
   credits: ProjectCredit[]
   tags: string[]
   featured: boolean

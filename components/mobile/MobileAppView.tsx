@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion'
 import { springs, staggerDelay } from '@/lib/motion'
-import { projects } from '@/lib/content'
-import { categoryGradient } from '@/lib/utils'
+import { getProjects } from '@/lib/content'
+import { categoryGradient, projectMeta } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
 import { categories } from '@/core/registries/categories'
 import { MacOSFolderIcon } from '@/components/ui/MacOSFolderIcon'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
 import type { ProjectCategory } from '@/types'
 import { useMobileMotion } from './useMobileMotion'
 
@@ -26,6 +27,7 @@ export function MobileAppView({
   onBack,
 }: MobileAppViewProps) {
   const locale = useLocaleStore((s) => s.locale)
+  const projects = getProjects(locale)
   const { appEntrance, transformOrigin, present } = useMobileMotion()
   const text = uiText[locale]
   const filtered = category ? projects.filter((p) => p.category === category) : []
@@ -158,6 +160,7 @@ export function MobileAppView({
                 boxShadow: '0 1px 2px rgba(0,0,0,0.04),0 10px 26px rgba(0,0,0,0.1)',
               }}
             >
+              <ProjectArtwork project={project} sizes="(max-width: 767px) 100vw, 400px" />
               <span
                 style={{
                   position: 'absolute',
@@ -187,7 +190,7 @@ export function MobileAppView({
                 {project.title}
               </div>
               <div style={{ fontSize: '13px', color: '#a0a0a5', marginTop: '1px' }}>
-                {categoryLabel(project.category)} · {project.year}
+                {projectMeta(project, locale)}
               </div>
             </div>
           </motion.button>

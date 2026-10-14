@@ -3,10 +3,11 @@
 import { motion } from 'framer-motion'
 import { useWindowStore } from '@/store/windowStore'
 import { getFeaturedProjects } from '@/lib/content'
-import { categoryGradient, widgetDarkGlass } from '@/lib/utils'
+import { categoryGradient, projectMeta, widgetDarkGlass } from '@/lib/utils'
 import { springs, staggerDelay } from '@/lib/motion'
 
-const featured = getFeaturedProjects().slice(0, 3)
+import { useLocaleStore } from '@/store/localeStore'
+import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
 
 interface RecentProjectsWidgetProps {
   elevated?: boolean
@@ -14,6 +15,8 @@ interface RecentProjectsWidgetProps {
 
 export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
   const { openWindow } = useWindowStore()
+  const locale = useLocaleStore((s) => s.locale)
+  const featured = getFeaturedProjects(locale).slice(0, 3)
 
   return (
     <div
@@ -42,7 +45,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
           marginBottom: '10px',
         }}
       >
-        Recent Projects
+        {locale === 'it' ? 'Progetti selezionati' : 'Selected Projects'}
       </div>
 
       {/* Project rows */}
@@ -77,10 +80,14 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
                 borderRadius: '10px',
                 background: categoryGradient(project.category),
                 flexShrink: 0,
+                position: 'relative',
+                overflow: 'hidden',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.40)',
               }}
               aria-hidden
-            />
+            >
+              <ProjectArtwork project={project} sizes="80px" />
+            </div>
             {/* Text */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
@@ -104,7 +111,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
                   textTransform: 'capitalize',
                 }}
               >
-                {project.category.replace(/-/g, ' ')} · {project.year}
+                {projectMeta(project, locale)}
               </div>
             </div>
             {/* Chevron */}
