@@ -50,10 +50,15 @@ for (const [id, definition] of Object.entries(definitions)) {
     const cleaned = attributes.replace(/\s+(width|height|viewBox)="[^"]*"/g, '')
     return `<svg${cleaned} width="${width * renderScale}" height="${height * renderScale}" viewBox="${viewBox}">`
   })
-  await sharp(Buffer.from(screen))
+  const raster = await sharp(Buffer.from(screen))
     .resize({ width: 432, height: 432, fit: 'inside' })
     .png()
-    .toFile(fileURLToPath(new URL(`${id}.png`, neutralDestination)))
+    .toBuffer()
+  await writeFile(new URL(`${id}.png`, neutralDestination), raster)
+  // Lossless WebP keeps the exact Retina pixels while reducing every shell's transfer.
+  await sharp(raster)
+    .webp({ lossless: true, effort: 6 })
+    .toFile(fileURLToPath(new URL(`${id}.webp`, neutralDestination)))
   await writeFile(new URL(`${id}.svg`, neutralDestination), screen)
 }
 console.log(

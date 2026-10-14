@@ -14,5 +14,5 @@ export const appIcons = {
 } satisfies Record<ApplicationId, IconId>
 
 export function iconSource(id: IconId) {
-  return `/icons/shared/${id}.png`
+  return `/icons/shared/${id}.webp`
 }

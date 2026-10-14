@@ -9,15 +9,19 @@ export { getProjects }
 export const projects = getProjects('en')
 export const notes: NoteEntry[] = [getProfileNote('en')]
 
-export const albums: PhotoAlbum[] = [
-  {
-    id: 'portraits',
-    title: 'Portraits',
-    coverPhoto: photos[0].src,
-    photos: photos.map((photo) => photo.src),
-    count: photos.length,
-  },
-]
+export const albums: PhotoAlbum[] = [...new Set(photos.map((photo) => photo.album))].map((id) => {
+  const collection = photos.filter((photo) => photo.album === id)
+  return {
+    id,
+    title:
+      id === 'portraits'
+        ? 'Portraits'
+        : getProjects('en').find((project) => project.id === id)!.title,
+    coverPhoto: collection[0].src,
+    photos: collection.map((photo) => photo.src),
+    count: collection.length,
+  }
+})
 
 export function getProjectBySlug(slug: string, locale: Locale = 'en'): Project | undefined {
   return getProjects(locale).find((project) => project.slug === slug)

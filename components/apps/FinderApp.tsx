@@ -315,20 +315,6 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     }}
                   >
                     <ProjectArtwork project={project} sizes="300px" />
-                    <span
-                      style={{
-                        position: 'absolute',
-                        top: '11px',
-                        left: '13px',
-                        fontFamily: '"JetBrains Mono", "SF Mono", monospace',
-                        fontSize: '8px',
-                        letterSpacing: '0.06em',
-                        color: 'rgba(255,255,255,0.7)',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {project.category.replace('-', ' ')}
-                    </span>
                   </div>
 
                   {/* Labels */}

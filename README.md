@@ -48,3 +48,18 @@ The shared biography is in `core/registries/profile.ts`. English is the landing
 language. Omit unconfirmed project years, and keep pre-launch work marked as
 `in-progress`. Add real media under `public/images/projects/` with its dimensions
 and localized captions; avoid demo work or invented production credits.
+
+Project previews use the same `ProjectArtwork` component in every shell. A case's
+`preview` settings define its solid brand background and optical logo size; `cover`
+points to a local transparent PNG. Artist photography can use `cover` without
+`preview`. Keep logos centered and use approved photography for artist previews. Gallery images can have a `locale` so
+Admiral's screenshots and outgoing landing links follow EN/IT together.
+
+Artist galleries marked `mediaLayout: 'editorial'` also populate the shared Photos
+library and its albums. Add images to the project once to update the case and
+Photos on all three devices. Video previews have local posters and load on play.
+
+Only the detected device shell loads during boot. Wallpapers have AVIF/WebP
+variants, and `icons:prepare` generates lossless WebP from the same Retina raster
+as the PNG reference. Original SVG masters, animation timings and interactions
+remain unchanged.

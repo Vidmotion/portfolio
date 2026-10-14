@@ -7,7 +7,7 @@ import { getProjectBySlug } from '@/lib/content'
 import { categoryGradient, projectMeta } from '@/lib/utils'
 import { categoryLabel } from '@/core/registries/categories'
 import { useLocaleStore } from '@/store/localeStore'
-import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { ProjectArtwork, projectCoverTextColor } from '@/components/ui/ProjectArtwork'
 import { springs, duration } from '@/lib/motion'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 
@@ -101,7 +101,9 @@ export function QuickLook() {
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.4) 100%)',
+                  background: project.preview
+                    ? 'none'
+                    : 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.4) 100%)',
                 }}
               />
               <div style={{ position: 'absolute', bottom: '20px', left: '24px', right: '24px' }}>
@@ -110,7 +112,9 @@ export function QuickLook() {
                     fontSize: '10px',
                     letterSpacing: '0.18em',
                     textTransform: 'uppercase',
-                    color: 'rgba(255,255,255,0.72)',
+                    color: project.preview
+                      ? projectCoverTextColor(project)
+                      : 'rgba(255,255,255,0.72)',
                     fontWeight: 600,
                     marginBottom: '6px',
                   }}
@@ -123,7 +127,7 @@ export function QuickLook() {
                     fontWeight: 600,
                     letterSpacing: '-0.03em',
                     lineHeight: 1.05,
-                    color: '#fff',
+                    color: projectCoverTextColor(project),
                     fontFamily: 'var(--font-display)',
                   }}
                 >

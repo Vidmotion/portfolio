@@ -60,9 +60,36 @@ export function ProjectStory({
         </section>
       )}
 
+      {project.videos?.length ? (
+        <section
+          className={styles.section}
+          aria-label={locale === 'it' ? 'Video del progetto' : 'Project videos'}
+        >
+          {project.videos.map((video) => (
+            <figure className={styles.figure} key={video.src}>
+              <video
+                data-project-video={project.id}
+                src={video.src}
+                poster={video.poster}
+                width={video.width}
+                height={video.height}
+                controls
+                playsInline
+                preload="none"
+                aria-label={video.caption}
+              />
+              <figcaption>{video.caption}</figcaption>
+            </figure>
+          ))}
+        </section>
+      ) : null}
+
       {project.gallery.length > 0 && (
-        <section className={styles.section} aria-label={text.projectGallery}>
-          {project.gallery.map((image) => (
+        <section
+          className={`${styles.section} ${project.mediaLayout === 'editorial' && project.gallery.length > 2 ? styles.editorial : ''}`}
+          aria-label={text.projectGallery}
+        >
+          {project.gallery.map((image, index) => (
             <figure className={styles.figure} key={image.src}>
               <a
                 href={image.src}
@@ -75,7 +102,11 @@ export function ProjectStory({
                   alt={image.alt}
                   width={image.width}
                   height={image.height}
-                  sizes="(max-width: 767px) calc(100vw - 48px), 720px"
+                  sizes={
+                    project.mediaLayout === 'editorial' && project.gallery.length > 2 && index > 0
+                      ? '(max-width: 420px) calc(100vw - 48px), (max-width: 767px) calc(50vw - 32px), 320px'
+                      : '(max-width: 767px) calc(100vw - 48px), 720px'
+                  }
                 />
               </a>
               <figcaption>{image.caption}</figcaption>

@@ -1,31 +1,38 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { duration } from '@/lib/motion'
 import { identity } from '@/core/registries/identity'
 
 interface BootScreenProps {
   onComplete: () => void
+  ready?: boolean
 }
 
 const LOGO_HOLD = 500
 const PROGRESS_DURATION = 800
 const FINAL_HOLD = 300
 
-export function BootScreen({ onComplete }: BootScreenProps) {
+export function BootScreen({ onComplete, ready = true }: BootScreenProps) {
   const [progress, setProgress] = useState(0)
   const [exiting, setExiting] = useState(false)
+  const readyRef = useRef(ready)
+  useEffect(() => {
+    readyRef.current = ready
+  }, [ready])
 
   useEffect(() => {
     const startTime = Date.now()
+    let frame = 0
+    let completionTimer: ReturnType<typeof setTimeout> | undefined
 
     const tick = () => {
       const elapsed = Date.now() - startTime
 
       if (elapsed < LOGO_HOLD) {
         setProgress(0)
-        requestAnimationFrame(tick)
+        frame = requestAnimationFrame(tick)
         return
       }
 
@@ -33,16 +40,19 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       const p = Math.min(progressElapsed / PROGRESS_DURATION, 1)
       setProgress(p)
 
-      if (elapsed < LOGO_HOLD + PROGRESS_DURATION + FINAL_HOLD) {
-        requestAnimationFrame(tick)
+      if (elapsed < LOGO_HOLD + PROGRESS_DURATION + FINAL_HOLD || !readyRef.current) {
+        frame = requestAnimationFrame(tick)
       } else {
         setExiting(true)
-        setTimeout(() => onComplete(), duration.window * 1000)
+        completionTimer = setTimeout(onComplete, duration.window * 1000)
       }
     }
 
-    const raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    frame = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(frame)
+      clearTimeout(completionTimer)
+    }
   }, [onComplete])
 
   return (
@@ -123,7 +133,13 @@ export function BootScreen({ onComplete }: BootScreenProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.3 }}
-            style={{ width: '180px', height: '3px', borderRadius: '9999px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}
+            style={{
+              width: '180px',
+              height: '3px',
+              borderRadius: '9999px',
+              background: 'rgba(255,255,255,0.08)',
+              overflow: 'hidden',
+            }}
             role="progressbar"
             aria-valuenow={Math.round(progress * 100)}
             aria-valuemin={0}

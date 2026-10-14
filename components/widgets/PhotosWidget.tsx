@@ -33,7 +33,7 @@ export function PhotosWidget({ elevated }: PhotosWidgetProps) {
         borderRadius: '26px',
         overflow: 'hidden',
         position: 'relative',
-        background: 'url(/photos-featured.jpg) center/cover no-repeat, linear-gradient(135deg, #2d1b3d, #1a2a4a)',
+        background: 'url(/images/projects/riri2k/bling-bling.webp) center/cover no-repeat, linear-gradient(135deg, #2d1b3d, #1a2a4a)',
         boxShadow: (elevated ? ELEVATED_SHADOW : RESTING_SHADOW).join(', '),
       }}
       aria-label="Photos widget — Featured"

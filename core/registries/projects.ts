@@ -1,12 +1,16 @@
-import type { Locale, Project, ProjectImage } from '@/types'
+import type { Locale, Project, ProjectImage, ProjectVideo } from '@/types'
 
 type ProjectCopy = Pick<
   Project,
   'summary' | 'subtitle' | 'description' | 'role' | 'sections' | 'deliverables' | 'links'
 >
-type ProjectDefinition = Omit<Project, keyof ProjectCopy | 'gallery' | 'credits'> & {
+type ProjectDefinition = Omit<Project, keyof ProjectCopy | 'gallery' | 'videos' | 'credits'> & {
   copy: Record<Locale, ProjectCopy>
-  images: (Omit<ProjectImage, 'alt' | 'caption'> & { caption: Record<Locale, string> })[]
+  images: (Omit<ProjectImage, 'alt' | 'caption'> & {
+    caption: Record<Locale, string>
+    locale?: Locale
+  })[]
+  videos?: (Omit<ProjectVideo, 'caption'> & { caption: Record<Locale, string> })[]
 }
 
 /** Canonical portfolio content. Edit a case here to update all device experiences. */
@@ -19,7 +23,8 @@ const definitions: ProjectDefinition[] = [
     featured: true,
     slug: 'ecr-group',
     status: 'in-progress',
-    cover: '/images/projects/ecr-group/ecr-desktop-home.webp',
+    cover: '/images/projects/logos/ecr-group.png',
+    preview: { background: '#1866a5', logoWidth: 47, logoHeight: 30 },
     images: [
       {
         src: '/images/projects/ecr-group/ecr-desktop-home.webp',
@@ -208,7 +213,8 @@ const definitions: ProjectDefinition[] = [
     featured: true,
     slug: 'pop',
     agency: 'Vidmotion',
-    cover: '/images/projects/pop/pop-desktop-home.webp',
+    cover: '/images/projects/logos/pop.png',
+    preview: { background: '#DA0613', logoWidth: 42, logoHeight: 32 },
     images: [
       {
         src: '/images/projects/pop/pop-desktop-home.webp',
@@ -281,8 +287,28 @@ const definitions: ProjectDefinition[] = [
     featured: true,
     slug: 'temakinho',
     agency: 'Vidmotion',
-    cover: '',
-    images: [],
+    cover: '/images/projects/logos/temakinho.png',
+    preview: { background: '#9E3910', logoWidth: 42, logoHeight: 32 },
+    images: [
+      {
+        src: '/images/projects/temakinho/homepage-design.webp',
+        width: 1600,
+        height: 3783,
+        caption: {
+          en: 'Homepage · design export',
+          it: 'Homepage · tavola di design',
+        },
+      },
+      {
+        src: '/images/projects/temakinho/rimini-design.webp',
+        width: 1600,
+        height: 1050,
+        caption: {
+          en: 'Rimini · restaurant page design',
+          it: 'Rimini · design della pagina ristorante',
+        },
+      },
+    ],
     tags: ['UX/UI', 'Front-end', 'Back-end', 'Rebranding contribution'],
     copy: {
       en: {
@@ -334,7 +360,8 @@ const definitions: ProjectDefinition[] = [
     client: 'TakeCare',
     featured: true,
     slug: 'takecare',
-    cover: '/images/projects/takecare/takecare-desktop-home.webp',
+    cover: '/images/projects/logos/takecare.png',
+    preview: { background: '#6E8431', tone: 'white', logoWidth: 30, logoHeight: 34 },
     images: [
       {
         src: '/images/projects/takecare/takecare-desktop-home.webp',
@@ -425,7 +452,8 @@ const definitions: ProjectDefinition[] = [
     featured: true,
     slug: 'zendra',
     agency: 'Vidmotion',
-    cover: '',
+    cover: '/images/projects/logos/zendra.png',
+    preview: { background: '#111111', logoWidth: 42, logoHeight: 30 },
     images: [],
     tags: ['UX/UI', 'Front-end', 'Back-end', 'Corporate website'],
     copy: {
@@ -478,8 +506,55 @@ const definitions: ProjectDefinition[] = [
     client: 'Riri2k',
     featured: true,
     slug: 'riri2k',
-    cover: '',
-    images: [],
+    cover: '/images/projects/riri2k/bling-bling.webp',
+    mediaLayout: 'editorial',
+    images: [
+      {
+        src: '/images/projects/riri2k/bling-6.webp',
+        width: 2400,
+        height: 1600,
+        caption: {
+          en: 'BLING BLING · artist photography',
+          it: 'BLING BLING · fotografia dell’artista',
+        },
+      },
+      {
+        src: '/images/projects/riri2k/bling-1.webp',
+        width: 2400,
+        height: 3600,
+        caption: {
+          en: 'BLING BLING · styling and close-up',
+          it: 'BLING BLING · styling e dettaglio',
+        },
+      },
+      {
+        src: '/images/projects/riri2k/bling-2.webp',
+        width: 2400,
+        height: 3600,
+        caption: {
+          en: 'BLING BLING · promotional portrait',
+          it: 'BLING BLING · ritratto promozionale',
+        },
+      },
+      {
+        src: '/images/projects/riri2k/bling-4.webp',
+        width: 2400,
+        height: 3600,
+        caption: {
+          en: 'BLING BLING · photographic series',
+          it: 'BLING BLING · serie fotografica',
+        },
+      },
+      {
+        src: '/images/projects/riri2k/bling-5.webp',
+        width: 2400,
+        height: 1601,
+        caption: {
+          en: 'BLING BLING · visual identity',
+          it: 'BLING BLING · identità visiva',
+        },
+      },
+    ],
     tags: ['Artist communication', 'Photo & video content', 'Music marketing'],
     copy: {
       en: {
@@ -532,8 +607,90 @@ const definitions: ProjectDefinition[] = [
     featured: false,
     slug: 'admiral',
     agency: 'Vidmotion',
-    cover: '',
-    images: [],
+    cover: '/images/projects/logos/admiral.png',
+    preview: { background: '#DB0032', logoWidth: 48, logoHeight: 30 },
+    images: [
+      {
+        src: '/images/projects/admiral/bonus-en-desktop.webp',
+        width: 1440,
+        height: 960,
+        locale: 'en',
+        caption: {
+          en: 'Bonus landing page · desktop · English',
+          it: 'Landing Bonus · desktop · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/bonus-en-mobile.webp',
+        width: 780,
+        height: 1688,
+        locale: 'en',
+        caption: {
+          en: 'Bonus landing page · mobile · English',
+          it: 'Landing Bonus · mobile · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/welcomeoffer-en-desktop.webp',
+        width: 1440,
+        height: 960,
+        locale: 'en',
+        caption: {
+          en: 'Welcome Offer landing page · desktop · English',
+          it: 'Landing Welcome Offer · desktop · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/welcomeoffer-en-mobile.webp',
+        width: 780,
+        height: 1688,
+        locale: 'en',
+        caption: {
+          en: 'Welcome Offer landing page · mobile · English',
+          it: 'Landing Welcome Offer · mobile · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/bonus-it-desktop.webp',
+        width: 1440,
+        height: 960,
+        locale: 'it',
+        caption: {
+          en: 'Bonus landing page · desktop · English',
+          it: 'Landing Bonus · desktop · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/bonus-it-mobile.webp',
+        width: 780,
+        height: 1688,
+        locale: 'it',
+        caption: {
+          en: 'Bonus landing page · mobile · English',
+          it: 'Landing Bonus · mobile · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/welcomeoffer-it-desktop.webp',
+        width: 1440,
+        height: 960,
+        locale: 'it',
+        caption: {
+          en: 'Welcome Offer landing page · desktop · English',
+          it: 'Landing Welcome Offer · desktop · italiano',
+        },
+      },
+      {
+        src: '/images/projects/admiral/welcomeoffer-it-mobile.webp',
+        width: 780,
+        height: 1688,
+        locale: 'it',
+        caption: {
+          en: 'Welcome Offer landing page · mobile · English',
+          it: 'Landing Welcome Offer · mobile · italiano',
+        },
+      },
+    ],
     tags: [
       'Landing page design',
       'Web development',
@@ -555,7 +712,10 @@ const definitions: ProjectDefinition[] = [
         summary:
           'Landing page design and development, plus creative support, direction assistance and on-set support for a television commercial.',
         sections: [],
-        links: [],
+        links: [
+          { label: 'Bonus landing page', href: 'https://bonus.admiral.ch/en/' },
+          { label: 'Welcome Offer landing page', href: 'https://welcomeoffer.admiral.ch/en/' },
+        ],
       },
       it: {
         description:
@@ -570,7 +730,10 @@ const definitions: ProjectDefinition[] = [
         summary:
           'Design e sviluppo di landing page, insieme a supporto creativo, aiuto regia e supporto sul set per uno spot televisivo.',
         sections: [],
-        links: [],
+        links: [
+          { label: 'Landing Bonus', href: 'https://bonus.admiral.ch/it/' },
+          { label: 'Landing Welcome Offer', href: 'https://welcomeoffer.admiral.ch/it/' },
+        ],
       },
     },
   },
@@ -582,7 +745,8 @@ const definitions: ProjectDefinition[] = [
     featured: false,
     slug: 'penny',
     agency: 'Vidmotion',
-    cover: '',
+    cover: '/images/projects/logos/penny.png',
+    preview: { background: '#CD1316', logoWidth: 40, logoHeight: 30 },
     images: [],
     tags: [
       'Landing page design',
@@ -626,13 +790,45 @@ const definitions: ProjectDefinition[] = [
   },
   {
     id: 'carla-hero',
+    mediaLayout: 'editorial',
     title: 'Carla Hero',
     category: 'creative-direction',
     client: 'Carla Hero',
     featured: false,
     slug: 'carla-hero',
-    cover: '',
-    images: [],
+    cover: '/images/projects/carla-hero/cover.webp',
+    videos: [
+      {
+        src: '/images/projects/carla-hero/video-preview.mp4',
+        poster: '/images/projects/carla-hero/video-poster.webp',
+        width: 1920,
+        height: 1080,
+        caption: {
+          en: 'Carla Hero · animated title study',
+          it: 'Carla Hero · studio del titolo animato',
+        },
+      },
+    ],
+    images: [
+      {
+        src: '/images/projects/carla-hero/cover.webp',
+        width: 1080,
+        height: 1080,
+        caption: {
+          en: 'Carla Hero · cover artwork',
+          it: 'Carla Hero · artwork di copertina',
+        },
+      },
+      {
+        src: '/images/projects/carla-hero/amorosa.webp',
+        width: 2000,
+        height: 2000,
+        caption: {
+          en: 'Amorosa · cover artwork',
+          it: 'Amorosa · artwork di copertina',
+        },
+      },
+    ],
     tags: ['Artist communication', 'Photo & video content', 'Music marketing'],
     copy: {
       en: {
@@ -684,7 +880,8 @@ const definitions: ProjectDefinition[] = [
     client: 'Ristora',
     featured: false,
     slug: 'ristora',
-    cover: '',
+    cover: '/images/projects/logos/ristora.png',
+    preview: { background: '#E30613', tone: 'white', logoWidth: 40, logoHeight: 30 },
     images: [],
     tags: ['Set support', 'TV production'],
     copy: {
@@ -713,6 +910,349 @@ const definitions: ProjectDefinition[] = [
     },
   },
   {
+    id: 'hollywood-milano',
+    title: 'Hollywood Milano',
+    category: 'digital',
+    client: 'Hollywood Milano',
+    agency: 'Vidmotion',
+    featured: false,
+    slug: 'hollywood-milano',
+    cover: '/images/projects/logos/hollywood-milano.png',
+    preview: { background: '#ff5ecc', tone: 'black', logoWidth: 44, logoHeight: 30 },
+    images: [],
+    tags: ['UX/UI', 'Web development', 'Marketing content', 'Video content', 'Hospitality'],
+    copy: {
+      en: {
+        description:
+          'For Hollywood Milano, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        subtitle: 'Hospitality, music and nightlife.',
+        summary:
+          'For Hollywood Milano, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        role: 'UX/UI, web development, marketing and video content.',
+        deliverables: ['Website UX/UI and development', 'Marketing content', 'Video content'],
+        sections: [],
+        links: [{ label: 'Visit website', href: 'https://hollywoodmilano.com/' }],
+      },
+      it: {
+        description:
+          'Per Hollywood Milano ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        subtitle: 'Hospitality, musica e nightlife.',
+        summary:
+          'Per Hollywood Milano ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        role: 'UX/UI, sviluppo web, contenuti marketing e video.',
+        deliverables: ['UX/UI e sviluppo del sito', 'Contenuti marketing', 'Contenuti video'],
+        sections: [],
+        links: [{ label: 'Visita il sito', href: 'https://hollywoodmilano.com/' }],
+      },
+    },
+  },
+  {
+    id: 'loolapaloosa',
+    title: 'Loolapaloosa',
+    category: 'digital',
+    client: 'Loolapaloosa',
+    agency: 'Vidmotion',
+    featured: false,
+    slug: 'loolapaloosa',
+    cover: '/images/projects/logos/loolapaloosa.png',
+    preview: { background: '#ffff00', tone: 'black', logoWidth: 44, logoHeight: 30 },
+    images: [],
+    tags: ['UX/UI', 'Web development', 'Marketing content', 'Video content', 'Hospitality'],
+    copy: {
+      en: {
+        description:
+          'For Loolapaloosa, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        subtitle: 'Hospitality, music and nightlife.',
+        summary:
+          'For Loolapaloosa, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        role: 'UX/UI, web development, marketing and video content.',
+        deliverables: ['Website UX/UI and development', 'Marketing content', 'Video content'],
+        sections: [],
+        links: [{ label: 'Visit website', href: 'https://loolapaloosamilano.com/' }],
+      },
+      it: {
+        description:
+          'Per Loolapaloosa ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        subtitle: 'Hospitality, musica e nightlife.',
+        summary:
+          'Per Loolapaloosa ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        role: 'UX/UI, sviluppo web, contenuti marketing e video.',
+        deliverables: ['UX/UI e sviluppo del sito', 'Contenuti marketing', 'Contenuti video'],
+        sections: [],
+        links: [{ label: 'Visita il sito', href: 'https://loolapaloosamilano.com/' }],
+      },
+    },
+  },
+  {
+    id: 'nomad',
+    title: 'Nomad Milano',
+    category: 'digital',
+    client: 'Nomad Milano',
+    agency: 'Vidmotion',
+    featured: false,
+    slug: 'nomad',
+    cover: '/images/projects/logos/nomad.png',
+    preview: { background: '#3e2e15', tone: 'original', logoWidth: 44, logoHeight: 30 },
+    images: [],
+    tags: ['UX/UI', 'Web development', 'Marketing content', 'Video content', 'Hospitality'],
+    copy: {
+      en: {
+        description:
+          'For Nomad Milano, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        subtitle: 'Hospitality, music and nightlife.',
+        summary:
+          'For Nomad Milano, I worked on UX/UI and website development, alongside marketing and video content. My contribution connects the digital experience with the material used to communicate the venue’s identity, atmosphere and events.',
+        role: 'UX/UI, web development, marketing and video content.',
+        deliverables: ['Website UX/UI and development', 'Marketing content', 'Video content'],
+        sections: [],
+        links: [],
+      },
+      it: {
+        description:
+          'Per Nomad Milano ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        subtitle: 'Hospitality, musica e nightlife.',
+        summary:
+          'Per Nomad Milano ho lavorato su UX/UI e sviluppo del sito, insieme a contenuti marketing e video. Il mio contributo collega l’esperienza digitale ai materiali utilizzati per comunicare identità, atmosfera ed eventi del locale.',
+        role: 'UX/UI, sviluppo web, contenuti marketing e video.',
+        deliverables: ['UX/UI e sviluppo del sito', 'Contenuti marketing', 'Contenuti video'],
+        sections: [],
+        links: [],
+      },
+    },
+  },
+  {
+    id: 'le-scuderie-milano',
+    title: 'Le Scuderie Milano',
+    category: 'digital',
+    client: 'Le Scuderie Milano',
+    featured: false,
+    slug: 'le-scuderie-milano',
+    cover: '/images/projects/logos/le-scuderie-milano.png',
+    images: [
+      {
+        src: '/images/projects/le-scuderie-milano/website-mockup.webp',
+        width: 2400,
+        height: 1800,
+        caption: {
+          en: 'Website · device mockup',
+          it: 'Sito · mockup di dispositivo',
+        },
+      },
+      {
+        src: '/images/projects/le-scuderie-milano/homepage-design.webp',
+        width: 2000,
+        height: 1328,
+        caption: {
+          en: 'Homepage · design study',
+          it: 'Homepage · studio di design',
+        },
+      },
+    ],
+    tags: ['UX/UI design', 'Web development'],
+    preview: {
+      background: '#f87521',
+      logoWidth: 44,
+      logoHeight: 30,
+    },
+    copy: {
+      en: {
+        description:
+          'I worked on UX/UI and website development for Le Scuderie Milano. The design presents an urban destination through its spaces, events and everyday experiences, bringing a place-based identity into a clear digital structure. The selected material shows the homepage design and its presentation in a device mockup.',
+        summary:
+          'I worked on UX/UI and website development for Le Scuderie Milano. The design presents an urban destination through its spaces, events and everyday experiences, bringing a place-based identity into a clear digital structure. The selected material shows the homepage design and its presentation in a device mockup.',
+        subtitle: 'A new urban destination, translated into a digital experience.',
+        role: 'UX/UI and web development.',
+        deliverables: ['UX/UI design', 'Web development'],
+        sections: [],
+        links: [],
+      },
+      it: {
+        description:
+          'Ho lavorato su UX/UI e sviluppo del sito per Le Scuderie Milano. Il design presenta una destinazione urbana attraverso spazi, eventi ed esperienze quotidiane, portando l’identità di un luogo in una struttura digitale chiara. I materiali selezionati mostrano il design della homepage e la sua presentazione in un mockup di dispositivo.',
+        summary:
+          'Ho lavorato su UX/UI e sviluppo del sito per Le Scuderie Milano. Il design presenta una destinazione urbana attraverso spazi, eventi ed esperienze quotidiane, portando l’identità di un luogo in una struttura digitale chiara. I materiali selezionati mostrano il design della homepage e la sua presentazione in un mockup di dispositivo.',
+        subtitle: 'Una nuova destinazione urbana, tradotta in un’esperienza digitale.',
+        role: 'UX/UI e sviluppo web.',
+        deliverables: ['Design UX/UI', 'Sviluppo web'],
+        sections: [],
+        links: [],
+      },
+    },
+  },
+  {
+    id: 'smallfly',
+    title: 'SmallFly',
+    category: 'digital',
+    client: 'SmallFly',
+    featured: false,
+    slug: 'smallfly',
+    cover: '/images/projects/logos/smallfly.png',
+    images: [],
+    tags: ['Landing page design', 'Web development'],
+    preview: {
+      background: '#00203b',
+      logoWidth: 44,
+      logoHeight: 30,
+    },
+    copy: {
+      en: {
+        description:
+          'I designed and developed a landing page for SmallFly. The work translates the aviation brand’s identity into a focused digital introduction, with attention to content hierarchy, interface clarity and the relationship between visual presentation and navigation.',
+        summary:
+          'I designed and developed a landing page for SmallFly. The work translates the aviation brand’s identity into a focused digital introduction, with attention to content hierarchy, interface clarity and the relationship between visual presentation and navigation.',
+        subtitle: 'A focused digital introduction to an aviation brand.',
+        role: 'Landing page design and development.',
+        deliverables: ['Landing page design', 'Web development'],
+        sections: [],
+        links: [],
+      },
+      it: {
+        description:
+          'Ho progettato e sviluppato una landing page per SmallFly. Il lavoro traduce l’identità del brand dell’aviazione in una presentazione digitale mirata, con attenzione alla gerarchia dei contenuti, alla chiarezza dell’interfaccia e al rapporto tra presentazione visiva e navigazione.',
+        summary:
+          'Ho progettato e sviluppato una landing page per SmallFly. Il lavoro traduce l’identità del brand dell’aviazione in una presentazione digitale mirata, con attenzione alla gerarchia dei contenuti, alla chiarezza dell’interfaccia e al rapporto tra presentazione visiva e navigazione.',
+        subtitle: 'Una presentazione digitale mirata per un brand dell’aviazione.',
+        role: 'Design e sviluppo della landing page.',
+        deliverables: ['Design della landing page', 'Sviluppo web'],
+        sections: [],
+        links: [],
+      },
+    },
+  },
+  {
+    id: 'chef-p',
+    title: 'CHEF P',
+    category: 'creative-direction',
+    client: 'CHEF P',
+    featured: false,
+    slug: 'chef-p',
+    cover: '/images/projects/chef-p/shooting-1.webp',
+    images: [
+      {
+        src: '/images/projects/chef-p/shooting-1.webp',
+        width: 2400,
+        height: 3598,
+        caption: {
+          en: 'CHEF P & DJ Dero · 24/7 shoot',
+          it: 'CHEF P & DJ Dero · shooting 24/7',
+        },
+      },
+      {
+        src: '/images/projects/chef-p/shooting-3.webp',
+        width: 2400,
+        height: 3598,
+        caption: {
+          en: 'CHEF P & DJ Dero · promotional photography',
+          it: 'CHEF P & DJ Dero · fotografia promozionale',
+        },
+      },
+    ],
+    tags: ['Artist photography', 'Promotional shoots'],
+    coverPosition: 'center 12%',
+    mediaLayout: 'editorial',
+    copy: {
+      en: {
+        description:
+          'I have worked with CHEF P on several photographic shoots. This selection includes a shoot with DJ Dero around 24/7, bringing the artists, the release and their visual presence into the same frame. The work focuses on producing strong photographic material for music communication.',
+        summary:
+          'I have worked with CHEF P on several photographic shoots. This selection includes a shoot with DJ Dero around 24/7, bringing the artists, the release and their visual presence into the same frame. The work focuses on producing strong photographic material for music communication.',
+        subtitle: 'Artist photography for music communication.',
+        role: 'Artist photography and photographic shoots.',
+        deliverables: ['Artist photography', 'Promotional shoots'],
+        sections: [],
+        links: [],
+      },
+      it: {
+        description:
+          'Ho lavorato con CHEF P su diversi shooting fotografici. Questa selezione include il servizio con DJ Dero intorno a 24/7, portando gli artisti, il progetto musicale e la loro presenza visiva nella stessa immagine. Il lavoro si concentra sulla produzione di materiale fotografico forte per la comunicazione musicale.',
+        summary:
+          'Ho lavorato con CHEF P su diversi shooting fotografici. Questa selezione include il servizio con DJ Dero intorno a 24/7, portando gli artisti, il progetto musicale e la loro presenza visiva nella stessa immagine. Il lavoro si concentra sulla produzione di materiale fotografico forte per la comunicazione musicale.',
+        subtitle: 'Fotografia dell’artista per la comunicazione musicale.',
+        role: 'Fotografia dell’artista e shooting fotografici.',
+        deliverables: ['Fotografia dell’artista', 'Shooting promozionali'],
+        sections: [],
+        links: [],
+      },
+    },
+  },
+  {
+    id: 'sandro',
+    title: 'SANDRO',
+    category: 'film-making',
+    client: 'SANDRO',
+    featured: false,
+    slug: 'sandro',
+    cover: '/images/projects/sandro/ensemble.webp',
+    images: [
+      {
+        src: '/images/projects/sandro/ensemble.webp',
+        width: 2400,
+        height: 1800,
+        caption: {
+          en: 'Video still · ensemble scene',
+          it: 'Frame video · scena corale',
+        },
+      },
+      {
+        src: '/images/projects/sandro/portrait.webp',
+        width: 2400,
+        height: 1800,
+        caption: {
+          en: 'Video still · portrait',
+          it: 'Frame video · ritratto',
+        },
+      },
+      {
+        src: '/images/projects/sandro/portrait-detail.webp',
+        width: 2400,
+        height: 1800,
+        caption: {
+          en: 'Video still · close-up',
+          it: 'Frame video · dettaglio del ritratto',
+        },
+      },
+    ],
+    tags: ['Creative management', 'Marketing', 'Video direction'],
+    status: 'in-progress',
+    mediaLayout: 'editorial',
+    videos: [
+      {
+        src: '/images/projects/sandro/video-preview.mp4',
+        poster: '/images/projects/sandro/video-poster.webp',
+        width: 1440,
+        height: 1080,
+        caption: {
+          en: 'SANDRO · work-in-progress video preview',
+          it: 'SANDRO · anteprima video del progetto in sviluppo',
+        },
+      },
+    ],
+    copy: {
+      en: {
+        description:
+          'SANDRO is an artist project currently in development. I work across creative management, marketing and video direction, shaping the visual language that accompanies the music. The selection brings together a video preview and stills from the work in progress, showing the direction of the project without presenting it as a finished release.',
+        summary:
+          'SANDRO is an artist project currently in development. I work across creative management, marketing and video direction, shaping the visual language that accompanies the music. The selection brings together a video preview and stills from the work in progress, showing the direction of the project without presenting it as a finished release.',
+        subtitle: 'Creative management and video direction for an artist in development.',
+        role: 'Creative management, marketing and video direction.',
+        deliverables: ['Creative management', 'Marketing', 'Video direction'],
+        sections: [],
+        links: [],
+      },
+      it: {
+        description:
+          'SANDRO è un progetto artistico attualmente in sviluppo. Mi occupo di gestione creativa, marketing e regia video, costruendo il linguaggio visivo che accompagna la musica. La selezione riunisce un’anteprima video e frame del lavoro in corso, mostrando la direzione del progetto senza presentarlo come una release definitiva.',
+        summary:
+          'SANDRO è un progetto artistico attualmente in sviluppo. Mi occupo di gestione creativa, marketing e regia video, costruendo il linguaggio visivo che accompagna la musica. La selezione riunisce un’anteprima video e frame del lavoro in corso, mostrando la direzione del progetto senza presentarlo come una release definitiva.',
+        subtitle: 'Gestione creativa e regia video per un artista in sviluppo.',
+        role: 'Gestione creativa, marketing e regia video.',
+        deliverables: ['Gestione creativa', 'Marketing', 'Regia video'],
+        sections: [],
+        links: [],
+      },
+    },
+  },
+  {
     id: 'portfolio-os',
     title: 'Portfolio OS',
     category: 'digital',
@@ -720,7 +1260,8 @@ const definitions: ProjectDefinition[] = [
     featured: false,
     slug: 'portfolio-os',
     year: 2026,
-    cover: '',
+    cover: '/images/projects/logos/portfolio-os.png',
+    preview: { background: '#252529', logoWidth: 44, logoHeight: 30 },
     images: [],
     tags: ['Experience design', 'Interaction design', 'Custom icons', 'AI-assisted development'],
     copy: {
@@ -768,14 +1309,19 @@ const definitions: ProjectDefinition[] = [
   },
 ]
 function localize(locale: Locale): Project[] {
-  return definitions.map(({ copy, images, ...project }) => ({
+  return definitions.map(({ copy, images, videos = [], ...project }) => ({
     ...project,
     ...copy[locale],
-    gallery: images.map(({ caption, ...image }) => ({
-      ...image,
-      caption: caption[locale],
-      alt: `${project.title} — ${caption[locale]}`,
-    })),
+    videos: videos.map(({ caption, ...video }) => ({ ...video, caption: caption[locale] })),
+    gallery: images
+      .filter((image) => !image.locale || image.locale === locale)
+      .map(({ caption, src, width, height }) => ({
+        src,
+        width,
+        height,
+        caption: caption[locale],
+        alt: `${project.title} — ${caption[locale]}`,
+      })),
     credits: [
       { role: copy[locale].role, name: 'Carlo Desantis' },
       ...(project.agency

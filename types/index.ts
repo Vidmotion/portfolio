@@ -28,6 +28,14 @@ export interface ProjectSection {
   body: string
 }
 
+export interface ProjectVideo {
+  src: string
+  poster: string
+  width: number
+  height: number
+  caption: string
+}
+
 export interface Project {
   id: string
   slug: string
@@ -46,7 +54,16 @@ export interface Project {
   links: { label: string; href: string }[]
   coverAspectRatio?: '16:9' | '4:3' | '3:2' | '1:1'
   cover: string
+  coverPosition?: string
+  preview?: {
+    background: string
+    tone?: 'original' | 'white' | 'black'
+    logoWidth?: number
+    logoHeight?: number
+  }
   gallery: ProjectImage[]
+  videos?: ProjectVideo[]
+  mediaLayout?: 'editorial'
   credits: ProjectCredit[]
   tags: string[]
   featured: boolean

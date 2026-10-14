@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { photos } from '@/core/registries/photos'
+import { getPhotos } from '@/core/registries/photos'
+import { getProjects } from '@/core/registries/projects'
 import { uiText } from '@/core/registries/locale'
 import { useLocaleStore } from '@/store/localeStore'
 import { springs, staggerDelay } from '@/lib/motion'
@@ -12,17 +13,24 @@ import styles from './AppResponsive.module.css'
 export function PhotosApp() {
   const locale = useLocaleStore((s) => s.locale)
   const text = uiText[locale]
-  const [mode, setMode] = useState<'all' | 'portraits' | 'favourites'>('portraits')
+  const photos = getPhotos(locale)
+  const [mode, setMode] = useState('all')
   const [favourites, setFavourites] = useState<string[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   const selected = photos.find((photo) => photo.id === selectedId)
   const visible =
-    mode === 'favourites' ? photos.filter((photo) => favourites.includes(photo.id)) : photos
-  const labels = {
+    mode === 'favourites'
+      ? photos.filter((photo) => favourites.includes(photo.id))
+      : mode === 'all'
+        ? photos
+        : photos.filter((photo) => photo.album === mode)
+  const albumIds = [...new Set(photos.map((photo) => photo.album))]
+  const labels: Record<string, string> = {
     all: locale === 'it' ? 'Tutte le foto' : 'All Photos',
     favourites: locale === 'it' ? 'Preferiti' : 'Favourites',
     portraits: locale === 'it' ? 'Ritratti' : 'Portraits',
+    ...Object.fromEntries(getProjects(locale).map((project) => [project.id, project.title])),
   }
 
   useEffect(() => {
@@ -65,13 +73,16 @@ export function PhotosApp() {
           </button>
         ))}
         <p className={styles.sectionLabel}>{text.albums}</p>
-        <button
-          className={styles.photoNav}
-          aria-current={mode === 'portraits' ? 'page' : undefined}
-          onClick={() => setMode('portraits')}
-        >
-          {labels.portraits}
-        </button>
+        {albumIds.map((album) => (
+          <button
+            key={album}
+            className={styles.photoNav}
+            aria-current={mode === album ? 'page' : undefined}
+            onClick={() => setMode(album)}
+          >
+            {labels[album]}
+          </button>
+        ))}
       </nav>
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <div className={styles.photoHeader}>
@@ -87,7 +98,7 @@ export function PhotosApp() {
                 key={photo.id}
                 className={styles.photo}
                 onClick={() => setSelectedId(photo.id)}
-                aria-label={`${text.portrait} — ${photo.alt}`}
+                aria-label={`${text.openImage} — ${photo.alt}`}
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ ...springs.default, delay: index * staggerDelay(visible.length) }}
@@ -97,13 +108,15 @@ export function PhotosApp() {
               </motion.button>
             ))}
           </div>
-          <p className={styles.empty}>
-            {mode === 'favourites' && visible.length === 0
-              ? locale === 'it'
-                ? 'Apri una foto e aggiungila ai preferiti.'
-                : 'Open a photo to add it to your favourites.'
-              : text.noPhotos}
-          </p>
+          {visible.length === 0 && (
+            <p className={styles.empty}>
+              {mode === 'favourites' && visible.length === 0
+                ? locale === 'it'
+                  ? 'Apri una foto e aggiungila ai preferiti.'
+                  : 'Open a photo to add it to your favourites.'
+                : text.noPhotos}
+            </p>
+          )}
         </div>
       </div>
       <dialog

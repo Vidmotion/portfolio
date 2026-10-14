@@ -10,25 +10,25 @@ interface WallpaperLayerProps {
 
 const wallpaperStyles: Record<ResolvedWallpaper, React.CSSProperties> = {
   morning: {
-    backgroundImage: 'url(/wallpaper.jpg)',
+    backgroundImage: 'image-set(url(/wallpaper.avif) type("image/avif"), url(/wallpaper.webp) type("image/webp"))',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
   },
   afternoon: {
-    backgroundImage: 'linear-gradient(rgba(210,165,100,0.18), rgba(210,165,100,0.18)), url(/wallpaper.jpg)',
+    backgroundImage: 'linear-gradient(rgba(210,165,100,0.18), rgba(210,165,100,0.18)), image-set(url(/wallpaper.avif) type("image/avif"), url(/wallpaper.webp) type("image/webp"))',
     backgroundSize: 'cover, cover',
     backgroundPosition: 'center, center',
     backgroundRepeat: 'no-repeat, no-repeat',
   },
   evening: {
-    backgroundImage: 'linear-gradient(rgba(160,60,20,0.32), rgba(100,20,60,0.20)), url(/wallpaper.jpg)',
+    backgroundImage: 'linear-gradient(rgba(160,60,20,0.32), rgba(100,20,60,0.20)), image-set(url(/wallpaper.avif) type("image/avif"), url(/wallpaper.webp) type("image/webp"))',
     backgroundSize: 'cover, cover',
     backgroundPosition: 'center, center',
     backgroundRepeat: 'no-repeat, no-repeat',
   },
   night: {
-    backgroundImage: 'linear-gradient(rgba(8,12,28,0.62), rgba(8,12,28,0.62)), url(/wallpaper.jpg)',
+    backgroundImage: 'linear-gradient(rgba(8,12,28,0.62), rgba(8,12,28,0.62)), image-set(url(/wallpaper.avif) type("image/avif"), url(/wallpaper.webp) type("image/webp"))',
     backgroundSize: 'cover, cover',
     backgroundPosition: 'center, center',
     backgroundRepeat: 'no-repeat, no-repeat',

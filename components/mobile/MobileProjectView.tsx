@@ -6,7 +6,7 @@ import { categoryGradient, projectMeta } from '@/lib/utils'
 import { useMobileMotion } from './useMobileMotion'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
-import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { ProjectArtwork, projectCoverTextColor } from '@/components/ui/ProjectArtwork'
 import { ProjectStory } from '@/components/apps/ProjectStory'
 
 interface MobileProjectViewProps {
@@ -42,6 +42,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
 
   const gradient = categoryGradient(project.category)
 
+  const coverText = projectCoverTextColor(project)
   return (
     <motion.div
       initial={reduced ? { opacity: 0 } : { opacity: 0, x: 36 }}
@@ -75,7 +76,9 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)',
+            background: project.preview
+              ? 'none'
+              : 'linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)',
           }}
           aria-hidden
         />
@@ -90,7 +93,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             width: '44px',
             height: '44px',
             borderRadius: '50%',
-            background: 'rgba(0,0,0,0.32)',
+            background: coverText === '#000' ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.32)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             border: 'none',
@@ -120,7 +123,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
               fontSize: '10px',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.82)',
+              color: project.preview ? coverText : 'rgba(255,255,255,0.82)',
               fontWeight: 500,
             }}
           >
@@ -130,7 +133,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
             style={{
               fontSize: '34px',
               fontWeight: 600,
-              color: '#fff',
+              color: coverText,
               letterSpacing: '-0.03em',
               lineHeight: 1.0,
               marginTop: '8px',

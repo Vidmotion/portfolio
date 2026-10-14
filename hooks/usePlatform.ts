@@ -2,8 +2,9 @@ import { useState, useLayoutEffect } from 'react'
 import type { Platform } from '@/types'
 import { detectPlatform } from '@/lib/utils'
 
-export function usePlatform(): Platform {
-  const [platform, setPlatform] = useState<Platform>('desktop')
+export function usePlatform(): Platform | null {
+  // Avoid rendering desktop assets before the actual device has been detected.
+  const [platform, setPlatform] = useState<Platform | null>(null)
 
   // useLayoutEffect (not useEffect) so the real platform is resolved before the
   // browser paints — avoids a flash of the wrong shell on tablet/mobile first load.

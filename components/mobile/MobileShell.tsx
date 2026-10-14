@@ -38,7 +38,7 @@ export function MobileShell() {
         // Home Screen reference (Figma) ships its own top vignette baked into the
         // wallpaper layer — reproduced here as a layered gradient over the photo.
         background:
-          'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.8) 7.5%, rgba(0,0,0,0) 38.2%, rgba(0,0,0,0) 100%), url(/images/mobile/home-wallpaper.jpg) center/cover no-repeat',
+          'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.8) 7.5%, rgba(0,0,0,0) 38.2%, rgba(0,0,0,0) 100%), image-set(url(/images/mobile/home-wallpaper.avif) type("image/avif"), url(/images/mobile/home-wallpaper.webp) type("image/webp")) center/cover no-repeat',
         fontFamily: 'var(--font-text)',
       }}
       role="main"

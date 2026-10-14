@@ -7,7 +7,7 @@ import { ProfileContent } from '@/components/ui/ProfileContent'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { identity } from '@/core/registries/identity'
 import { profile } from '@/core/registries/profile'
-import { photos } from '@/core/registries/photos'
+import { getPhotos } from '@/core/registries/photos'
 import { uiText } from '@/core/registries/locale'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
@@ -23,6 +23,7 @@ export function MobileUtilityView({
   onBack: () => void
 }) {
   const locale = useLocaleStore((s) => s.locale)
+  const photos = getPhotos(locale)
   const { appEntrance, transformOrigin, present } = useMobileMotion()
   const text = uiText[locale]
   const { settings, setReducedMotion, setHighContrast } = useSettingsStore()
@@ -60,16 +61,16 @@ export function MobileUtilityView({
                 <Image
                   src={photo.src}
                   alt={photo.alt}
-                  width={480}
-                  height={480}
+                  width={photo.width}
+                  height={photo.height}
                   sizes="(max-width: 600px) 100vw, 480px"
                 />
                 <figcaption>
-                  {text.portrait} · {identity.name}
+                  {photo.album === 'portraits' ? `${text.portrait} · ${identity.name}` : photo.alt}
                 </figcaption>
               </figure>
             ))}
-            <p>{text.noPhotos}</p>
+            {photos.length === 0 && <p>{text.noPhotos}</p>}
           </div>
         )}
         {utility === 'contacts' && (

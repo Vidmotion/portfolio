@@ -7,7 +7,7 @@ import { springs } from '@/lib/motion'
 import styles from './AppResponsive.module.css'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
-import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
+import { ProjectArtwork, projectCoverTextColor } from '@/components/ui/ProjectArtwork'
 import { ProjectStory } from './ProjectStory'
 
 interface ProjectAppProps {
@@ -37,6 +37,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
   }
 
   const coverGradient = categoryGradient(project.category)
+  const coverText = projectCoverTextColor(project)
 
   return (
     <div
@@ -68,7 +69,9 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.55) 100%)',
+            background: project.preview
+              ? 'none'
+              : 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.55) 100%)',
           }}
           aria-hidden
         />
@@ -91,7 +94,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
               fontSize: '11px',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.82)',
+              color: project.preview ? coverText : 'rgba(255,255,255,0.82)',
               fontWeight: 500,
               marginBottom: '10px',
             }}
@@ -103,7 +106,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
               fontFamily: 'var(--font-display)',
               fontSize: 'var(--project-title)',
               fontWeight: 600,
-              color: '#fff',
+              color: project.preview ? coverText : '#fff',
               letterSpacing: '-0.035em',
               lineHeight: 1.0,
               maxWidth: '660px',
@@ -115,7 +118,7 @@ export function ProjectApp({ projectId }: ProjectAppProps) {
             <p
               style={{
                 fontSize: '15px',
-                color: 'rgba(255,255,255,0.6)',
+                color: project.preview ? coverText : 'rgba(255,255,255,0.6)',
                 marginTop: '10px',
                 fontWeight: 400,
               }}

@@ -1,32 +1,61 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { BootScreen } from '@/components/os/BootScreen'
-import { DesktopShell } from '@/components/os/DesktopShell'
-import { TabletShell } from '@/components/tablet/TabletShell'
-import { MobileShell } from '@/components/mobile/MobileShell'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useAccessibilityPreferences } from '@/hooks/useAccessibilityPreferences'
-import { EasterEggLayer } from '@/components/ui/EasterEggLayer'
+const loadDesktop = () => import('@/components/os/DesktopShell').then((m) => m.DesktopShell)
+const loadTablet = () => import('@/components/tablet/TabletShell').then((m) => m.TabletShell)
+const loadMobile = () => import('@/components/mobile/MobileShell').then((m) => m.MobileShell)
+const DesktopShell = dynamic(loadDesktop, { ssr: false })
+const TabletShell = dynamic(loadTablet, { ssr: false })
+const MobileShell = dynamic(loadMobile, { ssr: false })
+const EasterEggLayer = dynamic(
+  () => import('@/components/ui/EasterEggLayer').then((m) => m.EasterEggLayer),
+  { ssr: false }
+)
 
 export default function Home() {
   const [booted, setBooted] = useState(false)
+  const [shellReady, setShellReady] = useState(false)
+  const finishBoot = useCallback(() => setBooted(true), [])
   const platform = usePlatform()
   const locale = useLocaleStore((s) => s.locale)
   const reducedMotion = useSettingsStore((s) => s.settings.accessibility.reducedMotion)
   useAccessibilityPreferences()
+  useEffect(() => {
+    // Fetch the correct shell during the existing boot animation, ready before unlock.
+    const prepare =
+      platform === 'mobile'
+        ? loadMobile
+        : platform === 'tablet'
+          ? loadTablet
+          : platform === 'desktop'
+            ? loadDesktop
+            : null
+    if (prepare) void prepare().then(() => setShellReady(true))
+  }, [platform])
   useEffect(() => {
     document.documentElement.lang = locale
   }, [locale])
 
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
+      {platform === 'mobile' && (
+        <link
+          rel="preload"
+          as="image"
+          href="/images/mobile/home-wallpaper.avif"
+          type="image/avif"
+        />
+      )}
       {/* Boot screen — shown until boot sequence completes */}
       <AnimatePresence>
-        {!booted && <BootScreen onComplete={() => setBooted(true)} />}
+        {!booted && <BootScreen ready={shellReady} onComplete={finishBoot} />}
       </AnimatePresence>
 
       {/* Desktop — macOS-inspired experience */}

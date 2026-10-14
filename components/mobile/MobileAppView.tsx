@@ -161,20 +161,6 @@ export function MobileAppView({
               }}
             >
               <ProjectArtwork project={project} sizes="(max-width: 767px) 100vw, 400px" />
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '14px',
-                  fontFamily: '"JetBrains Mono", "SF Mono", monospace',
-                  fontSize: '8px',
-                  letterSpacing: '0.06em',
-                  color: 'rgba(255,255,255,0.7)',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {project.category.replace('-', ' ')}
-              </span>
             </div>
 
             <div>
