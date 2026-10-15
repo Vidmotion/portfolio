@@ -198,3 +198,6 @@
   border-radius: 18px;
   margin-bottom: 18px;
 }
+.group + .appearance {
+  margin-top: 18px;
+}

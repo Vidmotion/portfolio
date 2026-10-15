@@ -13,6 +13,7 @@ import { usePlatform } from '@/hooks/usePlatform'
 import { useLocaleStore } from '@/store/localeStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useAccessibilityPreferences } from '@/hooks/useAccessibilityPreferences'
+import { usePortfolioNavigation } from '@/hooks/usePortfolioNavigation'
 const loadDesktop = () => import('@/components/os/DesktopShell').then((m) => m.DesktopShell)
 const loadTablet = () => import('@/components/tablet/TabletShell').then((m) => m.TabletShell)
 const loadMobile = () => import('@/components/mobile/MobileShell').then((m) => m.MobileShell)
@@ -30,6 +31,7 @@ export default function Home() {
   const [shellReady, setShellReady] = useState(false)
   const finishBoot = useCallback(() => setBooted(true), [])
   const platform = usePlatform()
+  usePortfolioNavigation(platform)
   const assetsReady = useBootAssets(platform, !booted)
   const customEnabled = useDesktopStore((s) => s.customWallpaperEnabled)
   const customUrl = useCustomWallpaperStore((s) => s.url)

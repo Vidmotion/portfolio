@@ -112,14 +112,16 @@ export function MobileUtilityView({
         )}
         {utility === 'settings' && (
           <>
-            <div className={styles.appearance}>
-              <AppearanceSettings />
-            </div>
             <div className={styles.group}>
               <div className={styles.setting}>
                 <span>{text.language}</span>
                 <LanguageSwitcher size="regular" />
               </div>
+            </div>
+            <div className={styles.appearance}>
+              <AppearanceSettings />
+            </div>
+            <div className={styles.group}>
               {[
                 {
                   label: text.reduceMotion,

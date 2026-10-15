@@ -107,10 +107,18 @@
   margin: 0 6px 1px;
   border: 0;
   background: transparent;
-  color: #46464a;
+  color: var(--ui-muted);
   font: 13px var(--font-text);
   text-align: left;
   cursor: pointer;
+}
+.projectCard[data-selected='true'] {
+  outline: 2px solid var(--os-accent);
+}
+.projectCard:focus-visible {
+  outline: 3px solid var(--os-accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px var(--ui-raised);
 }
 .photoNav[aria-current] {
   background: rgba(var(--os-accent-rgb), 0.1);

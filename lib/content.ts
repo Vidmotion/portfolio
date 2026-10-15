@@ -32,7 +32,13 @@ export function getProjectsByCategory(category: string, locale: Locale = 'en'): 
 }
 
 export function getFeaturedProjects(locale: Locale = 'en'): Project[] {
-  return getProjects(locale).filter((project) => project.featured)
+  const order = ['ecr-group', 'takecare', 'temakinho']
+  const featured = getProjects(locale).filter((project) => project.featured)
+  return [...featured].sort(
+    (a, b) =>
+      (order.indexOf(a.id) < 0 ? order.length : order.indexOf(a.id)) -
+      (order.indexOf(b.id) < 0 ? order.length : order.indexOf(b.id))
+  )
 }
 
 export function getNotes(locale: Locale): NoteEntry[] {

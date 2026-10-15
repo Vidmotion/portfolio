@@ -271,7 +271,7 @@
   padding: 17px;
   flex-shrink: 0;
 }
-.previews button {
+.previews a {
   display: flex;
   align-items: center;
   gap: 13px;
@@ -283,9 +283,10 @@
   color: inherit;
   text-align: left;
   font: inherit;
+  text-decoration: none;
   cursor: pointer;
 }
-.previews button + button {
+.previews a + a {
   border-top: 0.5px solid var(--os-line);
 }
 .projectThumb {
@@ -294,7 +295,7 @@
   border-radius: 11px;
   flex-shrink: 0;
 }
-.previews button > span:nth-child(2) {
+.previews a > span:nth-child(2) {
   flex: 1;
 }
 .previews strong {
@@ -317,7 +318,7 @@
   outline-offset: -3px;
 }
 .folderWidget button:focus-visible,
-.previews button:focus-visible {
+.previews a:focus-visible {
   outline: 2px solid var(--os-accent);
   outline-offset: 1px;
   border-radius: 8px;
@@ -325,6 +326,7 @@
 @media (max-width: 350px) {
   .expertise {
     padding: 12px;
+    min-height: 156px;
   }
   .expertiseList {
     font-size: 11px;
@@ -338,7 +340,22 @@
     font-size: 11px;
   }
   .photoCaption {
-    font-size: 10px;
+    font-size: 11px;
+  }
+}
+@media (min-height: 541px) and (max-height: 740px) {
+  .expertise {
+    min-height: 148px;
+    padding: 12px;
+  }
+  .expertise .heading {
+    margin-bottom: 8px;
+  }
+  .expertiseList {
+    gap: 7px;
+  }
+  .expertiseList > span:nth-child(n + 4) {
+    display: none;
   }
 }
 @media (max-height: 540px) and (min-width: 560px) {
@@ -350,7 +367,7 @@
     margin-bottom: 8px;
   }
   .expertiseList {
-    font-size: 10px;
+    font-size: 11px;
     gap: 5px;
   }
   .folderWidget {
@@ -358,7 +375,7 @@
     padding: 7px;
   }
   .folderWidget button {
-    font-size: 10px;
+    font-size: 11px;
     gap: 4px;
   }
   .folderIcon {

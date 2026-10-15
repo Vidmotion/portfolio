@@ -12,12 +12,21 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://portfolio.carlodesantis.com'),
   title: profile.seo.title,
   description: profile.seo.description.en,
+  alternates: { canonical: '/' },
   openGraph: {
     title: identity.name,
     description: profile.seo.description.en,
     type: 'website',
+    url: '/',
+    siteName: 'Carlo Desantis — Portfolio',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: profile.seo.title,
+    description: profile.seo.description.en,
   },
 }
 

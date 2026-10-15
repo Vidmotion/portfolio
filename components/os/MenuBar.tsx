@@ -56,7 +56,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         fontSize: '13px',
         letterSpacing: '-0.005em',
         // Shared translucent chrome follows the selected wallpaper palette.
-        background: 'var(--os-dock)',
+        background: 'var(--os-chrome)',
         backdropFilter: 'blur(24px) saturate(180%)',
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
         borderBottom: '0.5px solid var(--os-line)',
@@ -81,9 +81,17 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         />
 
         {/* Brand */}
-        <span style={{ fontWeight: 600, color: 'var(--os-ink)', letterSpacing: '-0.01em' }}>
+        <h1
+          style={{
+            font: 'inherit',
+            margin: 0,
+            fontWeight: 600,
+            color: 'var(--os-ink)',
+            letterSpacing: '-0.01em',
+          }}
+        >
           {identity.name}
-        </span>
+        </h1>
 
         {/* Nav items */}
         {navItems.map((item) => (

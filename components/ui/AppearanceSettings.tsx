@@ -7,6 +7,7 @@ import { useDesktopStore } from '@/store/desktopStore'
 import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { useLocaleStore } from '@/store/localeStore'
 import { wallpapers, getWallpaper } from '@/core/registries/wallpapers'
+import { colorContrast, mixWithWhite } from '@/lib/appearance'
 import styles from './AppearanceSettings.module.css'
 
 export function AppearanceSettings() {
@@ -27,6 +28,21 @@ export function AppearanceSettings() {
     input = useRef<HTMLInputElement>(null)
   const dark = appearance.mode === 'dark',
     theme = getWallpaper(wallpaper)
+  const accent = customWallpaperEnabled && custom.url ? custom.accent : theme.accent
+  const surface =
+    appearance.surfaceColor === 'auto'
+      ? dark
+        ? '#172235'
+        : mixWithWhite(accent, 0.96)
+      : appearance.surfaceColor
+  const ink =
+    appearance.textColor === 'auto' ? (dark ? '#f2f5fb' : theme.ink) : appearance.textColor
+  const glyph = iconColor === 'auto' ? (dark ? mixWithWhite(accent, 0.76) : accent) : iconColor
+  const lowContrast =
+    colorContrast(ink, surface) < 4.5 ||
+    colorContrast(glyph, surface) < 3 ||
+    appearance.iconOpacity < 0.6 ||
+    (appearance.surfaceOpacity !== null && appearance.surfaceOpacity < 0.3)
   async function upload(file?: File) {
     if (!file || custom.busy) return
     setError('')
@@ -231,6 +247,13 @@ export function AppearanceSettings() {
           </label>
         ))}
       </div>
+      {lowContrast && (
+        <p className={styles.contrastNote} role="status">
+          {it
+            ? 'Questa combinazione può rendere testi o icone poco leggibili. Prova i colori automatici, aumenta l’opacità o ripristina il tema.'
+            : 'This combination may make text or icons hard to read. Try automatic colors, increase opacity or reset the theme.'}
+        </p>
+      )}
       <button type="button" className={styles.reset} onClick={resetAppearance}>
         <RotateCcw size={14} />
         {it ? 'Ripristina il tema' : 'Reset theme'}

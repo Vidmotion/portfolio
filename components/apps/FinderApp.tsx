@@ -269,6 +269,8 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
             <div className={styles.finderGrid}>
               {filtered.map((project, i) => (
                 <motion.button
+                  className={styles.projectCard}
+                  data-selected={selectedProjectId === project.id}
                   key={project.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -296,8 +298,6 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     cursor: 'default',
                     padding: 0,
                     textAlign: 'left',
-                    outline:
-                      selectedProjectId === project.id ? '2px solid var(--os-accent)' : 'none',
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
@@ -352,7 +352,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
               {filtered.map((project, i) => (
                 <motion.button
-                  className={styles.listRow}
+                  className={`${styles.listRow} ${styles.projectCard}`}
                   key={project.id}
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}

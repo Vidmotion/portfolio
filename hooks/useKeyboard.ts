@@ -36,6 +36,9 @@ export function useGlobalKeyboard() {
           return
         }
         if (spotlightOpen || commandOpen) return // handled by those components
+        // Escape belongs to the active field while composing or choosing a value.
+        if ((e.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]'))
+          return
         const focused = getFocusedWindow()
         if (focused) closeWindow(focused.id)
         return

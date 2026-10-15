@@ -9,7 +9,7 @@ import { playlist } from '@/core/registries/playlist'
 import { categories } from '@/core/registries/categories'
 import { uiText } from '@/core/registries/locale'
 import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
-import { getProjects } from '@/lib/content'
+import { getFeaturedProjects } from '@/lib/content'
 import { categoryGradient, projectMeta } from '@/lib/utils'
 import { useLocaleStore } from '@/store/localeStore'
 import { useEasterEggStore } from '@/store/easterEggStore'
@@ -19,6 +19,7 @@ import type { ProjectCategory } from '@/types'
 import type { CSSProperties } from 'react'
 import styles from './MobileHomeWidgets.module.css'
 import { AppGlyph } from '@/components/ui/AppGlyph'
+import { projectHref, openProjectLink } from '@/lib/projectLinks'
 
 export type WidgetLaunch = (element: HTMLElement, action?: () => void) => void
 type WidgetProps = { launch: WidgetLaunch; open?: () => void; reduced: boolean }
@@ -195,38 +196,38 @@ export function ProjectPreviewWidget({
 }) {
   const locale = useLocaleStore((s) => s.locale)
   const text = uiText[locale]
-  const projects = getProjects(locale)
+  const projects = getFeaturedProjects(locale)
   return (
     <div className={styles.previews}>
       <span className={styles.heading}>{text.projectPreviews}</span>
-      {projects
-        .filter((project) => project.featured)
-        .slice(0, 3)
-        .map((project) => (
-          <motion.button
-            key={project.id}
-            aria-label={`Open ${project.title}`}
-            onClick={(event) => launch(event.currentTarget, () => open(project.id))}
-            whileTap={reduced ? undefined : { scale: 0.98 }}
+      {projects.slice(0, 3).map((project) => (
+        <motion.a
+          key={project.id}
+          href={projectHref(project.id, locale)}
+          aria-label={`Open ${project.title}`}
+          onClick={(event) =>
+            openProjectLink(event, () => launch(event.currentTarget, () => open(project.id)))
+          }
+          whileTap={reduced ? undefined : { scale: 0.98 }}
+        >
+          <span
+            className={styles.projectThumb}
+            style={{
+              background: categoryGradient(project.category),
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+            aria-hidden
           >
-            <span
-              className={styles.projectThumb}
-              style={{
-                background: categoryGradient(project.category),
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-              aria-hidden
-            >
-              <ProjectArtwork project={project} sizes="64px" />
-            </span>
-            <span>
-              <strong>{project.title}</strong>
-              <small>{projectMeta(project, locale)}</small>
-            </span>
-            <ChevronRight size={16} aria-hidden />
-          </motion.button>
-        ))}
+            <ProjectArtwork project={project} sizes="64px" />
+          </span>
+          <span>
+            <strong>{project.title}</strong>
+            <small>{projectMeta(project, locale)}</small>
+          </span>
+          <ChevronRight size={16} aria-hidden />
+        </motion.a>
+      ))}
     </div>
   )
 }
