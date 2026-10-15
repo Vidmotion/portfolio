@@ -193,7 +193,7 @@ export function SpotlightSearch() {
                   letterSpacing: '-0.015em',
                   color: '#161617',
                   fontFamily: 'var(--font-display)',
-                  caretColor: '#0a7eff',
+                  caretColor: 'var(--os-accent)',
                 }}
               />
               {query && (

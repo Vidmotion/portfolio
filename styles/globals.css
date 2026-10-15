@@ -4,6 +4,7 @@
    ───────────────────────────────────────────────────────────────────────────── */
 
 @import "tailwindcss";
+@import "./appearance.css";
 
 /* ─── Design Tokens ──────────────────────────────────────────────────────────── */
 
@@ -22,8 +23,8 @@
   --neutral-900: #111111;
 
   /* ── Color: Accent ───────────────────────────────────────────────────────── */
-  --accent-blue:       #0A7EFF;
-  --accent-blue-hover: #0066CC;
+  --accent-blue:       var(--os-accent);
+  --accent-blue-hover: var(--os-accent);
 
   /* ── Color: Status ───────────────────────────────────────────────────────── */
   --status-success: #34C759;

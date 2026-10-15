@@ -5,7 +5,12 @@ import { motion, useMotionValue } from 'framer-motion'
 import { WindowControls } from '@/components/ui/WindowControls'
 import { useWindowStore } from '@/store/windowStore'
 import { windowVariants, springs } from '@/lib/motion'
-import { clampWindowPosition, clampWindowSize, WIDGET_DARK_GLASS, getOsMenuBarHeight } from '@/lib/utils'
+import {
+  clampWindowPosition,
+  clampWindowSize,
+  WIDGET_DARK_GLASS,
+  getOsMenuBarHeight,
+} from '@/lib/utils'
 import type { OSWindow as OSWindowType } from '@/types'
 import styles from './OSWindow.module.css'
 
@@ -232,7 +237,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
             textAlign: 'center',
             fontSize: '13px',
             fontWeight: 500,
-            color: win.isFocused ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.42)',
+            color: win.isFocused ? 'var(--os-ink)' : 'var(--os-muted)',
             letterSpacing: '-0.005em',
             overflow: 'hidden',
             textOverflow: 'ellipsis',

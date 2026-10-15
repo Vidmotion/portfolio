@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Wallpaper, Widget, WidgetType, WidgetSize, WidgetPosition } from '@/types'
+import { DEFAULT_WALLPAPER, isWallpaper, isIconColor } from '@/core/registries/wallpapers'
 import { generateId } from '@/lib/utils'
 
 interface DesktopStore {
   wallpaper: Wallpaper
+  iconColor: string
   widgets: Widget[]
   selectedFolderId: string | null
   selectedProjectId: string | null
@@ -16,6 +18,7 @@ interface DesktopStore {
   tabletWidgetOffsets: Record<string, { x: number; y: number }>
 
   setWallpaper: (wallpaper: Wallpaper) => void
+  setIconColor: (color: string) => void
   addWidget: (type: WidgetType, size: WidgetSize, position: WidgetPosition) => string
   removeWidget: (id: string) => void
   moveWidget: (id: string, position: WidgetPosition) => void
@@ -39,7 +42,8 @@ export const DEFAULT_WIDGETS: Widget[] = [
 export const useDesktopStore = create<DesktopStore>()(
   persist(
     (set) => ({
-      wallpaper: 'morning',
+      wallpaper: DEFAULT_WALLPAPER,
+      iconColor: 'auto',
       widgets: DEFAULT_WIDGETS,
       selectedFolderId: null,
       selectedProjectId: null,
@@ -47,7 +51,12 @@ export const useDesktopStore = create<DesktopStore>()(
       folderOffsets: {},
       tabletWidgetOffsets: {},
 
-      setWallpaper: (wallpaper) => set({ wallpaper }),
+      setWallpaper: (wallpaper) => {
+        if (isWallpaper(wallpaper)) set({ wallpaper })
+      },
+      setIconColor: (iconColor) => {
+        if (isIconColor(iconColor)) set({ iconColor })
+      },
 
       addWidget: (type, size, position) => {
         const id = generateId('widget')
@@ -82,17 +91,19 @@ export const useDesktopStore = create<DesktopStore>()(
     }),
     {
       name: 'portfolio-os-desktop',
-      version: 1,
+      version: 2,
       migrate: (persistedState) => {
         const state = persistedState as DesktopStore
-        // Move the previous time-based default to Morning, preserving chosen themes and layout.
+        // Retire the personal photograph and keep existing layouts.
         return {
           ...state,
-          wallpaper: !state.wallpaper || state.wallpaper === 'auto' ? 'morning' : state.wallpaper,
+          wallpaper: isWallpaper(state.wallpaper) ? state.wallpaper : DEFAULT_WALLPAPER,
+          iconColor: isIconColor(state.iconColor) ? state.iconColor : 'auto',
         }
       },
       partialize: (state) => ({
         wallpaper: state.wallpaper,
+        iconColor: state.iconColor,
         widgets: state.widgets,
         folderOffsets: state.folderOffsets,
         tabletWidgetOffsets: state.tabletWidgetOffsets,

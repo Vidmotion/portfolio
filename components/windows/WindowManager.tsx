@@ -8,6 +8,7 @@ import { FinderApp } from '@/components/apps/FinderApp'
 import { ProjectApp } from '@/components/apps/ProjectApp'
 import { PhotosApp } from '@/components/apps/PhotosApp'
 import { NotesApp } from '@/components/apps/NotesApp'
+import { ContactApp } from '@/components/apps/ContactApp'
 import { SettingsApp } from '@/components/apps/SettingsApp'
 import { SpotifyWidget } from '@/components/widgets/SpotifyWidget'
 import appStyles from '@/components/apps/AppResponsive.module.css'
@@ -32,6 +33,7 @@ function AppContent({ win }: { win: OSWindowType }) {
       />
     ),
     settings: <SettingsApp />,
+    contact: <ContactApp />,
     spotify: (
       <div className={appStyles.music}>
         <SpotifyWidget />

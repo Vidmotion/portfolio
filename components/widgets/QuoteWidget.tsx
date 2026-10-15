@@ -27,15 +27,42 @@ export function QuoteWidget({ elevated }: QuoteWidgetProps) {
       aria-label={text.updates}
     >
       {/* Accent bar */}
-      <div style={{ width: '22px', height: '1.5px', background: 'rgba(255,255,255,0.20)', borderRadius: '1px' }} aria-hidden />
+      <div
+        style={{
+          width: '22px',
+          height: '1.5px',
+          background: 'var(--os-accent)',
+          borderRadius: '1px',
+        }}
+        aria-hidden
+      />
 
       {/* Quote text */}
-      <p style={{ margin: 0, fontSize: '15px', fontWeight: 400, color: 'rgba(255,255,255,0.90)', lineHeight: 1.5, letterSpacing: '-0.015em', whiteSpace: 'pre-line', fontFamily: 'var(--font-display)' }}>
+      <p
+        style={{
+          margin: 0,
+          fontSize: '15px',
+          fontWeight: 400,
+          color: 'var(--os-ink)',
+          lineHeight: 1.5,
+          letterSpacing: '-0.015em',
+          whiteSpace: 'pre-line',
+          fontFamily: 'var(--font-display)',
+        }}
+      >
         {text.websiteUpdate}
       </p>
 
       {/* Attribution */}
-      <div style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', fontWeight: 600 }}>
+      <div
+        style={{
+          fontSize: '9px',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: 'var(--os-muted)',
+          fontWeight: 600,
+        }}
+      >
         {text.updates}
       </div>
     </div>

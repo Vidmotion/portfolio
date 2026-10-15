@@ -133,16 +133,19 @@ const WIDGET_GLASS_INSET_SHADOW = [
   // lato destro
   'inset -1px 0 0 rgba(255,255,255,.115)',
 ]
-const WIDGET_GLASS_RESTING_SHADOW = ['0 12px 32px rgba(0,0,0,.34)', '0 30px 80px rgba(0,0,0,.42)']
+const WIDGET_GLASS_RESTING_SHADOW = [
+  '0 8px 24px rgba(25,45,73,.10)',
+  '0 20px 60px rgba(25,45,73,.12)',
+]
 const WIDGET_GLASS_ELEVATED_SHADOW = [
-  '0 20px 48px rgba(0,0,0,0.40)',
-  '0 44px 100px rgba(0,0,0,0.46)',
+  '0 20px 48px rgba(25,45,73,.18)',
+  '0 44px 100px rgba(25,45,73,.2)',
 ]
 
 export const WIDGET_DARK_GLASS: CSSProperties = {
-  background: 'rgba(32,32,34,.20)',
-  backdropFilter: 'blur(25px) saturate(160%) brightness(.95)',
-  WebkitBackdropFilter: 'blur(25px) saturate(160%) brightness(.92)',
+  background: 'var(--os-glass)',
+  backdropFilter: 'blur(25px) saturate(160%) brightness(1)',
+  WebkitBackdropFilter: 'blur(25px) saturate(160%) brightness(1)',
   boxShadow: [...WIDGET_GLASS_INSET_SHADOW, ...WIDGET_GLASS_RESTING_SHADOW].join(', '),
 }
 

@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig } from 'framer-motion'
 import dynamic from 'next/dynamic'
+import { AppearanceController } from '@/components/ui/AppearanceController'
+import { useDesktopStore } from '@/store/desktopStore'
+import { getWallpaper } from '@/core/registries/wallpapers'
 import { BootScreen } from '@/components/os/BootScreen'
 import { usePlatform } from '@/hooks/usePlatform'
 import { useLocaleStore } from '@/store/localeStore'
@@ -20,6 +23,7 @@ const EasterEggLayer = dynamic(
 )
 
 export default function Home() {
+  const wallpaper = useDesktopStore((s) => s.wallpaper)
   const [booted, setBooted] = useState(false)
   const [shellReady, setShellReady] = useState(false)
   const finishBoot = useCallback(() => setBooted(true), [])
@@ -45,13 +49,9 @@ export default function Home() {
 
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
-      {platform === 'mobile' && (
-        <link
-          rel="preload"
-          as="image"
-          href="/images/mobile/home-wallpaper.avif"
-          type="image/avif"
-        />
+      <AppearanceController />
+      {platform && (
+        <link rel="preload" as="image" href={getWallpaper(wallpaper).src} type="image/jpeg" />
       )}
       {/* Boot screen — shown until boot sequence completes */}
       <AnimatePresence>

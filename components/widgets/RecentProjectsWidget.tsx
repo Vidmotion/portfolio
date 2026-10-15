@@ -40,7 +40,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
           fontSize: '10px',
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.42)',
+          color: 'var(--os-muted)',
           fontWeight: 600,
           marginBottom: '10px',
         }}
@@ -69,7 +69,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
               fontFamily: 'inherit',
               borderRadius: '11px',
             }}
-            whileHover={{ background: 'rgba(255,255,255,0.07)' }}
+            whileHover={{ background: 'rgba(var(--os-accent-rgb),.07)' }}
             whileTap={{ scale: 0.98 }}
           >
             {/* Thumbnail */}
@@ -94,7 +94,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
                 style={{
                   fontSize: '14px',
                   fontWeight: 500,
-                  color: 'rgba(255,255,255,0.92)',
+                  color: 'var(--os-ink)',
                   letterSpacing: '-0.015em',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
@@ -106,7 +106,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
               <div
                 style={{
                   fontSize: '12px',
-                  color: 'rgba(255,255,255,0.42)',
+                  color: 'var(--os-muted)',
                   marginTop: '1px',
                   textTransform: 'capitalize',
                 }}
@@ -117,7 +117,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
             {/* Chevron */}
             <div
               style={{
-                color: 'rgba(255,255,255,0.24)',
+                color: 'var(--os-faint)',
                 fontSize: '16px',
                 flexShrink: 0,
                 lineHeight: 1,

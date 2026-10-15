@@ -3,6 +3,8 @@
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, ChevronLeft } from 'lucide-react'
+import { ContactApp } from '@/components/apps/ContactApp'
+import { AppearanceSettings } from '@/components/ui/AppearanceSettings'
 import { ProfileContent } from '@/components/ui/ProfileContent'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { identity } from '@/core/registries/identity'
@@ -34,7 +36,9 @@ export function MobileUtilityView({
         ? text.photos
         : utility === 'settings'
           ? text.settings
-          : text.contacts
+          : utility === 'message'
+            ? text.write
+            : text.contacts
   return (
     <motion.div
       {...appEntrance}
@@ -53,6 +57,7 @@ export function MobileUtilityView({
         <h1>{title}</h1>
       </header>
       <div className={styles.content}>
+        {utility === 'message' && <ContactApp />}
         {utility === 'about' && <ProfileContent />}
         {utility === 'photos' && (
           <div className={styles.photos}>
@@ -106,45 +111,50 @@ export function MobileUtilityView({
           </>
         )}
         {utility === 'settings' && (
-          <div className={styles.group}>
-            <div className={styles.setting}>
-              <span>{text.language}</span>
-              <LanguageSwitcher size="regular" />
+          <>
+            <div className={styles.appearance}>
+              <AppearanceSettings />
             </div>
-            {[
-              {
-                label: text.reduceMotion,
-                checked: settings.accessibility.reducedMotion,
-                change: setReducedMotion,
-              },
-              {
-                label: text.contrast,
-                checked: settings.accessibility.highContrast,
-                change: setHighContrast,
-              },
-            ].map((setting) => (
-              <div key={setting.label} className={styles.setting}>
-                <span>{setting.label}</span>
-                <button
-                  className={styles.toggle}
-                  role="switch"
-                  aria-label={setting.label}
-                  aria-checked={setting.checked}
-                  onClick={() => setting.change(!setting.checked)}
-                >
-                  <span
-                    className={styles.toggleTrack}
-                    style={{ background: setting.checked ? '#34c759' : '#c7c7cc' }}
+            <div className={styles.group}>
+              <div className={styles.setting}>
+                <span>{text.language}</span>
+                <LanguageSwitcher size="regular" />
+              </div>
+              {[
+                {
+                  label: text.reduceMotion,
+                  checked: settings.accessibility.reducedMotion,
+                  change: setReducedMotion,
+                },
+                {
+                  label: text.contrast,
+                  checked: settings.accessibility.highContrast,
+                  change: setHighContrast,
+                },
+              ].map((setting) => (
+                <div key={setting.label} className={styles.setting}>
+                  <span>{setting.label}</span>
+                  <button
+                    className={styles.toggle}
+                    role="switch"
+                    aria-label={setting.label}
+                    aria-checked={setting.checked}
+                    onClick={() => setting.change(!setting.checked)}
                   >
                     <span
-                      className={styles.toggleThumb}
-                      style={{ transform: `translateX(${setting.checked ? 20 : 0}px)` }}
-                    />
-                  </span>
-                </button>
-              </div>
-            ))}
-          </div>
+                      className={styles.toggleTrack}
+                      style={{ background: setting.checked ? '#34c759' : '#c7c7cc' }}
+                    >
+                      <span
+                        className={styles.toggleThumb}
+                        style={{ transform: `translateX(${setting.checked ? 20 : 0}px)` }}
+                      />
+                    </span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </motion.div>

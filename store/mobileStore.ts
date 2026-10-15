@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { ProjectCategory } from '@/types'
 
 export type MobileScreen = 'lock' | 'home' | 'app' | 'project' | 'utility'
-export type MobileUtility = 'about' | 'photos' | 'settings' | 'contacts'
+export type MobileUtility = 'about' | 'photos' | 'settings' | 'contacts' | 'message'
 export type MobileLaunchOrigin = { x: number; y: number }
 export type MobileHomePage = 0 | 1 | 2
 

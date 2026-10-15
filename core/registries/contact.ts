@@ -1,0 +1,80 @@
+import type { Locale } from '@/types'
+
+export type ContactKind = 'company' | 'professional'
+export const opportunities = {
+  company: [
+    { id: 'position', en: 'A role in your team', it: 'Un ruolo nel tuo team' },
+    { id: 'project', en: 'A project or commission', it: 'Un progetto o un incarico' },
+    { id: 'ongoing', en: 'An ongoing collaboration', it: 'Una collaborazione continuativa' },
+  ],
+  professional: [
+    { id: 'creative', en: 'Creative direction & content', it: 'Direzione creativa e contenuti' },
+    { id: 'digital', en: 'Design & web development', it: 'Design e sviluppo web' },
+    { id: 'production', en: 'Photo, film & production', it: 'Foto, video e produzione' },
+    { id: 'other', en: 'Another idea', it: 'Un’altra idea' },
+  ],
+} as const
+
+export const contactText = {
+  en: {
+    title: 'Let’s make something happen.',
+    intro: 'A new role, a project or a good idea. Tell me what you have in mind.',
+    company: 'Company',
+    professional: 'Professional',
+    name: 'Your name',
+    email: 'Email',
+    organization: 'Company name',
+    profession: 'What do you do?',
+    opportunity: 'What brings you here?',
+    portfolio: 'Website or portfolio',
+    timing: 'When would you like to start?',
+    timingOptions: ['Just exploring', 'As soon as possible', 'Within 1–3 months', 'Flexible'],
+    budget: 'Budget or salary range',
+    optional: 'optional',
+    message: 'Your proposal',
+    companyHint: 'The role or project, your team and what you’re looking for…',
+    professionalHint: 'The idea, your contribution and how we could work together…',
+    submit: 'Send proposal',
+    sending: 'Sending…',
+    privacy: 'I’ll use these details only to respond to your proposal.',
+    success: 'Message sent.',
+    successBody: 'Thanks for getting in touch. I’ll reply to the email address you provided.',
+    again: 'Write another message',
+    error: 'The message wasn’t sent. Your draft is still here. Try again, or email me directly.',
+    unavailable:
+      'Sending is temporarily unavailable. Your draft is still here; you can reach me directly by email.',
+    limited: 'Please wait a few minutes before sending another message.',
+    invalid: 'Check the required fields and email address.',
+  },
+  it: {
+    title: 'Diamo forma alla prossima idea.',
+    intro: 'Un nuovo ruolo, un progetto o una buona idea. Raccontami cosa hai in mente.',
+    company: 'Azienda',
+    professional: 'Professionista',
+    name: 'Il tuo nome',
+    email: 'Email',
+    organization: 'Nome dell’azienda',
+    profession: 'Di cosa ti occupi?',
+    opportunity: 'Cosa vorresti propormi?',
+    portfolio: 'Sito o portfolio',
+    timing: 'Quando vorresti iniziare?',
+    timingOptions: ['Sto esplorando', 'Il prima possibile', 'Entro 1–3 mesi', 'Da concordare'],
+    budget: 'Budget o fascia retributiva',
+    optional: 'facoltativo',
+    message: 'La tua proposta',
+    companyHint: 'Il ruolo o il progetto, il tuo team e cosa stai cercando…',
+    professionalHint: 'L’idea, il tuo contributo e come potremmo lavorare insieme…',
+    submit: 'Invia proposta',
+    sending: 'Invio in corso…',
+    privacy: 'Userò questi dati solo per rispondere alla tua proposta.',
+    success: 'Messaggio inviato.',
+    successBody: 'Grazie per avermi scritto. Ti risponderò all’indirizzo email che hai indicato.',
+    again: 'Scrivi un altro messaggio',
+    error:
+      'Il messaggio non è stato inviato. La bozza è ancora qui. Riprova oppure scrivimi direttamente via email.',
+    unavailable:
+      'L’invio è temporaneamente indisponibile. La bozza è ancora qui; puoi scrivermi direttamente via email.',
+    limited: 'Attendi qualche minuto prima di inviare un altro messaggio.',
+    invalid: 'Controlla i campi obbligatori e l’indirizzo email.',
+  },
+} satisfies Record<Locale, Record<string, string | string[]>>

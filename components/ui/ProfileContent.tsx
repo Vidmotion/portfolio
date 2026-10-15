@@ -67,7 +67,7 @@ export function ProfileContent() {
         href={`mailto:${identity.email}`}
         style={{
           fontSize: '15px',
-          color: '#0066cc',
+          color: 'var(--os-accent)',
           textDecoration: 'underline',
           textUnderlineOffset: '3px',
         }}

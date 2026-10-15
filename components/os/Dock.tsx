@@ -24,7 +24,14 @@ interface DockItemProps {
   tablet: boolean
 }
 
-const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch, tablet }: DockItemProps) {
+const DockItem = memo(function DockItem({
+  id,
+  name,
+  isRunning,
+  mouseX,
+  onLaunch,
+  tablet,
+}: DockItemProps) {
   const ref = useRef<HTMLButtonElement>(null)
 
   const distance = useTransform(mouseX, (val) => {
@@ -56,7 +63,10 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch,
         ref={ref}
         onClick={() => onLaunch(id)}
         style={{ width: size, height: size }}
-        whileTap={{ scale: tablet ? 0.92 : 0.86, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+        whileTap={{
+          scale: tablet ? 0.92 : 0.86,
+          transition: { type: 'spring', stiffness: 400, damping: 18 },
+        }}
         className="relative flex cursor-pointer items-center justify-center select-none"
         aria-label={tablet ? name : `Open ${name}`}
         title={name}
@@ -66,6 +76,7 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch,
             width: '100%',
             height: '100%',
             borderRadius: '13px',
+            background: 'var(--os-icon-tile)',
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
@@ -74,7 +85,10 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch,
           whileHover={{ filter: 'brightness(1.06)' }}
           transition={{ duration: 0.14, ease: ease.opening }}
         >
-          <AppGlyph icon={appIcons[id]} scale={id === 'notes' || id === 'linkedin' ? 0.72 : undefined} />
+          <AppGlyph
+            icon={appIcons[id]}
+            scale={id === 'notes' || id === 'linkedin' ? 0.72 : undefined}
+          />
         </motion.div>
       </motion.button>
 
@@ -93,7 +107,7 @@ const DockItem = memo(function DockItem({ id, name, isRunning, mouseX, onLaunch,
             width: '4px',
             height: '4px',
             borderRadius: '50%',
-            background: 'rgba(255,255,255,0.72)',
+            background: 'var(--os-accent)',
             boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
           }}
         />
@@ -124,7 +138,7 @@ export function Dock({ tablet = false }: { tablet?: boolean }) {
           backdropFilter: 'blur(60px) saturate(200%)',
           WebkitBackdropFilter: 'blur(60px) saturate(200%)',
           borderRadius: '28px',
-          background: 'rgba(255,255,255,0.24)',
+          background: 'var(--os-dock)',
           boxShadow: [
             'inset 0 1px 0 rgba(255,255,255,0.68)',
             'inset 0 0 0 0.5px rgba(255,255,255,0.38)',
@@ -133,14 +147,18 @@ export function Dock({ tablet = false }: { tablet?: boolean }) {
             '0 24px 64px rgba(0,0,0,0.20)',
           ].join(', '),
         }}
-        onMouseMove={(e) => { if (!tablet) mouseX.set(e.clientX) }}
+        onMouseMove={(e) => {
+          if (!tablet) mouseX.set(e.clientX)
+        }}
         onMouseLeave={() => mouseX.set(Infinity)}
         role={tablet ? 'navigation' : 'toolbar'}
         aria-label={tablet ? 'Tablet dock' : 'Dock'}
       >
         {apps.map((app) => {
           // Keep the social links together after the dock separator.
-          const showSep = app.id === 'instagram' || (app.id === 'linkedin' && !apps.some((item) => item.id === 'instagram'))
+          const showSep =
+            app.id === 'instagram' ||
+            (app.id === 'linkedin' && !apps.some((item) => item.id === 'instagram'))
           return (
             <div key={app.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               {showSep && (

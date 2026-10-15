@@ -91,9 +91,9 @@ function DraggableFolder({
       <span
         style={{
           fontSize: '12px',
-          color: '#fff',
+          color: 'var(--os-ink)',
           fontWeight: 500,
-          textShadow: '0 1px 4px rgba(0,0,0,0.6)',
+          textShadow: 'var(--os-label-shadow)',
           textAlign: 'center',
           lineHeight: '1.2',
           letterSpacing: '-0.005em',
@@ -105,7 +105,10 @@ function DraggableFolder({
   )
 }
 
-export function DesktopFolders({ tabletLayout, containerRef }: {
+export function DesktopFolders({
+  tabletLayout,
+  containerRef,
+}: {
   tabletLayout?: { x: number; y: number; columns: number }
   containerRef?: React.RefObject<HTMLDivElement | null>
 }) {

@@ -296,7 +296,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     cursor: 'default',
                     padding: 0,
                     textAlign: 'left',
-                    outline: selectedProjectId === project.id ? '2px solid #0a7eff' : 'none',
+                    outline: selectedProjectId === project.id ? '2px solid var(--os-accent)' : 'none',
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
@@ -479,7 +479,7 @@ function SidebarItem({ label, count, isActive, onClick }: SidebarItemProps) {
         style={{
           fontSize: '13px',
           fontWeight: isActive ? 600 : 400,
-          color: isActive ? '#0a7eff' : '#46464a',
+          color: isActive ? 'var(--os-accent)' : '#46464a',
           letterSpacing: '-0.005em',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -493,7 +493,7 @@ function SidebarItem({ label, count, isActive, onClick }: SidebarItemProps) {
       <span
         style={{
           fontSize: '12px',
-          color: isActive ? '#0a7eff' : '#a0a0a5',
+          color: isActive ? 'var(--os-accent)' : '#a0a0a5',
           flexShrink: 0,
           marginLeft: '4px',
         }}

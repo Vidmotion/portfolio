@@ -1,0 +1,95 @@
+.appearance {
+  container-type: inline-size;
+}
+.wallpapers {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 3px 16px;
+}
+.wallpapers button {
+  position: relative;
+  aspect-ratio: 1.35;
+  border: 0;
+  padding: 0;
+  border-radius: 14px;
+  background: #e7ebf1;
+  cursor: pointer;
+  box-shadow: 0 2px 6px #142c4414;
+}
+.wallpapers img {
+  object-fit: cover;
+  border-radius: inherit;
+}
+.wallpapers button[aria-pressed='true'] {
+  outline: 2px solid var(--os-accent);
+  outline-offset: 3px;
+}
+.check {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--os-accent);
+  color: white;
+}
+.colorHeading {
+  font-size: 13px;
+  font-weight: 550;
+  margin: 8px 0 10px;
+}
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+.colors button,
+.custom {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 7px solid white;
+  border-radius: 50%;
+  outline: 1px solid #152d4920;
+  cursor: pointer;
+  padding: 0;
+  color: white;
+}
+.colors button[aria-pressed='true'] {
+  outline: 2px solid var(--os-accent);
+  outline-offset: 1px;
+}
+.auto {
+  background: conic-gradient(#234d83, #8e2927, #a6471a, #234d83);
+}
+.custom {
+  position: relative;
+  overflow: hidden;
+  background: #e5eaf1;
+  color: #152d49;
+  font-size: 24px;
+}
+.custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.appearance :focus-visible,
+.custom:focus-within {
+  outline: 2px solid var(--os-accent);
+  outline-offset: 3px;
+}
+@container (max-width: 360px) {
+  .wallpapers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -64,7 +64,7 @@ export function MobileAppView({
             background: 'transparent',
             border: 'none',
             fontSize: '15px',
-            color: '#0066cc',
+            color: 'var(--os-accent)',
             display: 'flex',
             alignItems: 'center',
             gap: '3px',

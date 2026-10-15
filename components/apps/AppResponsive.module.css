@@ -113,8 +113,8 @@
   cursor: pointer;
 }
 .photoNav[aria-current] {
-  background: #0a7eff1a;
-  color: #0066cc;
+  background: rgba(var(--os-accent-rgb),.1);
+  color: var(--os-accent);
   font-weight: 600;
 }
 .sectionLabel {

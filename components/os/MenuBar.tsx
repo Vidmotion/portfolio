@@ -55,11 +55,11 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         fontFamily: 'var(--font-text)',
         fontSize: '13px',
         letterSpacing: '-0.005em',
-        // macOS menu bar: very subtle frosted glass on dark wallpaper
-        background: 'rgba(0,0,0,0.12)',
+        // Shared translucent chrome follows the selected wallpaper palette.
+        background: 'var(--os-dock)',
         backdropFilter: 'blur(24px) saturate(180%)',
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-        borderBottom: '0.5px solid rgba(255,255,255,0.08)',
+        borderBottom: '0.5px solid var(--os-line)',
       }}
       role={tablet ? 'toolbar' : undefined}
       aria-label={tablet ? 'Tablet menu bar' : undefined}
@@ -72,7 +72,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
             width: '18px',
             height: '18px',
             borderRadius: '50%',
-            background: 'rgba(255,255,255,0.92)',
+            background: 'var(--os-ink)',
             flexShrink: 0,
             boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
           }}
@@ -81,9 +81,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         />
 
         {/* Brand */}
-        <span
-          style={{ fontWeight: 600, color: 'rgba(255,255,255,0.92)', letterSpacing: '-0.01em' }}
-        >
+        <span style={{ fontWeight: 600, color: 'var(--os-ink)', letterSpacing: '-0.01em' }}>
           {identity.name}
         </span>
 
@@ -94,8 +92,8 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
             onClick={() => activate(item)}
             style={{
               fontWeight: pressed === item.label ? 500 : 400,
-              color: pressed === item.label ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.78)',
-              background: pressed === item.label ? 'rgba(255,255,255,0.14)' : 'transparent',
+              color: pressed === item.label ? 'var(--os-ink)' : 'var(--os-muted)',
+              background: pressed === item.label ? 'rgba(var(--os-accent-rgb),.12)' : 'transparent',
               border: 'none',
               padding: tablet ? '1px 5px' : '1px 7px',
               minHeight: tablet ? '40px' : undefined,
@@ -113,21 +111,28 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
       </div>
 
       {/* Right side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: tablet ? '8px' : '16px', color: '#fff' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: tablet ? '8px' : '16px',
+          color: 'var(--os-ink)',
+        }}
+      >
         <LanguageSwitcher />
         {/* WiFi icon */}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-label="WiFi connected">
-          <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="rgba(255,255,255,0.85)" />
+          <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="var(--os-accent)" />
           <path
             d="M4.5 7.5C5.6 6.4 6.7 5.8 8 5.8s2.4.6 3.5 1.7"
-            stroke="rgba(255,255,255,0.70)"
+            stroke="var(--os-muted)"
             strokeWidth="1.3"
             strokeLinecap="round"
             fill="none"
           />
           <path
             d="M1.5 4.5C3.2 2.8 5.5 1.8 8 1.8s4.8 1 6.5 2.7"
-            stroke="rgba(255,255,255,0.40)"
+            stroke="var(--os-faint)"
             strokeWidth="1.3"
             strokeLinecap="round"
             fill="none"
@@ -138,7 +143,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
           style={{
             fontSize: '13px',
             fontWeight: 400,
-            color: 'rgba(255,255,255,0.78)',
+            color: 'var(--os-muted)',
             fontVariantNumeric: 'tabular-nums',
           }}
         >
@@ -149,7 +154,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
           style={{
             fontSize: '13px',
             fontWeight: 500,
-            color: 'rgba(255,255,255,0.92)',
+            color: 'var(--os-ink)',
             fontVariantNumeric: 'tabular-nums',
             minWidth: '58px',
           }}

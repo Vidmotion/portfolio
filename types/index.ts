@@ -73,7 +73,8 @@ export interface Project {
 
 export type WindowState = 'open' | 'minimized' | 'maximized'
 
-export type WindowApp = 'finder' | 'project' | 'photos' | 'notes' | 'settings' | 'spotify'
+export type WindowApp =
+  'finder' | 'project' | 'photos' | 'notes' | 'settings' | 'spotify' | 'contact'
 
 export type WindowSizePreset = 'sm' | 'md' | 'lg' | 'xl'
 
@@ -103,8 +104,8 @@ export interface OSWindow {
 
 // ─── Desktop ──────────────────────────────────────────────────────────────────
 
-export type Wallpaper = 'morning' | 'afternoon' | 'evening' | 'night' | 'auto' | 'slate' | 'mono'
-export type ResolvedWallpaper = Exclude<Wallpaper, 'auto'>
+export type Wallpaper = 'wallpaper2' | 'wallpaper3' | 'wallpaper4' | 'wallpaper5'
+export type ResolvedWallpaper = Wallpaper
 
 // ─── Widgets ──────────────────────────────────────────────────────────────────
 

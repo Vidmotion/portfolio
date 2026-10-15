@@ -303,7 +303,7 @@ function NoteContent({ content }: { content: string }) {
           key={i}
           style={{
             fontSize: '17px',
-            color: '#0a7eff',
+            color: 'var(--os-accent)',
             lineHeight: 1.85,
             letterSpacing: '-0.011em',
             marginBottom: '4px',

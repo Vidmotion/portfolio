@@ -9,7 +9,6 @@ import { useApplicationLauncher } from '@/hooks/useApplicationLauncher'
 import { springs, duration } from '@/lib/motion'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { wallpapers } from '@/core/registries/wallpapers'
-import type { Wallpaper } from '@/types'
 
 interface Action {
   id: string
@@ -17,16 +16,6 @@ interface Action {
   shortcut?: string
   icon: string
   run: () => void
-}
-
-const WALLPAPER_ICONS: Record<Wallpaper, string> = {
-  auto: '🕐',
-  morning: '🌅',
-  afternoon: '☀️',
-  evening: '🌇',
-  night: '🌙',
-  slate: '⬜',
-  mono: '⬛',
 }
 
 function fuzzyMatch(query: string, label: string): boolean {
@@ -66,10 +55,10 @@ export function CommandPalette() {
     { id: 'spotify', label: 'Open Music', icon: '🎵', run: () => launch('spotify') },
     { id: 'settings', label: 'Open Settings', icon: '⚙️', run: () => launch('settings') },
     { id: 'close-all', label: 'Close All Windows', icon: '✕', run: () => closeAllWindows() },
-    ...wallpapers.map((w) => ({
+    ...wallpapers.map((w, i) => ({
       id: `wallpaper-${w.id}`,
-      label: `Wallpaper: ${w.label}`,
-      icon: WALLPAPER_ICONS[w.id],
+      label: `Wallpaper ${i + 1}`,
+      icon: '◧',
       run: () => setWallpaper(w.id),
     })),
     { id: 'reset-layout', label: 'Reset Layout', icon: '↺', run: () => resetLayout() },
@@ -175,7 +164,7 @@ export function CommandPalette() {
                   letterSpacing: '-0.012em',
                   color: '#161617',
                   fontFamily: 'var(--font-display)',
-                  caretColor: '#0a7eff',
+                  caretColor: 'var(--os-accent)',
                 }}
               />
             </div>

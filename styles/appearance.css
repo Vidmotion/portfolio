@@ -1,0 +1,40 @@
+/* Wallpaper-aware chrome, shared by macOS, iPadOS and iOS views. */
+:root {
+  --os-accent: #234d83;
+  --os-accent-rgb: 35, 77, 131;
+  --os-ink: #152d49;
+  --os-wash: 232, 242, 252;
+  --os-muted: color-mix(in srgb, var(--os-ink) 76%, transparent);
+  --os-faint: color-mix(in srgb, var(--os-ink) 60%, transparent);
+  --os-line: rgba(var(--os-accent-rgb), 0.2);
+  --os-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.87), rgba(var(--os-wash), 0.8));
+  --os-glass-solid: rgb(var(--os-wash));
+  --os-dock: rgba(var(--os-wash), 0.76);
+  --os-icon-color: #234d83;
+  --os-icon-tile: rgba(255, 255, 255, 0.46);
+  --os-label-shadow: 0 1px 5px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85);
+}
+[data-app-glyph] {
+  transition: filter 0.22s ease;
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --os-glass: var(--os-glass-solid);
+    --os-dock: var(--os-glass-solid);
+  }
+}
+[data-high-contrast='true'] {
+  --os-muted: var(--os-ink);
+  --os-faint: var(--os-ink);
+  --os-glass: #fff;
+  --os-dock: #fff;
+  --os-line: var(--os-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-app-glyph] {
+    transition: none;
+  }
+}
+[data-reduced-motion='true'] [data-app-glyph] {
+  transition: none;
+}

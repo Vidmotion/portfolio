@@ -1,11 +1,9 @@
 'use client'
 
-import { useDesktopStore } from '@/store/desktopStore'
+import { AppearanceSettings } from '@/components/ui/AppearanceSettings'
 import { useDockStore } from '@/store/dockStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { identity } from '@/core/registries/identity'
-import { wallpapers as WALLPAPER_OPTIONS } from '@/core/registries/wallpapers'
-import type { Wallpaper } from '@/types'
 import styles from './AppResponsive.module.css'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
@@ -29,7 +27,7 @@ function Toggle({
         width: '40px',
         height: '24px',
         borderRadius: '9999px',
-        background: checked ? '#0a7eff' : 'rgba(0,0,0,0.15)',
+        background: checked ? 'var(--os-accent)' : 'rgba(0,0,0,0.15)',
         border: 'none',
         padding: '2px',
         cursor: 'default',
@@ -110,7 +108,6 @@ export function SettingsApp() {
   const locale = useLocaleStore((s) => s.locale)
   const text = uiText[locale]
   const it = locale === 'it'
-  const { wallpaper, setWallpaper } = useDesktopStore()
   const { magnificationEnabled, setMagnification } = useDockStore()
   const { settings, setReducedMotion, setHighContrast } = useSettingsStore()
 
@@ -123,31 +120,7 @@ export function SettingsApp() {
       </div>
 
       <SectionLabel>{it ? 'Aspetto' : 'Appearance'}</SectionLabel>
-      <Row
-        label={it ? 'Sfondo' : 'Wallpaper'}
-        description={it ? 'Cambia lo sfondo' : 'Changes the background'}
-      >
-        <select
-          aria-label={it ? 'Sfondo' : 'Wallpaper'}
-          value={wallpaper}
-          onChange={(e) => setWallpaper(e.target.value as Wallpaper)}
-          style={{
-            fontSize: '13px',
-            fontFamily: 'var(--font-text)',
-            color: '#161617',
-            background: 'rgba(0,0,0,0.05)',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '6px 10px',
-          }}
-        >
-          {WALLPAPER_OPTIONS.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </Row>
+      <AppearanceSettings />
       <Row
         label={it ? 'Ingrandimento del Dock' : 'Dock Magnification'}
         description={
