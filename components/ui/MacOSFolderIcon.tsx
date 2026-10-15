@@ -27,6 +27,7 @@ export function MacOSFolderIcon({
         width: `${width}px`,
         height: `${height}px`,
         position: 'relative',
+        opacity: 'var(--os-icon-opacity)',
         flexShrink: 0,
         filter: elevated
           ? `drop-shadow(0 ${16 * s}px ${26 * s}px rgba(${shadowColor},0.42))`

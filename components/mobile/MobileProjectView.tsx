@@ -30,7 +30,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#a0a0a5',
+          color: 'var(--ui-muted)',
           fontSize: '13px',
           fontFamily: 'var(--font-text)',
         }}

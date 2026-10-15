@@ -42,7 +42,7 @@ function Toggle({
           width: '20px',
           height: '20px',
           borderRadius: '50%',
-          background: '#fff',
+          background: 'var(--ui-raised)',
           boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
           display: 'block',
         }}
@@ -73,12 +73,19 @@ function Row({
     >
       <div>
         <div
-          style={{ fontSize: '13px', fontWeight: 500, color: '#161617', letterSpacing: '-0.005em' }}
+          style={{
+            fontSize: '13px',
+            fontWeight: 500,
+            color: 'var(--ui-ink)',
+            letterSpacing: '-0.005em',
+          }}
         >
           {label}
         </div>
         {description && (
-          <div style={{ fontSize: '12px', color: '#6d6d75', marginTop: '2px' }}>{description}</div>
+          <div style={{ fontSize: '12px', color: 'var(--ui-muted)', marginTop: '2px' }}>
+            {description}
+          </div>
         )}
       </div>
       {children}
@@ -93,7 +100,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         fontSize: '11px',
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
-        color: '#6d6d75',
+        color: 'var(--ui-muted)',
         fontWeight: 600,
         marginTop: '28px',
         marginBottom: '4px',
@@ -114,7 +121,12 @@ export function SettingsApp() {
   return (
     <div className={styles.settings}>
       <div
-        style={{ fontSize: '24px', fontWeight: 600, color: '#161617', letterSpacing: '-0.02em' }}
+        style={{
+          fontSize: '24px',
+          fontWeight: 600,
+          color: 'var(--ui-ink)',
+          letterSpacing: '-0.02em',
+        }}
       >
         {text.settings}
       </div>

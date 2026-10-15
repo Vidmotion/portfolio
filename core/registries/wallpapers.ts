@@ -4,7 +4,12 @@ import type { Wallpaper } from '@/types'
 export const wallpapers = [
   {
     id: 'wallpaper2',
-    src: '/wallpaper2.jpeg',
+    src: '/images/wallpapers/2-desktop.webp',
+    mobile: '/images/wallpapers/2-mobile.webp',
+    avif: '/images/wallpapers/2-desktop.avif',
+    mobileAvif: '/images/wallpapers/2-mobile.avif',
+    thumbnail: '/images/wallpapers/2-thumb.webp',
+    opacity: 0.42,
     accent: '#234d83',
     rgb: '35,77,131',
     ink: '#152d49',
@@ -13,7 +18,12 @@ export const wallpapers = [
   },
   {
     id: 'wallpaper3',
-    src: '/wallpaper3.jpeg',
+    src: '/images/wallpapers/3-desktop.webp',
+    mobile: '/images/wallpapers/3-mobile.webp',
+    avif: '/images/wallpapers/3-desktop.avif',
+    mobileAvif: '/images/wallpapers/3-mobile.avif',
+    thumbnail: '/images/wallpapers/3-thumb.webp',
+    opacity: 0.54,
     accent: '#263f91',
     rgb: '38,63,145',
     ink: '#202c50',
@@ -22,7 +32,12 @@ export const wallpapers = [
   },
   {
     id: 'wallpaper4',
-    src: '/wallpaper4.jpeg',
+    src: '/images/wallpapers/4-desktop.webp',
+    mobile: '/images/wallpapers/4-mobile.webp',
+    avif: '/images/wallpapers/4-desktop.avif',
+    mobileAvif: '/images/wallpapers/4-mobile.avif',
+    thumbnail: '/images/wallpapers/4-thumb.webp',
+    opacity: 0.46,
     accent: '#a6471a',
     rgb: '166,71,26',
     ink: '#462e26',
@@ -31,7 +46,12 @@ export const wallpapers = [
   },
   {
     id: 'wallpaper5',
-    src: '/wallpaper5.jpeg',
+    src: '/images/wallpapers/5-desktop.webp',
+    mobile: '/images/wallpapers/5-mobile.webp',
+    avif: '/images/wallpapers/5-desktop.avif',
+    mobileAvif: '/images/wallpapers/5-mobile.avif',
+    thumbnail: '/images/wallpapers/5-thumb.webp',
+    opacity: 0.5,
     accent: '#8e2927',
     rgb: '142,41,39',
     ink: '#422a2b',
@@ -41,6 +61,11 @@ export const wallpapers = [
 ] as const satisfies ReadonlyArray<{
   id: Wallpaper
   src: string
+  mobile: string
+  avif: string
+  mobileAvif: string
+  thumbnail: string
+  opacity: number
   accent: string
   rgb: string
   ink: string

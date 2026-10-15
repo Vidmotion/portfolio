@@ -2,11 +2,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Wallpaper, Widget, WidgetType, WidgetSize, WidgetPosition } from '@/types'
 import { DEFAULT_WALLPAPER, isWallpaper, isIconColor } from '@/core/registries/wallpapers'
+import {
+  DEFAULT_APPEARANCE,
+  normalizeAppearance,
+  type AppearancePreferences,
+} from '@/lib/appearance'
 import { generateId } from '@/lib/utils'
 
 interface DesktopStore {
   wallpaper: Wallpaper
   iconColor: string
+  appearance: AppearancePreferences
+  customWallpaperEnabled: boolean
   widgets: Widget[]
   selectedFolderId: string | null
   selectedProjectId: string | null
@@ -19,6 +26,9 @@ interface DesktopStore {
 
   setWallpaper: (wallpaper: Wallpaper) => void
   setIconColor: (color: string) => void
+  setAppearance: (value: Partial<AppearancePreferences>) => void
+  setCustomWallpaperEnabled: (enabled: boolean) => void
+  resetAppearance: () => void
   addWidget: (type: WidgetType, size: WidgetSize, position: WidgetPosition) => string
   removeWidget: (id: string) => void
   moveWidget: (id: string, position: WidgetPosition) => void
@@ -44,6 +54,8 @@ export const useDesktopStore = create<DesktopStore>()(
     (set) => ({
       wallpaper: DEFAULT_WALLPAPER,
       iconColor: 'auto',
+      appearance: DEFAULT_APPEARANCE,
+      customWallpaperEnabled: false,
       widgets: DEFAULT_WIDGETS,
       selectedFolderId: null,
       selectedProjectId: null,
@@ -52,11 +64,20 @@ export const useDesktopStore = create<DesktopStore>()(
       tabletWidgetOffsets: {},
 
       setWallpaper: (wallpaper) => {
-        if (isWallpaper(wallpaper)) set({ wallpaper })
+        if (isWallpaper(wallpaper)) set({ wallpaper, customWallpaperEnabled: false })
       },
       setIconColor: (iconColor) => {
         if (isIconColor(iconColor)) set({ iconColor })
       },
+
+      setAppearance: (value) =>
+        set((state) => ({ appearance: normalizeAppearance({ ...state.appearance, ...value }) })),
+      setCustomWallpaperEnabled: (customWallpaperEnabled) => set({ customWallpaperEnabled }),
+      resetAppearance: () =>
+        set((state) => ({
+          iconColor: 'auto',
+          appearance: { ...DEFAULT_APPEARANCE, mode: state.appearance.mode },
+        })),
 
       addWidget: (type, size, position) => {
         const id = generateId('widget')
@@ -91,7 +112,7 @@ export const useDesktopStore = create<DesktopStore>()(
     }),
     {
       name: 'portfolio-os-desktop',
-      version: 2,
+      version: 3,
       migrate: (persistedState) => {
         const state = persistedState as DesktopStore
         // Retire the personal photograph and keep existing layouts.
@@ -99,11 +120,15 @@ export const useDesktopStore = create<DesktopStore>()(
           ...state,
           wallpaper: isWallpaper(state.wallpaper) ? state.wallpaper : DEFAULT_WALLPAPER,
           iconColor: isIconColor(state.iconColor) ? state.iconColor : 'auto',
+          appearance: normalizeAppearance(state.appearance),
+          customWallpaperEnabled: state.customWallpaperEnabled === true,
         }
       },
       partialize: (state) => ({
         wallpaper: state.wallpaper,
         iconColor: state.iconColor,
+        appearance: state.appearance,
+        customWallpaperEnabled: state.customWallpaperEnabled,
         widgets: state.widgets,
         folderOffsets: state.folderOffsets,
         tabletWidgetOffsets: state.tabletWidgetOffsets,

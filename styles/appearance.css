@@ -38,3 +38,51 @@
 [data-reduced-motion='true'] [data-app-glyph] {
   transition: none;
 }
+
+/* Clear glass separates material alpha from glyphs and text. */
+:root {
+  --os-on-accent: #fff;
+  --os-icon-opacity: 1;
+  --os-reading-glass: rgba(244, 248, 253, 0.78);
+  --os-surface-edge: rgba(255, 255, 255, 0.72);
+  --os-label-base: rgba(245, 249, 255, 0.4);
+  --ui-ink: #1c2b3e;
+  --ui-muted: #5d6d80;
+  --ui-surface: #f7f9fc;
+  --ui-raised: #fff;
+  --ui-border: #152d4924;
+  --os-shadow: 0 5px 16px rgba(30, 47, 70, 0.09), 0 16px 36px rgba(30, 47, 70, 0.1);
+}
+.glass-widget-squircle {
+  border: 0.5px solid var(--os-surface-edge);
+}
+[data-app-glyph] {
+  opacity: var(--os-icon-opacity);
+}
+[data-app-tile] {
+  background: var(--os-icon-tile);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 var(--os-surface-edge),
+    inset 0 0 0 0.5px var(--os-surface-edge),
+    var(--os-shadow);
+}
+@media (prefers-reduced-transparency: reduce) {
+  html :is(.glass-widget-squircle, [data-app-tile]) {
+    background: var(--os-glass-solid) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+html[data-high-contrast='true'] {
+  --os-muted: var(--os-ink);
+  --os-faint: var(--os-ink);
+  --os-glass: var(--os-glass-solid) !important;
+  --os-dock: var(--os-glass-solid) !important;
+  --os-line: var(--os-ink);
+}
+
+html[data-high-contrast='true'] [data-app-tile] {
+  background: var(--os-glass-solid) !important;
+}

@@ -251,21 +251,21 @@ body {
 
 .glass-standard {
   background: var(--bg-window);
-  backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid var(--border-window);
 }
 
 .glass-heavy {
   background: var(--bg-dock);
-  backdrop-filter: blur(60px) saturate(200%);
   -webkit-backdrop-filter: blur(60px) saturate(200%);
+  backdrop-filter: blur(60px) saturate(200%);
 }
 
 .glass-widget {
   background: var(--bg-widget);
-  backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
 }
 
 /* macOS/iOS "squircle" continuous corner curvature. Progressive enhancement —

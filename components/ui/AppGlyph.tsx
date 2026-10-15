@@ -31,6 +31,7 @@ export function AppGlyph({
         maxHeight: '100%',
         objectFit: 'contain',
         filter: 'url(#os-icon-tint)',
+        opacity: 'var(--os-icon-opacity)',
         pointerEvents: 'none',
       }}
     />

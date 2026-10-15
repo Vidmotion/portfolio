@@ -72,7 +72,11 @@ function IconButton({
       whileTap={reduced ? undefined : { scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
     >
-      <span data-launch-anchor="" className={`${styles.iconTile} ${styles.graphite}`}>
+      <span
+        data-launch-anchor=""
+        data-app-tile=""
+        className={`${styles.iconTile} ${styles.graphite}`}
+      >
         <AppGlyph icon={app.icon} className={styles.glyph} />
       </span>
       {!dock && <span className={styles.appLabel}>{app.label}</span>}

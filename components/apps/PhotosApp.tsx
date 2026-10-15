@@ -54,7 +54,7 @@ export function PhotosApp() {
         className={styles.sidebar}
         style={{
           borderRight: '.5px solid #0000000f',
-          background: 'rgba(248,248,249,.5)',
+          background: 'var(--ui-raised)',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',

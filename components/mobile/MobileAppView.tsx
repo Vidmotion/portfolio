@@ -44,7 +44,7 @@ export function MobileAppView({
         transformOrigin,
         pointerEvents: present ? 'auto' : 'none',
         inset: 0,
-        background: '#fcfcfd',
+        background: 'var(--ui-surface)',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'var(--font-text)',
@@ -82,7 +82,7 @@ export function MobileAppView({
           style={{
             fontSize: '30px',
             fontWeight: 600,
-            color: '#161617',
+            color: 'var(--ui-ink)',
             letterSpacing: '-0.03em',
             marginTop: '10px',
             fontFamily: 'var(--font-display)',
@@ -117,7 +117,7 @@ export function MobileAppView({
                 background: 'transparent',
                 textAlign: 'left',
                 cursor: 'pointer',
-                color: '#161617',
+                color: 'var(--ui-ink)',
               }}
               aria-label={`Open ${folder.label} folder`}
             >
@@ -126,7 +126,9 @@ export function MobileAppView({
             </button>
           ))}
         {category && filtered.length === 0 && (
-          <p style={{ color: '#666', fontSize: '15px', padding: '12px 8px' }}>{text.noProjects}</p>
+          <p style={{ color: 'var(--ui-muted)', fontSize: '15px', padding: '12px 8px' }}>
+            {text.noProjects}
+          </p>
         )}
         {filtered.map((project, i) => (
           <motion.button
@@ -168,14 +170,14 @@ export function MobileAppView({
                 style={{
                   fontSize: '18px',
                   fontWeight: 600,
-                  color: '#161617',
+                  color: 'var(--ui-ink)',
                   letterSpacing: '-0.02em',
                   fontFamily: 'var(--font-display)',
                 }}
               >
                 {project.title}
               </div>
-              <div style={{ fontSize: '13px', color: '#a0a0a5', marginTop: '1px' }}>
+              <div style={{ fontSize: '13px', color: 'var(--ui-muted)', marginTop: '1px' }}>
                 {projectMeta(project, locale)}
               </div>
             </div>

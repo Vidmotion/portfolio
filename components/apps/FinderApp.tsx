@@ -93,7 +93,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
         className={styles.sidebar}
         style={{
           flexShrink: 0,
-          background: 'rgba(248,248,249,0.5)',
+          background: 'var(--ui-raised)',
           borderRight: '0.5px solid rgba(0,0,0,0.05)',
           padding: '18px 12px',
           overflowY: 'auto',
@@ -106,7 +106,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
             fontSize: '10px',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: '#6d6d75',
+            color: 'var(--ui-muted)',
             fontWeight: 600,
             padding: '6px 10px 10px',
           }}
@@ -142,7 +142,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                 fontSize: '11px',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: '#6d6d75',
+                color: 'var(--ui-muted)',
                 fontWeight: 600,
               }}
             >
@@ -152,7 +152,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
               style={{
                 fontSize: '30px',
                 fontWeight: 600,
-                color: '#161617',
+                color: 'var(--ui-ink)',
                 letterSpacing: '-0.025em',
                 marginTop: '4px',
                 fontFamily: 'var(--font-display)',
@@ -188,7 +188,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                   background: 'transparent',
                   border: 'none',
                   fontSize: '12px',
-                  color: '#161617',
+                  color: 'var(--ui-ink)',
                   width: '110px',
                   fontFamily: 'var(--font-text)',
                 }}
@@ -196,7 +196,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
               />
             </div>
 
-            <span style={{ fontSize: '13px', color: '#6d6d75' }}>
+            <span style={{ fontSize: '13px', color: 'var(--ui-muted)' }}>
               {filtered.length}{' '}
               {locale === 'it'
                 ? filtered.length === 1
@@ -223,10 +223,10 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                   style={{
                     padding: '5px 13px',
                     borderRadius: '7px',
-                    background: viewMode === mode ? '#fff' : 'transparent',
+                    background: viewMode === mode ? 'var(--ui-raised)' : 'transparent',
                     fontSize: '12px',
                     fontWeight: viewMode === mode ? 600 : 500,
-                    color: viewMode === mode ? '#161617' : '#8a8a8f',
+                    color: viewMode === mode ? 'var(--ui-ink)' : 'var(--ui-muted)',
                     boxShadow: viewMode === mode ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
                     cursor: 'default',
                     border: 'none',
@@ -259,7 +259,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '200px',
-                color: '#6d6d75',
+                color: 'var(--ui-muted)',
                 fontSize: '13px',
               }}
             >
@@ -296,7 +296,8 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     cursor: 'default',
                     padding: 0,
                     textAlign: 'left',
-                    outline: selectedProjectId === project.id ? '2px solid var(--os-accent)' : 'none',
+                    outline:
+                      selectedProjectId === project.id ? '2px solid var(--os-accent)' : 'none',
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
@@ -323,7 +324,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       style={{
                         fontSize: '15px',
                         fontWeight: 600,
-                        color: '#161617',
+                        color: 'var(--ui-ink)',
                         letterSpacing: '-0.015em',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -336,7 +337,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     <div
                       style={{
                         fontSize: '12px',
-                        color: '#6d6d75',
+                        color: 'var(--ui-muted)',
                         marginTop: '2px',
                         textTransform: 'capitalize',
                       }}
@@ -374,7 +375,9 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     gap: '12px',
                     padding: '8px 10px',
                     background:
-                      selectedProjectId === project.id ? 'rgba(10,126,255,0.1)' : 'transparent',
+                      selectedProjectId === project.id
+                        ? 'rgba(var(--os-accent-rgb),.1)'
+                        : 'transparent',
                     border: 'none',
                     cursor: 'default',
                     textAlign: 'left',
@@ -406,7 +409,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       style={{
                         fontSize: '13px',
                         fontWeight: 600,
-                        color: '#161617',
+                        color: 'var(--ui-ink)',
                         letterSpacing: '-0.01em',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -419,7 +422,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                   <div
                     style={{
                       fontSize: '12px',
-                      color: '#6d6d75',
+                      color: 'var(--ui-muted)',
                       flexShrink: 0,
                       textTransform: 'capitalize',
                     }}
@@ -429,7 +432,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                   <div
                     style={{
                       fontSize: '12px',
-                      color: '#6d6d75',
+                      color: 'var(--ui-muted)',
                       flexShrink: 0,
                       width: '36px',
                       textAlign: 'right',
@@ -467,7 +470,7 @@ function SidebarItem({ label, count, isActive, onClick }: SidebarItemProps) {
         width: 'calc(100% - 0px)',
         padding: '7px 10px',
         borderRadius: '8px',
-        background: isActive ? 'rgba(10,126,255,0.1)' : 'transparent',
+        background: isActive ? 'rgba(var(--os-accent-rgb),.1)' : 'transparent',
         border: 'none',
         cursor: 'default',
         marginBottom: '1px',
@@ -479,7 +482,7 @@ function SidebarItem({ label, count, isActive, onClick }: SidebarItemProps) {
         style={{
           fontSize: '13px',
           fontWeight: isActive ? 600 : 400,
-          color: isActive ? 'var(--os-accent)' : '#46464a',
+          color: isActive ? 'var(--os-accent)' : 'var(--ui-muted)',
           letterSpacing: '-0.005em',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -493,7 +496,7 @@ function SidebarItem({ label, count, isActive, onClick }: SidebarItemProps) {
       <span
         style={{
           fontSize: '12px',
-          color: isActive ? 'var(--os-accent)' : '#a0a0a5',
+          color: isActive ? 'var(--os-accent)' : 'var(--ui-muted)',
           flexShrink: 0,
           marginLeft: '4px',
         }}

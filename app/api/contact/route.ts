@@ -13,6 +13,23 @@ const singleLine = (value: unknown, max: number) =>
     ? value.trim()
     : ''
 
+function mailTransport() {
+  const port = Number(process.env.SMTP_PORT ?? '465')
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST ?? 'smtps.aruba.it',
+    port,
+    secure: port === 465,
+    requireTLS: port !== 465,
+    auth: { user: process.env.SMTP_USER ?? identity.email, pass: process.env.SMTP_PASSWORD },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+    disableFileAccess: true,
+    disableUrlAccess: true,
+    tls: { minVersion: 'TLSv1.2' },
+  })
+}
+
 export async function POST(request: Request) {
   const origin = request.headers.get('origin')
   const expected = process.env.CONTACT_ORIGIN ?? 'https://portfolio.carlodesantis.com'
@@ -94,20 +111,7 @@ export async function POST(request: Request) {
     count: (attempt?.count ?? 0) + 1,
     until: attempt?.until ?? now + 15 * 60 * 1000,
   })
-  const port = Number(process.env.SMTP_PORT ?? '465')
-  const transport = nodemailer.createTransport({
-    host: process.env.SMTP_HOST ?? 'smtps.aruba.it',
-    port,
-    secure: port === 465,
-    requireTLS: port !== 465,
-    auth: { user, pass },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-    disableFileAccess: true,
-    disableUrlAccess: true,
-    tls: { minVersion: 'TLSv1.2' },
-  })
+  const transport = mailTransport()
   const labels = contactText[locale]
   const text = [
     `Portfolio OS — ${labels[kind]}`,
@@ -143,4 +147,32 @@ export async function POST(request: Request) {
   } finally {
     transport.close()
   }
+}
+
+let verification: { until: number; result: Promise<boolean> } | undefined
+
+export async function GET() {
+  // Diagnostic only: checks TLS/auth without sending a message. Cache and share
+  // concurrent checks so polling cannot repeatedly authenticate to the mailbox.
+  if (!verification || Date.now() > verification.until) {
+    verification = {
+      until: Date.now() + 10 * 60 * 1000,
+      result: (async () => {
+        if (!process.env.SMTP_PASSWORD) return false
+        const transport = mailTransport()
+        try {
+          await transport.verify()
+          return true
+        } catch {
+          return false
+        } finally {
+          transport.close()
+        }
+      })(),
+    }
+  }
+  return Response.json(
+    { ready: await verification.result },
+    { headers: { 'Cache-Control': 'no-store' } }
+  )
 }

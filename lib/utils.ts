@@ -144,6 +144,7 @@ const WIDGET_GLASS_ELEVATED_SHADOW = [
 
 export const WIDGET_DARK_GLASS: CSSProperties = {
   background: 'var(--os-glass)',
+  color: 'var(--os-ink)',
   backdropFilter: 'blur(25px) saturate(160%) brightness(1)',
   WebkitBackdropFilter: 'blur(25px) saturate(160%) brightness(1)',
   boxShadow: [...WIDGET_GLASS_INSET_SHADOW, ...WIDGET_GLASS_RESTING_SHADOW].join(', '),

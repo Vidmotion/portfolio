@@ -187,7 +187,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         overflow: 'hidden',
         display: win.state === 'minimized' ? 'none' : 'flex',
         flexDirection: 'column',
-        background: 'rgba(252,252,253,0.82)',
+        background: 'var(--ui-surface)',
         backdropFilter: 'blur(48px) saturate(180%)',
         WebkitBackdropFilter: 'blur(48px) saturate(180%)',
         boxShadow: win.isFocused
@@ -216,7 +216,7 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
           background: WIDGET_DARK_GLASS.background,
           backdropFilter: WIDGET_DARK_GLASS.backdropFilter,
           WebkitBackdropFilter: WIDGET_DARK_GLASS.WebkitBackdropFilter,
-          borderBottom: '0.5px solid rgba(255,255,255,0.08)',
+          borderBottom: '0.5px solid var(--ui-border)',
           cursor: dragging ? 'grabbing' : 'grab',
           touchAction: 'none',
           fontFamily: 'var(--font-text)',

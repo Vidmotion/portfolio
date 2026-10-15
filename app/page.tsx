@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { AppearanceController } from '@/components/ui/AppearanceController'
+import { useBootAssets } from '@/hooks/useBootAssets'
+import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { useDesktopStore } from '@/store/desktopStore'
 import { getWallpaper } from '@/core/registries/wallpapers'
 import { BootScreen } from '@/components/os/BootScreen'
@@ -28,6 +30,9 @@ export default function Home() {
   const [shellReady, setShellReady] = useState(false)
   const finishBoot = useCallback(() => setBooted(true), [])
   const platform = usePlatform()
+  const assetsReady = useBootAssets(platform, !booted)
+  const customEnabled = useDesktopStore((s) => s.customWallpaperEnabled)
+  const customUrl = useCustomWallpaperStore((s) => s.url)
   const locale = useLocaleStore((s) => s.locale)
   const reducedMotion = useSettingsStore((s) => s.settings.accessibility.reducedMotion)
   useAccessibilityPreferences()
@@ -50,16 +55,42 @@ export default function Home() {
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
       <AppearanceController />
-      {platform && (
-        <link rel="preload" as="image" href={getWallpaper(wallpaper).src} type="image/jpeg" />
+      {platform && !customEnabled && (
+        <>
+          <link
+            rel="preload"
+            as="image"
+            type="image/avif"
+            media="(max-width:767px)"
+            href={getWallpaper(wallpaper).mobileAvif}
+          />
+          <link
+            rel="preload"
+            as="image"
+            type="image/avif"
+            media="(min-width:768px)"
+            href={getWallpaper(wallpaper).avif}
+          />
+        </>
       )}
+      {customEnabled && customUrl && <link rel="preload" as="image" href={customUrl} />}
       {/* Boot screen — shown until boot sequence completes */}
       <AnimatePresence>
-        {!booted && <BootScreen ready={shellReady} onComplete={finishBoot} />}
+        {!booted && (
+          <BootScreen
+            platform={platform}
+            ready={shellReady && assetsReady}
+            onComplete={finishBoot}
+          />
+        )}
       </AnimatePresence>
 
       {/* Desktop — macOS-inspired experience */}
-      {platform === 'desktop' && <DesktopShell />}
+      {platform === 'desktop' && (
+        <div inert={!booted}>
+          <DesktopShell />
+        </div>
+      )}
 
       {/* Tablet — iPadOS-inspired experience */}
       {platform === 'tablet' && booted && (

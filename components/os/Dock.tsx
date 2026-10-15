@@ -82,6 +82,7 @@ const DockItem = memo(function DockItem({
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          data-app-tile=""
           whileHover={{ filter: 'brightness(1.06)' }}
           transition={{ duration: 0.14, ease: ease.opening }}
         >
@@ -139,13 +140,8 @@ export function Dock({ tablet = false }: { tablet?: boolean }) {
           WebkitBackdropFilter: 'blur(60px) saturate(200%)',
           borderRadius: '28px',
           background: 'var(--os-dock)',
-          boxShadow: [
-            'inset 0 1px 0 rgba(255,255,255,0.68)',
-            'inset 0 0 0 0.5px rgba(255,255,255,0.38)',
-            '0 0 0 0.5px rgba(0,0,0,0.06)',
-            '0 8px 24px rgba(0,0,0,0.14)',
-            '0 24px 64px rgba(0,0,0,0.20)',
-          ].join(', '),
+          boxShadow:
+            'inset 0 1px 0 var(--os-surface-edge), inset 0 0 0 .5px var(--os-surface-edge), var(--os-shadow)',
         }}
         onMouseMove={(e) => {
           if (!tablet) mouseX.set(e.clientX)

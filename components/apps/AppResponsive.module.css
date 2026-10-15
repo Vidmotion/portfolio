@@ -54,7 +54,7 @@
   height: 100%;
   overflow-y: auto;
   padding: var(--settings-pad);
-  background: rgba(252, 252, 253, 0.82);
+  background: var(--ui-surface);
   font-family: var(--font-text);
 }
 .photoGrid {
@@ -83,11 +83,11 @@
 .photoHeader h2 {
   font: 600 26px var(--font-display);
   letter-spacing: -0.025em;
-  color: #161617;
+  color: var(--ui-ink);
 }
 .photoHeader p,
 .empty {
-  color: #6d6d75;
+  color: var(--ui-muted);
   font-size: 13px;
   line-height: 1.5;
   margin-top: 8px;
@@ -113,7 +113,7 @@
   cursor: pointer;
 }
 .photoNav[aria-current] {
-  background: rgba(var(--os-accent-rgb),.1);
+  background: rgba(var(--os-accent-rgb), 0.1);
   color: var(--os-accent);
   font-weight: 600;
 }
@@ -121,7 +121,7 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6d6d75;
+  color: var(--ui-muted);
   font-weight: 600;
   padding: 0 12px 8px;
   margin-top: 16px;

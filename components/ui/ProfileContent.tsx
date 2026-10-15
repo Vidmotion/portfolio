@@ -12,7 +12,7 @@ export function ProfileContent() {
   const show = useEasterEggStore((s) => s.show)
   const greeting = useLongPress(() => show('hello'))
   return (
-    <div style={{ color: '#33333a', fontFamily: 'var(--font-text)' }}>
+    <div style={{ color: 'var(--ui-ink)', fontFamily: 'var(--font-text)' }}>
       <div
         style={{
           display: 'flex',
@@ -41,7 +41,7 @@ export function ProfileContent() {
             style={{
               fontSize: '24px',
               fontWeight: 600,
-              color: '#161617',
+              color: 'var(--ui-ink)',
               letterSpacing: '-.025em',
             }}
           >

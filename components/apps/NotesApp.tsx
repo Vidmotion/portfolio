@@ -52,7 +52,7 @@ export function NotesApp({
           flexShrink: 0,
           borderRight: '0.5px solid rgba(0,0,0,0.06)',
           padding: '12px 0',
-          background: 'rgba(250,250,251,0.7)',
+          background: 'var(--ui-raised)',
           display: 'flex',
           flexDirection: 'column',
           overflowY: 'auto',
@@ -88,7 +88,7 @@ export function NotesApp({
               width: '100%',
               background: 'transparent',
               border: 0,
-              color: '#161617',
+              color: 'var(--ui-ink)',
               fontSize: '12px',
             }}
           />
@@ -96,7 +96,9 @@ export function NotesApp({
 
         {/* Note list */}
         {filteredNotes.length === 0 && (
-          <p style={{ padding: '12px', fontSize: '12px', color: '#6d6d75' }}>{text.selectNote}</p>
+          <p style={{ padding: '12px', fontSize: '12px', color: 'var(--ui-muted)' }}>
+            {text.selectNote}
+          </p>
         )}
         {filteredNotes.map((note) => (
           <button
@@ -107,7 +109,8 @@ export function NotesApp({
               flexDirection: 'column',
               padding: '10px 14px',
               textAlign: 'left',
-              background: selectedNoteId === note.id ? 'rgba(10,126,255,0.08)' : 'transparent',
+              background:
+                selectedNoteId === note.id ? 'rgba(var(--os-accent-rgb),.08)' : 'transparent',
               borderBottom: '0.5px solid rgba(0,0,0,0.04)',
               border: 'none',
               cursor: 'default',
@@ -120,7 +123,7 @@ export function NotesApp({
               style={{
                 fontSize: '13px',
                 fontWeight: 600,
-                color: '#161617',
+                color: 'var(--ui-ink)',
                 letterSpacing: '-0.008em',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -133,7 +136,7 @@ export function NotesApp({
             <span
               style={{
                 fontSize: '11px',
-                color: '#6d6d75',
+                color: 'var(--ui-muted)',
                 marginTop: '2px',
                 lineHeight: 1.3,
                 overflow: 'hidden',
@@ -154,7 +157,7 @@ export function NotesApp({
           flex: 1,
           minWidth: 0,
           overflowY: 'auto',
-          background: '#fff',
+          background: 'var(--ui-raised)',
         }}
       >
         <AnimatePresence mode="wait">
@@ -175,7 +178,7 @@ export function NotesApp({
                   fontSize: '11px',
                   letterSpacing: '0.18em',
                   textTransform: 'uppercase',
-                  color: '#6d6d75',
+                  color: 'var(--ui-muted)',
                   fontWeight: 600,
                 }}
               >
@@ -188,7 +191,7 @@ export function NotesApp({
                   fontFamily: 'var(--font-display)',
                   fontSize: 'var(--note-title)',
                   fontWeight: 600,
-                  color: '#161617',
+                  color: 'var(--ui-ink)',
                   letterSpacing: '-0.03em',
                   lineHeight: 1.05,
                   margin: '14px 0 32px',
@@ -210,7 +213,7 @@ export function NotesApp({
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                color: '#6d6d75',
+                color: 'var(--ui-muted)',
                 fontSize: '13px',
               }}
             >
@@ -241,7 +244,7 @@ function NoteContent({ content }: { content: string }) {
             fontFamily: 'var(--font-display)',
             fontSize: '28px',
             fontWeight: 600,
-            color: '#161617',
+            color: 'var(--ui-ink)',
             letterSpacing: '-0.025em',
             lineHeight: 1.1,
             marginBottom: '20px',
@@ -259,7 +262,7 @@ function NoteContent({ content }: { content: string }) {
             fontFamily: 'var(--font-display)',
             fontSize: '20px',
             fontWeight: 600,
-            color: '#161617',
+            color: 'var(--ui-ink)',
             letterSpacing: '-0.018em',
             marginBottom: '10px',
             marginTop: '32px',
@@ -275,7 +278,7 @@ function NoteContent({ content }: { content: string }) {
           style={{
             fontSize: '17px',
             fontWeight: 600,
-            color: '#161617',
+            color: 'var(--ui-ink)',
             lineHeight: 1.85,
             letterSpacing: '-0.011em',
             marginBottom: '8px',
@@ -318,7 +321,7 @@ function NoteContent({ content }: { content: string }) {
           key={i}
           style={{
             fontSize: '17px',
-            color: '#33333a',
+            color: 'var(--ui-ink)',
             lineHeight: 1.85,
             letterSpacing: '-0.011em',
             marginBottom: '4px',

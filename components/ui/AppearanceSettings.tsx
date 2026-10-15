@@ -1,15 +1,48 @@
 'use client'
 
 import Image from 'next/image'
-import { Check } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Check, Sun, Moon, Upload, RotateCcw, LoaderCircle, Trash2 } from 'lucide-react'
 import { useDesktopStore } from '@/store/desktopStore'
+import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { useLocaleStore } from '@/store/localeStore'
-import { wallpapers, iconColors } from '@/core/registries/wallpapers'
+import { wallpapers, getWallpaper } from '@/core/registries/wallpapers'
 import styles from './AppearanceSettings.module.css'
 
 export function AppearanceSettings() {
-  const { wallpaper, setWallpaper, iconColor, setIconColor } = useDesktopStore()
-  const it = useLocaleStore((s) => s.locale) === 'it'
+  const {
+    wallpaper,
+    setWallpaper,
+    iconColor,
+    setIconColor,
+    appearance,
+    setAppearance,
+    resetAppearance,
+    customWallpaperEnabled,
+    setCustomWallpaperEnabled,
+  } = useDesktopStore()
+  const custom = useCustomWallpaperStore(),
+    it = useLocaleStore((s) => s.locale) === 'it'
+  const [error, setError] = useState(''),
+    input = useRef<HTMLInputElement>(null)
+  const dark = appearance.mode === 'dark',
+    theme = getWallpaper(wallpaper)
+  async function upload(file?: File) {
+    if (!file || custom.busy) return
+    setError('')
+    try {
+      await custom.upload(file)
+      setCustomWallpaperEnabled(true)
+    } catch {
+      setError(
+        it
+          ? 'Scegli un’immagine JPG, PNG, WebP o AVIF fino a 20 MB. Riprova con un file più piccolo.'
+          : 'Choose a JPG, PNG, WebP or AVIF up to 20 MB. Try a smaller file.'
+      )
+    } finally {
+      if (input.current) input.current.value = ''
+    }
+  }
   return (
     <div className={styles.appearance}>
       <div className={styles.wallpapers} role="group" aria-label={it ? 'Sfondo' : 'Wallpaper'}>
@@ -18,11 +51,17 @@ export function AppearanceSettings() {
             key={item.id}
             type="button"
             aria-label={`${it ? 'Sfondo' : 'Wallpaper'} ${i + 1}`}
-            aria-pressed={wallpaper === item.id}
+            aria-pressed={!customWallpaperEnabled && wallpaper === item.id}
             onClick={() => setWallpaper(item.id)}
           >
-            <Image src={item.src} alt="" fill sizes="(max-width: 600px) 45vw, 160px" unoptimized />
-            {wallpaper === item.id && (
+            <Image
+              src={item.thumbnail}
+              alt=""
+              fill
+              sizes="(max-width:600px) 45vw,160px"
+              unoptimized
+            />
+            {!customWallpaperEnabled && wallpaper === item.id && (
               <span className={styles.check}>
                 <Check size={14} strokeWidth={3} />
               </span>
@@ -30,41 +69,172 @@ export function AppearanceSettings() {
           </button>
         ))}
       </div>
-      <div className={styles.colorHeading}>{it ? 'Colore icone' : 'Icon color'}</div>
-      <div className={styles.colors} role="group" aria-label={it ? 'Colore icone' : 'Icon color'}>
+      <div className={styles.uploadRow}>
+        {custom.url && (
+          <button
+            type="button"
+            className={styles.personalThumb}
+            onClick={() => setCustomWallpaperEnabled(true)}
+            aria-label={it ? 'Usa il mio sfondo' : 'Use my wallpaper'}
+            aria-pressed={customWallpaperEnabled}
+            style={{ backgroundImage: `url("${custom.url}")` }}
+          >
+            {customWallpaperEnabled && <Check size={16} />}
+          </button>
+        )}
         <button
           type="button"
-          className={styles.auto}
-          aria-label={it ? 'Segui lo sfondo' : 'Match wallpaper'}
-          aria-pressed={iconColor === 'auto'}
-          onClick={() => setIconColor('auto')}
+          className={styles.upload}
+          onClick={() => input.current?.click()}
+          disabled={custom.busy}
         >
-          {iconColor === 'auto' && <Check size={15} />}
+          {custom.busy ? <LoaderCircle size={16} /> : <Upload size={16} />}{' '}
+          {custom.busy
+            ? it
+              ? 'Ottimizzo…'
+              : 'Optimizing…'
+            : it
+              ? 'Scegli una foto'
+              : 'Choose a photo'}
         </button>
-        {iconColors.map((color) => (
+        {custom.url && (
           <button
-            key={color}
             type="button"
-            style={{ background: color }}
-            aria-label={`${it ? 'Colore icone' : 'Icon color'} ${color}`}
-            aria-pressed={iconColor === color}
-            onClick={() => setIconColor(color)}
+            className={styles.remove}
+            aria-label={it ? 'Rimuovi il mio sfondo' : 'Remove my wallpaper'}
+            onClick={async () => {
+              try {
+                await custom.remove()
+                setCustomWallpaperEnabled(false)
+              } catch {
+                setError(
+                  it
+                    ? 'Impossibile rimuovere lo sfondo. Riprova.'
+                    : 'Could not remove the wallpaper. Please try again.'
+                )
+              }
+            }}
           >
-            {iconColor === color && (
-              <Check size={15} color={color === '#f0f3fa' ? '#152d49' : '#fff'} />
-            )}
+            <Trash2 size={16} />
+          </button>
+        )}
+        <input
+          ref={input}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          aria-label={it ? 'Carica sfondo personale' : 'Upload personal wallpaper'}
+          className={styles.file}
+          onChange={(e) => void upload(e.target.files?.[0])}
+        />
+      </div>
+      <p className={styles.localNote}>
+        {it
+          ? 'Ottimizzata e salvata solo in questo browser.'
+          : 'Optimized and saved only in this browser.'}
+      </p>
+      {error && (
+        <p role="alert" className={styles.error}>
+          {error}
+        </p>
+      )}
+      <div
+        className={styles.mode}
+        role="group"
+        aria-label={it ? 'Modalità aspetto' : 'Appearance mode'}
+      >
+        {(['light', 'dark'] as const).map((mode) => (
+          <button
+            key={mode}
+            aria-pressed={appearance.mode === mode}
+            onClick={() => setAppearance({ mode })}
+          >
+            {mode === 'light' ? <Sun size={16} /> : <Moon size={16} />}{' '}
+            {mode === 'light' ? (it ? 'Chiaro' : 'Light') : it ? 'Scuro' : 'Dark'}
           </button>
         ))}
-        <label className={styles.custom} title={it ? 'Colore personalizzato' : 'Custom color'}>
-          <span aria-hidden>+</span>
-          <input
-            type="color"
-            aria-label={it ? 'Colore personalizzato' : 'Custom color'}
-            value={iconColor === 'auto' ? '#234d83' : iconColor}
-            onChange={(e) => setIconColor(e.target.value)}
-          />
-        </label>
       </div>
+      <div className={styles.controls}>
+        {[
+          {
+            label: it ? 'Sfondo delle app' : 'App background',
+            value: appearance.surfaceColor,
+            fallback: dark ? '#172235' : '#eef4fb',
+            change: (surfaceColor: string) => setAppearance({ surfaceColor }),
+          },
+          {
+            label: it ? 'Icone' : 'Icons',
+            value: iconColor,
+            fallback: theme.accent,
+            change: setIconColor,
+          },
+          {
+            label: it ? 'Testi' : 'Text',
+            value: appearance.textColor,
+            fallback: dark ? '#f2f5fb' : theme.ink,
+            change: (textColor: string) => setAppearance({ textColor }),
+          },
+        ].map((field) => (
+          <div className={styles.control} key={field.label}>
+            <span>{field.label}</span>
+            <div className={styles.colorActions}>
+              <button
+                type="button"
+                aria-label={`${it ? 'Automatico' : 'Automatic'} — ${field.label}`}
+                aria-pressed={field.value === 'auto'}
+                onClick={() => field.change('auto')}
+              >
+                {it ? 'Auto' : 'Auto'}
+              </button>
+              <input
+                type="color"
+                aria-label={field.label}
+                value={field.value === 'auto' ? field.fallback : field.value}
+                onChange={(e) => field.change(e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+        {[
+          {
+            label: it ? 'Opacità del vetro' : 'Glass opacity',
+            value: appearance.surfaceOpacity ?? (dark ? 0.56 : theme.opacity),
+            min: 0,
+            change: (surfaceOpacity: number) => setAppearance({ surfaceOpacity }),
+          },
+          {
+            label: it ? 'Opacità delle icone' : 'Icon opacity',
+            value: appearance.iconOpacity,
+            min: 0.25,
+            change: (iconOpacity: number) => setAppearance({ iconOpacity }),
+          },
+          {
+            label: it ? 'Intensità dello sfondo' : 'Wallpaper intensity',
+            value: appearance.wallpaperOpacity,
+            min: 0.2,
+            change: (wallpaperOpacity: number) => setAppearance({ wallpaperOpacity }),
+          },
+        ].map((field) => (
+          <label className={styles.sliderRow} key={field.label}>
+            <span>
+              {field.label}
+              <output>{Math.round(field.value * 100)}%</output>
+            </span>
+            <input
+              type="range"
+              aria-label={field.label}
+              min={field.min}
+              max="1"
+              step=".01"
+              value={field.value}
+              onChange={(e) => field.change(Number(e.target.value))}
+            />
+          </label>
+        ))}
+      </div>
+      <button type="button" className={styles.reset} onClick={resetAppearance}>
+        <RotateCcw size={14} />
+        {it ? 'Ripristina il tema' : 'Reset theme'}
+      </button>
     </div>
   )
 }
