@@ -122,3 +122,37 @@
   padding: 4px 9px;
   border-radius: 6px;
 }
+.continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #0002;
+}
+.continue a,
+.continue button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: var(--ui-raised);
+  color: var(--ui-ink);
+  font: 500 14px var(--font-text);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.continue a {
+  flex: 1;
+}
+.continue small {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 5px;
+  color: var(--ui-muted);
+}
+.continue strong {
+  font-weight: 600;
+}

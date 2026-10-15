@@ -201,3 +201,11 @@
 .group + .appearance {
   margin-top: 18px;
 }
+.photoOpen {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  width: 100%;
+  cursor: zoom-in;
+}

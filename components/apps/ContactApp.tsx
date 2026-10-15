@@ -90,6 +90,22 @@ export function ContactApp() {
               </span>
               <h2>{text.title}</h2>
               <p>{text.intro}</p>
+              <nav
+                className={styles.directContact}
+                aria-label={locale === 'it' ? 'Contatti diretti' : 'Direct contact'}
+              >
+                <a href={`mailto:${identity.email}`}>{identity.email}</a>
+                {identity.social.map((social) => (
+                  <a
+                    key={social.platform}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label ?? social.platform} ↗
+                  </a>
+                ))}
+              </nav>
             </header>
             <div
               className={styles.segment}

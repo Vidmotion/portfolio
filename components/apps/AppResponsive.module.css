@@ -134,61 +134,6 @@
   padding: 0 12px 8px;
   margin-top: 16px;
 }
-.lightbox {
-  margin: auto;
-  border: 0;
-  padding: 60px 20px 20px;
-  border-radius: 18px;
-  background: #161617;
-  color: white;
-  width: min(90vw, 760px);
-  max-height: 90dvh;
-}
-.lightbox::backdrop {
-  background: #000c;
-  backdrop-filter: blur(8px);
-}
-.lightbox[open] {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-.lightbox img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: calc(90dvh - 140px);
-  object-fit: contain;
-  border-radius: 10px;
-}
-.lightboxControls {
-  display: flex;
-  gap: 12px;
-}
-.lightboxControls button {
-  min-width: 44px;
-  min-height: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: #ffffff1f;
-  color: white;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.lightboxClose {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 50%;
-  background: #ffffff1f;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
 .music {
   height: 100%;
   overflow: auto;
@@ -196,7 +141,7 @@
   justify-content: safe center;
   align-items: safe center;
   padding: 20px;
-  background: #0a0a0b;
+  background: var(--ui-surface);
 }
 @container app-window (max-width:680px) {
   .shell {

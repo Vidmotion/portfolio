@@ -400,7 +400,7 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
                 whileTap={reduced ? undefined : { scale: 0.98 }}
               >
                 <span className={styles.widgetHeading}>{text.about}</span>
-                <span>{profile.summary[locale]}</span>
+                <span>{profile.homeSummary[locale]}</span>
               </motion.button>
               <div className={styles.splitGrid}>
                 <ExpertiseWidget launch={launch} open={props.onOpenNotes} reduced={reduced} />
@@ -421,6 +421,8 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
             </div>
           </section>
         </motion.div>
+      </div>
+      <div className={styles.scrollHintSlot}>
         {homePage === 0 && (
           <motion.div id={hintId} className={styles.scrollHint} style={{ opacity: hintOpacity }}>
             <span>{text.scrollExplore}</span>

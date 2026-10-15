@@ -115,7 +115,6 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
                   fontSize: '12px',
                   color: 'var(--os-muted)',
                   marginTop: '1px',
-                  textTransform: 'capitalize',
                 }}
               >
                 {projectMeta(project, locale)}

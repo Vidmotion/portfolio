@@ -67,6 +67,9 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
           p.title.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
           p.summary.toLowerCase().includes(q) ||
+          (p.agency ?? '').toLowerCase().includes(q) ||
+          (p.client ?? '').toLowerCase().includes(q) ||
+          p.role.toLowerCase().includes(q) ||
           p.tags.some((tag) => tag.toLowerCase().includes(q))
       )
     }
@@ -263,7 +266,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                 fontSize: '13px',
               }}
             >
-              {text.noProjects}
+              {searchQuery.trim() ? text.noSearchResults : text.noProjects}
             </div>
           ) : viewMode === 'grid' ? (
             <div className={styles.finderGrid}>
@@ -301,7 +304,11 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
-                  title={text.tapToOpen}
+                  title={
+                    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+                      ? text.tapToOpen
+                      : text.doubleClickToOpen
+                  }
                 >
                   {/* Cover */}
                   <div
@@ -339,7 +346,6 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                         fontSize: '12px',
                         color: 'var(--ui-muted)',
                         marginTop: '2px',
-                        textTransform: 'capitalize',
                       }}
                     >
                       {projectMeta(project, locale)}
@@ -389,7 +395,11 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     backgroundColor:
                       selectedProjectId === project.id ? undefined : 'rgba(0,0,0,0.04)',
                   }}
-                  title={text.tapToOpen}
+                  title={
+                    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+                      ? text.tapToOpen
+                      : text.doubleClickToOpen
+                  }
                 >
                   <div
                     style={{
@@ -424,7 +434,6 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       fontSize: '12px',
                       color: 'var(--ui-muted)',
                       flexShrink: 0,
-                      textTransform: 'capitalize',
                     }}
                   >
                     {project.category.replace('-', ' ')}

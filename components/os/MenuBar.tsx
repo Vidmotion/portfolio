@@ -127,7 +127,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
           color: 'var(--os-ink)',
         }}
       >
-        <LanguageSwitcher />
+        <LanguageSwitcher size={tablet ? 'regular' : 'compact'} />
         {/* WiFi icon */}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-label="WiFi connected">
           <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="var(--os-accent)" />

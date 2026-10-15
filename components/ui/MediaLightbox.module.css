@@ -1,0 +1,84 @@
+.dialog {
+  margin: auto;
+  width: min(92vw, 1100px);
+  max-height: 92dvh;
+  padding: 60px 20px 16px;
+  border: 1px solid #ffffff26;
+  border-radius: 20px;
+  background: #161617;
+  color: #fff;
+  font-family: var(--font-text);
+}
+.dialog::backdrop {
+  background: #000c;
+  backdrop-filter: blur(8px);
+}
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: appear 0.18s ease;
+}
+.dialog figure {
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  text-align: center;
+}
+.dialog img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(92dvh - 180px);
+  margin-inline: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+.dialog figcaption {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 10px;
+  color: #dedee6;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+}
+.dialog button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #ffffff1f;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.dialog .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+  font-size: 24px;
+}
+.dialog :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

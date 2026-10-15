@@ -6,11 +6,12 @@
   --dock-icon: 68px;
   --dock-inset: 12px;
   --dock-height: calc(var(--dock-icon) + var(--dock-inset) * 2);
+  --hint-height: 0px;
   --mobile-widget-material: var(--os-glass);
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) 44px var(--dock-height);
+  grid-template-rows: minmax(0, 1fr) var(--hint-height) 44px var(--dock-height);
   padding: var(--home-top) 0 max(12px, calc(env(safe-area-inset-bottom) + 6px));
   color: var(--os-ink);
   font-family: var(--font-text);
@@ -131,10 +132,16 @@
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
+.home[data-take-look='true'] {
+  --hint-height: 30px;
+}
+.scrollHintSlot {
+  min-height: 0;
+  overflow: hidden;
+}
 .scrollHint {
-  position: absolute;
-  bottom: 10px;
-  inset-inline: 0;
+  position: relative;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -588,7 +595,7 @@
     --canvas-gap: 10px;
     --dock-icon: 56px;
     --dock-inset: 7px;
-    grid-template-rows: minmax(0, 1fr) 36px var(--dock-height);
+    grid-template-rows: minmax(0, 1fr) var(--hint-height) 36px var(--dock-height);
   }
   .page {
     padding-block: 6px;

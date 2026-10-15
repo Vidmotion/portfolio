@@ -102,6 +102,7 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
         </span>
       </header>
       <div
+        key={project.id}
         data-project-scroll={project.id}
         style={{ flex: 1, minHeight: 0, overflowY: 'auto', overscrollBehavior: 'contain' }}
       >

@@ -96,6 +96,9 @@ export interface OSWindow {
   restoreState?: 'open' | 'maximized'
   position: WindowPosition
   size: WindowSize
+  /** User geometry, preserved while a smaller viewport temporarily constrains the window. */
+  preferredSize?: WindowSize
+  preferredPosition?: WindowPosition
   zIndex: number
   isFocused: boolean
   /** Arbitrary payload passed to the app rendered inside the window */

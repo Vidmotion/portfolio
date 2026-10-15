@@ -1,23 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useLocaleStore } from '@/store/localeStore'
 
-function fmt12(d: Date): string {
-  return d
-    .toLocaleTimeString('en-US', {
-      timeZone: 'Europe/Rome',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    })
-    .replace(/\s?(AM|PM)/, '')
-}
-
-function fmtFull(d: Date): string {
-  return d.toLocaleTimeString('en-US', {
+function fmtTime(d: Date, locale: string): string {
+  return d.toLocaleTimeString(locale, {
     timeZone: 'Europe/Rome',
-    hour: 'numeric',
+    hour: '2-digit',
     minute: '2-digit',
-    hour12: true,
+    hourCycle: 'h23',
   })
 }
 
@@ -42,7 +31,7 @@ function fmtDateLong(d: Date, locale: string): string {
 export interface TimeValues {
   /** "12:00" — hours:minutes, no AM/PM */
   bigTime: string
-  /** "12:00 AM" */
+  /** Localized 24-hour time, shared by menu, widgets and lock screen. */
   fullTime: string
   /** "Mon, Jun 30" */
   date: string
@@ -58,7 +47,7 @@ const INITIAL: TimeValues = {
 }
 
 export function useTime(): TimeValues {
-  const locale = useLocaleStore((s) => s.locale) === 'it' ? 'it-IT' : 'en-US'
+  const locale = useLocaleStore((s) => s.locale) === 'it' ? 'it-IT' : 'en-GB'
   const [now, setNow] = useState<Date | null>(null)
 
   useEffect(() => {
@@ -73,8 +62,8 @@ export function useTime(): TimeValues {
   if (!now) return INITIAL
 
   return {
-    bigTime: fmt12(now),
-    fullTime: fmtFull(now),
+    bigTime: fmtTime(now, locale),
+    fullTime: fmtTime(now, locale),
     date: fmtDate(now, locale),
     dateLong: fmtDateLong(now, locale),
   }

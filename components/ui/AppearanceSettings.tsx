@@ -49,11 +49,24 @@ export function AppearanceSettings() {
     try {
       await custom.upload(file)
       setCustomWallpaperEnabled(true)
-    } catch {
+    } catch (reason) {
+      const code = reason instanceof Error ? reason.message : ''
       setError(
-        it
-          ? 'Scegli un’immagine JPG, PNG, WebP o AVIF fino a 20 MB. Riprova con un file più piccolo.'
-          : 'Choose a JPG, PNG, WebP or AVIF up to 20 MB. Try a smaller file.'
+        code === 'decode'
+          ? it
+            ? 'Il file non è un’immagine leggibile. Prova a esportarlo di nuovo in JPG, PNG, WebP o AVIF.'
+            : 'This file is not a readable image. Try exporting it again as JPG, PNG, WebP or AVIF.'
+          : code === 'size'
+            ? it
+              ? 'Questa immagine è troppo grande. Scegli un file fino a 20 MB o riducine le dimensioni.'
+              : 'This image is too large. Choose a file up to 20 MB or reduce its dimensions.'
+            : code === 'format'
+              ? it
+                ? 'Scegli un’immagine JPG, PNG, WebP o AVIF.'
+                : 'Choose a JPG, PNG, WebP or AVIF image.'
+              : it
+                ? 'Non riesco a salvare lo sfondo in questo browser. Riprova.'
+                : 'Could not save the wallpaper in this browser. Please try again.'
       )
     } finally {
       if (input.current) input.current.value = ''

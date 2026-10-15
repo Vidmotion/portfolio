@@ -53,12 +53,15 @@ export async function saveCustomWallpaper(value: SavedWallpaper) {
 export const deleteCustomWallpaper = () => transaction('readwrite', (s) => s.delete('current'))
 
 export async function prepareCustomWallpaper(file: File): Promise<SavedWallpaper> {
-  if (
-    !['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type) ||
-    file.size > 20 * 1024 * 1024
-  )
+  if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type))
     throw Error('format')
-  const bitmap = await createImageBitmap(file)
+  if (file.size > 20 * 1024 * 1024) throw Error('size')
+  let bitmap: ImageBitmap
+  try {
+    bitmap = await createImageBitmap(file)
+  } catch {
+    throw Error('decode')
+  }
   try {
     if (bitmap.width * bitmap.height > 64000000) throw Error('size')
     const scale = Math.min(1, 2560 / Math.max(bitmap.width, bitmap.height)),

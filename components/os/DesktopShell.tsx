@@ -48,6 +48,7 @@ export function DesktopShell() {
     >
       {/* Layer 0: Wallpaper */}
       <WallpaperLayer wallpaper={resolvedWallpaper} />
+      <MenuBar />
 
       {/* Layer 1: Widgets */}
       <WidgetLayer />
@@ -62,7 +63,6 @@ export function DesktopShell() {
       <Dock />
 
       {/* Layer 5: Menu Bar */}
-      <MenuBar />
 
       {/* Layer 6: Overlays */}
       <SpotlightSearch />
