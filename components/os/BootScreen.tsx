@@ -76,6 +76,29 @@ export function BootScreen({
           </span>
         </div>
       </div>
+      <nav
+        aria-label={it ? 'Progetti e privacy' : 'Projects and privacy'}
+        style={{
+          position: 'absolute',
+          bottom: 'max(20px, env(safe-area-inset-bottom))',
+          display: 'flex',
+          gap: 24,
+          fontSize: 12,
+        }}
+      >
+        <a
+          href={it ? '/it/work' : '/work'}
+          style={{ color: 'var(--os-ink)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+        >
+          {it ? 'Progetti e profilo' : 'Projects & profile'}
+        </a>
+        <a
+          href={it ? '/it/privacy' : '/privacy'}
+          style={{ color: 'var(--os-ink)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+        >
+          {it ? 'Privacy e cookie' : 'Privacy & cookies'}
+        </a>
+      </nav>
     </motion.div>
   )
 }

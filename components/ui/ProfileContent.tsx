@@ -6,6 +6,7 @@ import { profile } from '@/core/registries/profile'
 import { useLocaleStore } from '@/store/localeStore'
 import { useLongPress } from '@/hooks/useLongPress'
 import { useEasterEggStore } from '@/store/easterEggStore'
+import { privacyPath, workPath } from '@/lib/seo'
 
 export function ProfileContent() {
   const locale = useLocaleStore((s) => s.locale)
@@ -74,6 +75,25 @@ export function ProfileContent() {
       >
         {identity.email}
       </a>
+      <p style={{ fontSize: 13, lineHeight: 1.6, marginTop: 20 }}>
+        <a
+          href={workPath(locale)}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'underline' }}
+        >
+          {locale === 'it' ? 'Indice dei progetti' : 'Project index'} ↗
+        </a>
+        {' · '}
+        <a
+          href={privacyPath(locale)}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'underline' }}
+        >
+          {locale === 'it' ? 'Privacy e cookie' : 'Privacy & cookies'} ↗
+        </a>
+      </p>
     </div>
   )
 }

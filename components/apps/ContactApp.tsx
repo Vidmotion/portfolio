@@ -7,6 +7,7 @@ import { useLocaleStore } from '@/store/localeStore'
 import { identity } from '@/core/registries/identity'
 import { contactText, opportunities, type ContactKind } from '@/core/registries/contact'
 import styles from './ContactApp.module.css'
+import { privacyPath } from '@/lib/seo'
 
 export function ContactApp() {
   const locale = useLocaleStore((s) => s.locale)
@@ -225,7 +226,17 @@ export function ContactApp() {
                 </div>
               )}
               <footer className={styles.footer}>
-                <p>{text.privacy}</p>
+                <p>
+                  {text.privacy}{' '}
+                  <a
+                    href={privacyPath(locale)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'underline' }}
+                  >
+                    {locale === 'it' ? 'Leggi l’informativa privacy' : 'Read the privacy notice'} ↗
+                  </a>
+                </p>
                 <button className={styles.send} type="submit" disabled={state === 'sending'}>
                   {state === 'sending' ? (
                     <LoaderCircle size={17} className={styles.spin} />

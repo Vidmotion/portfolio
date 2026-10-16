@@ -7,6 +7,7 @@ import { identity } from '@/core/registries/identity'
 import styles from './AppResponsive.module.css'
 import { useLocaleStore } from '@/store/localeStore'
 import { uiText } from '@/core/registries/locale'
+import { PrivacyControls } from '@/components/privacy/PrivacyControls'
 
 function Toggle({
   checked,
@@ -175,6 +176,7 @@ export function SettingsApp() {
           label={text.contrast}
         />
       </Row>
+      <PrivacyControls />
     </div>
   )
 }

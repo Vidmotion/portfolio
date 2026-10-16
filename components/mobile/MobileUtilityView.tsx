@@ -17,6 +17,7 @@ import { useMobileMotion } from './useMobileMotion'
 import type { MobileUtility } from '@/store/mobileStore'
 import styles from './MobileUtilityView.module.css'
 import { AppearancePreview } from './AppearancePreview'
+import { PrivacyControls } from '@/components/privacy/PrivacyControls'
 
 export function MobileUtilityView({
   utility,
@@ -161,6 +162,7 @@ export function MobileUtilityView({
                 </div>
               ))}
             </div>
+            <PrivacyControls />
           </>
         )}
       </div>
