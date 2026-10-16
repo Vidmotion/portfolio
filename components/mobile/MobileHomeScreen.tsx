@@ -79,7 +79,11 @@ function IconButton({
       >
         <AppGlyph icon={app.icon} className={styles.glyph} />
       </span>
-      {!dock && <span className={styles.appLabel}>{app.label}</span>}
+      {!dock && (
+        <span data-wallpaper-label="" className={styles.appLabel}>
+          {app.label}
+        </span>
+      )}
     </motion.button>
   )
 }
@@ -364,7 +368,9 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               <div className={styles.splitGrid}>
                 <div className={styles.widgetSlot}>
                   <StudioClock />
-                  <span className={styles.widgetCaption}>{text.studioTime}</span>
+                  <span data-wallpaper-label="" className={styles.widgetCaption}>
+                    {text.studioTime}
+                  </span>
                 </div>
                 <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
                   {renderApps(apps)}
@@ -373,11 +379,15 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
                 <div className={styles.widgetSlot}>
                   <FolderWidget launch={launch} open={props.onOpenApp} reduced={reduced} />
-                  <span className={styles.widgetCaption}>{text.exploreWork}</span>
+                  <span data-wallpaper-label="" className={styles.widgetCaption}>
+                    {text.exploreWork}
+                  </span>
                 </div>
                 <div className={styles.widgetSlot}>
                   <UpdateWidget />
-                  <span className={styles.widgetCaption}>{text.updates}</span>
+                  <span data-wallpaper-label="" className={styles.widgetCaption}>
+                    {text.updates}
+                  </span>
                 </div>
               </div>
             </div>
@@ -411,11 +421,15 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               <div className={`${styles.splitGrid} ${styles.bottomGrid}`}>
                 <div className={styles.widgetSlot}>
                   <HelloWidget launch={launch} open={props.onContact} reduced={reduced} />
-                  <span className={styles.widgetCaption}>{text.mail}</span>
+                  <span data-wallpaper-label="" className={styles.widgetCaption}>
+                    {text.mail}
+                  </span>
                 </div>
                 <div className={styles.widgetSlot}>
                   <PortraitWidget launch={launch} open={props.onOpenPhotos} reduced={reduced} />
-                  <span className={styles.widgetCaption}>{text.portrait}</span>
+                  <span data-wallpaper-label="" className={styles.widgetCaption}>
+                    {text.portrait}
+                  </span>
                 </div>
               </div>
             </div>

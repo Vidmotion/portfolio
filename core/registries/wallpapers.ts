@@ -11,6 +11,7 @@ export const wallpapers = [
     thumbnail: '/images/wallpapers/2-thumb.webp',
     opacity: 0.42,
     accent: '#234d83',
+    iconColor: '#234d83',
     rgb: '35,77,131',
     ink: '#152d49',
     wash: '232,242,252',
@@ -25,6 +26,7 @@ export const wallpapers = [
     thumbnail: '/images/wallpapers/3-thumb.webp',
     opacity: 0.54,
     accent: '#263f91',
+    iconColor: '#263f91',
     rgb: '38,63,145',
     ink: '#202c50',
     wash: '237,240,252',
@@ -39,6 +41,7 @@ export const wallpapers = [
     thumbnail: '/images/wallpapers/4-thumb.webp',
     opacity: 0.46,
     accent: '#a6471a',
+    iconColor: '#df6726',
     rgb: '166,71,26',
     ink: '#462e26',
     wash: '253,239,226',
@@ -53,6 +56,7 @@ export const wallpapers = [
     thumbnail: '/images/wallpapers/5-thumb.webp',
     opacity: 0.5,
     accent: '#8e2927',
+    iconColor: '#8e2927',
     rgb: '142,41,39',
     ink: '#422a2b',
     wash: '248,235,231',
@@ -67,15 +71,17 @@ export const wallpapers = [
   thumbnail: string
   opacity: number
   accent: string
+  iconColor: string
   rgb: string
   ink: string
   wash: string
   position: string
 }>
 
-export const DEFAULT_WALLPAPER: Wallpaper = 'wallpaper2'
+export const DEFAULT_WALLPAPER: Wallpaper = 'wallpaper4'
 export const isWallpaper = (id: unknown): id is Wallpaper => wallpapers.some((w) => w.id === id)
-export const getWallpaper = (id: Wallpaper) => wallpapers.find((w) => w.id === id) ?? wallpapers[0]
+export const getWallpaper = (id: Wallpaper) =>
+  wallpapers.find((w) => w.id === id) ?? wallpapers.find((w) => w.id === DEFAULT_WALLPAPER)!
 export const iconColors = [
   '#234d83',
   '#383e49',

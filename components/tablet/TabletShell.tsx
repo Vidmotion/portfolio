@@ -24,6 +24,7 @@ export function TabletShell() {
         overflow: 'hidden',
         fontFamily: 'var(--font-text)',
       }}
+      data-wallpaper-surface=""
       role="main"
       aria-label="Tablet — iPadOS experience"
     >

@@ -198,3 +198,56 @@
   border-radius: 18px;
   margin-bottom: 18px;
 }
+
+/* Only Settings gets a fixed preview; the home and other apps keep their layout. */
+.settingsView .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+}
+.settingsView .header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.settingsPreview {
+  flex-shrink: 0;
+  height: clamp(196px, 27dvh, 228px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 22px 14px;
+}
+.settingsPreview > span {
+  color: var(--ui-muted);
+  font-size: 11px;
+  line-height: 1.2;
+}
+.settingsPreview > div {
+  flex: 1;
+}
+@media (max-width: 350px) {
+  .settingsPreview {
+    padding-inline: 16px;
+  }
+}
+@media (max-height: 500px) and (min-width: 560px) {
+  .settingsView {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: 62px minmax(0, 1fr);
+  }
+  .settingsView .header {
+    grid-column: 1 / -1;
+    padding: 6px 22px;
+  }
+  .settingsPreview {
+    height: auto;
+    min-height: 0;
+    padding: 8px 14px 14px;
+  }
+  .settingsView .content {
+    padding: 8px 16px 24px 0;
+  }
+}

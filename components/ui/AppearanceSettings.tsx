@@ -7,6 +7,7 @@ import { useDesktopStore } from '@/store/desktopStore'
 import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { useLocaleStore } from '@/store/localeStore'
 import { wallpapers, getWallpaper } from '@/core/registries/wallpapers'
+import { mixWithWhite } from '@/lib/appearance'
 import styles from './AppearanceSettings.module.css'
 
 export function AppearanceSettings() {
@@ -27,6 +28,12 @@ export function AppearanceSettings() {
     input = useRef<HTMLInputElement>(null)
   const dark = appearance.mode === 'dark',
     theme = getWallpaper(wallpaper)
+  const customActive = customWallpaperEnabled && !!custom.url
+  const autoSurface = dark
+    ? '#172235'
+    : mixWithWhite(customActive ? custom.accent : theme.accent, 0.96)
+  const baseIcon = customActive ? custom.accent : theme.iconColor
+  const autoIcon = dark ? mixWithWhite(baseIcon, 0.76) : baseIcon
   async function upload(file?: File) {
     if (!file || custom.busy) return
     setError('')
@@ -158,13 +165,13 @@ export function AppearanceSettings() {
           {
             label: it ? 'Sfondo delle app' : 'App background',
             value: appearance.surfaceColor,
-            fallback: dark ? '#172235' : '#eef4fb',
+            fallback: autoSurface,
             change: (surfaceColor: string) => setAppearance({ surfaceColor }),
           },
           {
             label: it ? 'Icone' : 'Icons',
             value: iconColor,
-            fallback: theme.accent,
+            fallback: autoIcon,
             change: setIconColor,
           },
           {
@@ -195,6 +202,12 @@ export function AppearanceSettings() {
           </div>
         ))}
         {[
+          {
+            label: it ? 'Opacità sfondo delle app' : 'App background opacity',
+            value: appearance.iconBackgroundOpacity,
+            min: 0,
+            change: (iconBackgroundOpacity: number) => setAppearance({ iconBackgroundOpacity }),
+          },
           {
             label: it ? 'Opacità del vetro' : 'Glass opacity',
             value: appearance.surfaceOpacity ?? (dark ? 0.56 : theme.opacity),

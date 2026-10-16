@@ -89,12 +89,12 @@ function DraggableFolder({
     >
       <MacOSFolderIcon icon={null} elevated={isDragging} />
       <span
+        data-wallpaper-label=""
         style={{
           fontSize: '12px',
-          color: 'var(--os-ink)',
+          color: 'var(--wallpaper-label-color, var(--os-ink))',
           fontWeight: 500,
-          textShadow: 'var(--os-label-shadow)',
-          background: 'var(--os-label-base)',
+          textShadow: 'var(--wallpaper-label-shadow, var(--os-label-shadow))',
           padding: '2px 5px',
           borderRadius: '6px',
           textAlign: 'center',

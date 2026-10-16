@@ -16,6 +16,7 @@ import { useSettingsStore } from '@/store/settingsStore'
 import { useMobileMotion } from './useMobileMotion'
 import type { MobileUtility } from '@/store/mobileStore'
 import styles from './MobileUtilityView.module.css'
+import { AppearancePreview } from './AppearancePreview'
 
 export function MobileUtilityView({
   utility,
@@ -46,7 +47,7 @@ export function MobileUtilityView({
       aria-label={title}
       aria-hidden={!present}
       inert={!present}
-      className={styles.view}
+      className={`${styles.view} ${utility === 'settings' ? styles.settingsView : ''}`}
       style={{ transformOrigin, pointerEvents: present ? 'auto' : 'none' }}
     >
       <header className={styles.header} role="presentation">
@@ -56,6 +57,12 @@ export function MobileUtilityView({
         </button>
         <h1>{title}</h1>
       </header>
+      {utility === 'settings' && (
+        <div className={styles.settingsPreview}>
+          <span>{locale === 'it' ? 'Anteprima dal vivo' : 'Live preview'}</span>
+          <AppearancePreview />
+        </div>
+      )}
       <div className={styles.content}>
         {utility === 'message' && <ContactApp />}
         {utility === 'about' && <ProfileContent />}

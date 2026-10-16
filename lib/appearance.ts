@@ -5,6 +5,7 @@ export interface AppearancePreferences {
   textColor: string
   surfaceOpacity: number | null
   iconOpacity: number
+  iconBackgroundOpacity: number
   wallpaperOpacity: number
 }
 export const DEFAULT_APPEARANCE: AppearancePreferences = {
@@ -13,12 +14,22 @@ export const DEFAULT_APPEARANCE: AppearancePreferences = {
   textColor: 'auto',
   surfaceOpacity: null,
   iconOpacity: 1,
+  iconBackgroundOpacity: 0.25,
   wallpaperOpacity: 1,
 }
 export const isHex = (value: unknown): value is string =>
   typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value)
 export const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
 export const rgba = (hex: string, opacity: number) => `rgba(${rgb(hex).join(',')},${opacity})`
+export const mixWithWhite = (hex: string, weight: number) =>
+  '#' +
+  rgb(hex)
+    .map((x) =>
+      Math.round(x + (255 - x) * weight)
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')
 export function normalizeAppearance(
   input: Partial<AppearancePreferences> = {}
 ): AppearancePreferences {
@@ -31,6 +42,7 @@ export function normalizeAppearance(
     surfaceOpacity:
       typeof input.surfaceOpacity === 'number' ? bounded(input.surfaceOpacity, 0, 0.5) : null,
     iconOpacity: bounded(input.iconOpacity, 0.25, 1),
+    iconBackgroundOpacity: bounded(input.iconBackgroundOpacity, 0, 0.25),
     wallpaperOpacity: bounded(input.wallpaperOpacity, 0.2, 1),
   }
 }

@@ -643,7 +643,8 @@
 
 .appLabel,
 .widgetCaption {
-  background: var(--os-label-base);
+  color: var(--wallpaper-label-color, var(--os-ink));
+  text-shadow: var(--wallpaper-label-shadow, var(--os-label-shadow));
   border-radius: 6px;
   padding: 1px 4px;
 }

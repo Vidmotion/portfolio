@@ -112,15 +112,27 @@ export const useDesktopStore = create<DesktopStore>()(
     }),
     {
       name: 'portfolio-os-desktop',
-      version: 3,
+      version: 4,
       migrate: (persistedState) => {
         const state = persistedState as DesktopStore
-        // Retire the personal photograph and keep existing layouts.
+        const preferences = normalizeAppearance(state.appearance)
+        const previousDefault =
+          state.wallpaper === 'wallpaper2' &&
+          state.iconColor === 'auto' &&
+          !state.customWallpaperEnabled &&
+          preferences.mode === 'light' &&
+          preferences.surfaceColor === 'auto' &&
+          preferences.textColor === 'auto' &&
+          preferences.surfaceOpacity === null &&
+          preferences.iconOpacity === 1 &&
+          preferences.wallpaperOpacity === 1
+        // Update the former automatic default; preserve customized palettes and layouts.
         return {
           ...state,
-          wallpaper: isWallpaper(state.wallpaper) ? state.wallpaper : DEFAULT_WALLPAPER,
+          wallpaper:
+            !previousDefault && isWallpaper(state.wallpaper) ? state.wallpaper : DEFAULT_WALLPAPER,
           iconColor: isIconColor(state.iconColor) ? state.iconColor : 'auto',
-          appearance: normalizeAppearance(state.appearance),
+          appearance: preferences,
           customWallpaperEnabled: state.customWallpaperEnabled === true,
         }
       },

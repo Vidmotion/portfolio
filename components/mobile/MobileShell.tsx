@@ -36,6 +36,7 @@ export function MobileShell() {
         position: 'relative',
         fontFamily: 'var(--font-text)',
       }}
+      data-wallpaper-surface=""
       role="main"
       aria-label="Mobile — iOS experience"
     >

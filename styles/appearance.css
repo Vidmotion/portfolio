@@ -1,17 +1,17 @@
 /* Wallpaper-aware chrome, shared by macOS, iPadOS and iOS views. */
 :root {
-  --os-accent: #234d83;
-  --os-accent-rgb: 35, 77, 131;
-  --os-ink: #152d49;
-  --os-wash: 232, 242, 252;
+  --os-accent: #a6471a;
+  --os-accent-rgb: 166, 71, 26;
+  --os-ink: #462e26;
+  --os-wash: 253, 239, 226;
   --os-muted: color-mix(in srgb, var(--os-ink) 76%, transparent);
   --os-faint: color-mix(in srgb, var(--os-ink) 60%, transparent);
   --os-line: rgba(var(--os-accent-rgb), 0.2);
   --os-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.87), rgba(var(--os-wash), 0.8));
   --os-glass-solid: rgb(var(--os-wash));
   --os-dock: rgba(var(--os-wash), 0.76);
-  --os-icon-color: #234d83;
-  --os-icon-tile: rgba(255, 255, 255, 0.46);
+  --os-icon-color: #df6726;
+  --os-icon-tile: rgba(255, 248, 240, 0.25);
   --os-label-shadow: 0 1px 5px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85);
 }
 [data-app-glyph] {
@@ -45,7 +45,6 @@
   --os-icon-opacity: 1;
   --os-reading-glass: rgba(244, 248, 253, 0.78);
   --os-surface-edge: rgba(255, 255, 255, 0.72);
-  --os-label-base: rgba(245, 249, 255, 0.4);
   --ui-ink: #1c2b3e;
   --ui-muted: #5d6d80;
   --ui-surface: #f7f9fc;

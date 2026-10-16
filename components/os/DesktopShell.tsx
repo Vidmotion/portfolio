@@ -42,6 +42,7 @@ export function DesktopShell() {
       transition={springs.default}
       className="fixed inset-0 overflow-hidden select-none"
       style={{ cursor: 'default' }}
+      data-wallpaper-surface=""
       role="main"
       aria-label={`${identity.productName} Desktop`}
       onContextMenu={handleContextMenu}

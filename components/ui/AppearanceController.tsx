@@ -4,24 +4,17 @@ import { useEffect, useLayoutEffect } from 'react'
 import { useDesktopStore } from '@/store/desktopStore'
 import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { getWallpaper } from '@/core/registries/wallpapers'
-import { rgb, rgba } from '@/lib/appearance'
+import { rgb, rgba, mixWithWhite as mix } from '@/lib/appearance'
+import { useWallpaperLabels } from '@/hooks/useWallpaperLabels'
 
 export function AppearanceController() {
   const { wallpaper, iconColor, appearance, customWallpaperEnabled } = useDesktopStore()
   const custom = useCustomWallpaperStore()
+  useWallpaperLabels(appearance.textColor, appearance.wallpaperOpacity)
   const loadCustom = custom.load
   const theme = getWallpaper(wallpaper),
     dark = appearance.mode === 'dark'
   const baseAccent = customWallpaperEnabled && custom.url ? custom.accent : theme.accent
-  const mix = (hex: string, weight: number) =>
-    '#' +
-    rgb(hex)
-      .map((x) =>
-        Math.round(x + (255 - x) * weight)
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')
   const accent = dark ? mix(baseAccent, 0.6) : baseAccent
   const surface =
     appearance.surfaceColor === 'auto'
@@ -31,7 +24,8 @@ export function AppearanceController() {
       : appearance.surfaceColor
   const text =
     appearance.textColor === 'auto' ? (dark ? '#f2f5fb' : theme.ink) : appearance.textColor
-  const color = iconColor === 'auto' ? (dark ? mix(baseAccent, 0.76) : baseAccent) : iconColor
+  const baseIcon = customWallpaperEnabled && custom.url ? custom.accent : theme.iconColor
+  const color = iconColor === 'auto' ? (dark ? mix(baseIcon, 0.76) : baseIcon) : iconColor
   const opacity = appearance.surfaceOpacity ?? (dark ? 0.56 : theme.opacity)
   const channels = rgb(color).map((x) => x / 255)
   const matrix = channels
@@ -64,7 +58,7 @@ export function AppearanceController() {
       '--os-wash': rgb(surface).join(','),
       '--os-icon-color': color,
       '--os-icon-opacity': String(appearance.iconOpacity),
-      '--os-icon-tile': rgba(surface, opacity),
+      '--os-icon-tile': rgba(surface, appearance.iconBackgroundOpacity),
       '--os-glass': `linear-gradient(145deg,${rgba(mix(surface, dark ? 0.1 : 0.7), Math.min(1, opacity + 0.08))},${rgba(surface, opacity)})`,
       '--os-reading-glass': rgba(surface, Math.min(1, opacity + 0.24)),
       '--os-glass-solid': surface,
@@ -72,7 +66,6 @@ export function AppearanceController() {
       '--os-label-shadow': dark
         ? '0 1px 6px rgba(0,0,0,.7)'
         : '0 1px 5px rgba(255,255,255,.95),0 0 10px rgba(255,255,255,.8)',
-      '--os-label-base': rgba(surface, dark ? 0.22 : 0.4),
       '--os-surface-edge': dark ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.72)',
       '--os-shadow': dark
         ? '0 8px 28px rgba(0,0,0,.24)'
