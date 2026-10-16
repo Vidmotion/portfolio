@@ -8,7 +8,6 @@ import { springs, staggerDelay } from '@/lib/motion'
 
 import { useLocaleStore } from '@/store/localeStore'
 import { ProjectArtwork } from '@/components/ui/ProjectArtwork'
-import { projectHref, openProjectLink } from '@/lib/projectLinks'
 
 interface RecentProjectsWidgetProps {
   elevated?: boolean
@@ -52,17 +51,12 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
       {/* Project rows */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
         {featured.map((project, i) => (
-          <motion.a
+          <motion.button
             key={project.id}
-            href={projectHref(project.id, locale)}
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...springs.default, delay: i * staggerDelay(3) }}
-            onClick={(event) =>
-              openProjectLink(event, () =>
-                openWindow('project', project.title, 'lg', { projectId: project.id })
-              )
-            }
+            onClick={() => openWindow('project', project.title, 'lg', { projectId: project.id })}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -72,7 +66,6 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
               border: 0,
               background: 'transparent',
               textAlign: 'left',
-              textDecoration: 'none',
               fontFamily: 'inherit',
               borderRadius: '11px',
             }}
@@ -115,6 +108,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
                   fontSize: '12px',
                   color: 'var(--os-muted)',
                   marginTop: '1px',
+                  textTransform: 'capitalize',
                 }}
               >
                 {projectMeta(project, locale)}
@@ -131,7 +125,7 @@ export function RecentProjectsWidget({ elevated }: RecentProjectsWidgetProps) {
             >
               ›
             </div>
-          </motion.a>
+          </motion.button>
         ))}
       </div>
     </div>

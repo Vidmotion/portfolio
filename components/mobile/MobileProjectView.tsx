@@ -54,122 +54,99 @@ export function MobileProjectView({ projectId, onBack }: MobileProjectViewProps)
         zIndex: 20,
         inset: 0,
         background: '#fcfcfd',
-        display: 'flex',
-        flexDirection: 'column',
+        overflowY: 'auto',
         fontFamily: 'var(--font-text)',
       }}
     >
-      <header
+      {/* Cover */}
+      <div
         style={{
+          width: '100%',
+          height: '330px',
+          position: 'relative',
+          background: gradient,
           display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: 'max(8px, env(safe-area-inset-top)) 16px 8px',
-          minHeight: '60px',
+          alignItems: 'flex-end',
           flexShrink: 0,
-          background: 'var(--ui-surface)',
-          color: 'var(--ui-ink)',
-          borderBottom: '.5px solid var(--ui-border)',
+          overflow: 'hidden',
         }}
       >
-        <button
-          type="button"
-          onClick={onBack}
-          aria-label={text.backToProjects}
+        <ProjectArtwork project={project} />
+        <div
           style={{
+            position: 'absolute',
+            inset: 0,
+            background: project.preview
+              ? 'none'
+              : 'linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)',
+          }}
+          aria-hidden
+        />
+
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          style={{
+            position: 'absolute',
+            top: 'max(16px, calc(env(safe-area-inset-top) + 12px))',
+            left: '18px',
             width: '44px',
             height: '44px',
             borderRadius: '50%',
-            background: 'var(--ui-raised)',
-            color: 'var(--os-accent)',
-            border: '.5px solid var(--ui-border)',
-            fontSize: '26px',
-            flexShrink: 0,
+            background: coverText === '#000' ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.32)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: 'none',
+            color: '#fff',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2,
           }}
+          aria-label={text.backToProjects}
         >
           ‹
         </button>
-        <span
-          style={{
-            fontSize: '14px',
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {project.title}
-        </span>
-      </header>
-      <div
-        key={project.id}
-        data-project-scroll={project.id}
-        style={{ flex: 1, minHeight: 0, overflowY: 'auto', overscrollBehavior: 'contain' }}
-      >
-        {/* Cover */}
+
+        {/* Cover meta */}
         <div
           style={{
-            width: '100%',
-            height: '330px',
             position: 'relative',
-            background: gradient,
-            display: 'flex',
-            alignItems: 'flex-end',
-            flexShrink: 0,
-            overflow: 'hidden',
+            zIndex: 1,
+            width: '100%',
+            padding: '60px 24px 26px',
           }}
         >
-          <ProjectArtwork project={project} />
           <div
             style={{
-              position: 'absolute',
-              inset: 0,
-              background: project.preview
-                ? 'none'
-                : 'linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%)',
-            }}
-            aria-hidden
-          />
-
-          {/* Cover meta */}
-          <div
-            style={{
-              position: 'relative',
-              zIndex: 1,
-              width: '100%',
-              padding: '60px 24px 26px',
+              fontSize: '10px',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: project.preview ? coverText : 'rgba(255,255,255,0.82)',
+              fontWeight: 500,
             }}
           >
-            <div
-              style={{
-                fontSize: '10px',
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                color: project.preview ? coverText : 'rgba(255,255,255,0.82)',
-                fontWeight: 500,
-              }}
-            >
-              {projectMeta(project, locale)}
-            </div>
-            <h1
-              style={{
-                fontSize: '34px',
-                fontWeight: 600,
-                color: coverText,
-                letterSpacing: '-0.03em',
-                lineHeight: 1.0,
-                marginTop: '8px',
-                fontFamily: 'var(--font-display)',
-              }}
-            >
-              {project.title}
-            </h1>
+            {projectMeta(project, locale)}
+          </div>
+          <div
+            style={{
+              fontSize: '34px',
+              fontWeight: 600,
+              color: coverText,
+              letterSpacing: '-0.03em',
+              lineHeight: 1.0,
+              marginTop: '8px',
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            {project.title}
           </div>
         </div>
+      </div>
 
-        <div style={{ padding: '28px 24px 44px' }}>
-          <ProjectStory project={project} locale={locale} mobile />
-        </div>
+      <div style={{ padding: '28px 24px 44px' }}>
+        <ProjectStory project={project} locale={locale} mobile />
       </div>
     </motion.div>
   )

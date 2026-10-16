@@ -178,17 +178,13 @@ export const useWindowStore = create<WindowStore>()(
 
       moveWindow: (id, position) => {
         set((state) => ({
-          windows: state.windows.map((w) =>
-            w.id === id ? { ...w, position, preferredPosition: position } : w
-          ),
+          windows: state.windows.map((w) => (w.id === id ? { ...w, position } : w)),
         }))
       },
 
       resizeWindow: (id, size) => {
         set((state) => ({
-          windows: state.windows.map((w) =>
-            w.id === id ? { ...w, size, preferredSize: size } : w
-          ),
+          windows: state.windows.map((w) => (w.id === id ? { ...w, size } : w)),
         }))
       },
 
@@ -198,17 +194,10 @@ export const useWindowStore = create<WindowStore>()(
         set((state) => {
           let changed = false
           const windows = state.windows.map((win) => {
-            const preferredSize = win.preferredSize ?? win.size
-            const preferredPosition = win.preferredPosition ?? win.position
-            const size = clampWindowSize(
-              preferredSize.width,
-              preferredSize.height,
-              0,
-              getOsMenuBarHeight()
-            )
+            const size = clampWindowSize(win.size.width, win.size.height, 0, getOsMenuBarHeight())
             const position = clampWindowPosition(
-              preferredPosition.x,
-              preferredPosition.y,
+              win.position.x,
+              win.position.y,
               size.width,
               size.height
             )
@@ -220,7 +209,7 @@ export const useWindowStore = create<WindowStore>()(
             )
               return win
             changed = true
-            return { ...win, size, position, preferredSize, preferredPosition }
+            return { ...win, size, position }
           })
           return changed ? { windows } : state
         })

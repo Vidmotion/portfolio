@@ -36,7 +36,7 @@ function AppContent({ win }: { win: OSWindowType }) {
     contact: <ContactApp />,
     spotify: (
       <div className={appStyles.music}>
-        <SpotifyWidget player />
+        <SpotifyWidget />
       </div>
     ),
   }
@@ -67,8 +67,7 @@ export function WindowManager() {
     <div
       className="pointer-events-none fixed inset-0"
       style={{ zIndex: 'var(--z-windows)' }}
-      role="region"
-      aria-label="Open windows"
+      aria-live="polite"
     >
       <AnimatePresence>
         {windows.map((win) => (

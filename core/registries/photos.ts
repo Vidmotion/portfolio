@@ -24,9 +24,7 @@ function collection(locale: Locale) {
         project.gallery.map((image) => ({
           id: `${project.id}-${image.src.split('/').pop()}`,
           src: image.src,
-          alt: image.caption.toLocaleLowerCase().startsWith(project.title.toLocaleLowerCase())
-            ? image.caption
-            : `${project.title} · ${image.caption}`,
+          alt: `${project.title} · ${image.caption}`,
           album: project.id,
           width: image.width,
           height: image.height,

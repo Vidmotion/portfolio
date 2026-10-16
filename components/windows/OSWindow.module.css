@@ -1,9 +1,6 @@
 .window {
   --window-dock-space: 120px;
 }
-.window:focus {
-  outline: none;
-}
 .content {
   container: app-window / inline-size;
 }

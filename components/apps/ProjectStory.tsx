@@ -1,15 +1,7 @@
-'use client'
-
 import Image from 'next/image'
-import { useState } from 'react'
 import type { Locale, Project } from '@/types'
 import { uiText } from '@/core/registries/locale'
 import styles from './ProjectStory.module.css'
-import { MediaLightbox } from '@/components/ui/MediaLightbox'
-import { projectHref, openProjectLink } from '@/lib/projectLinks'
-import { getFeaturedProjects } from '@/lib/content'
-import { useMobileStore } from '@/store/mobileStore'
-import { useWindowStore } from '@/store/windowStore'
 
 /** The same case story and media are rendered on Desktop, Tablet and Mobile. */
 export function ProjectStory({
@@ -22,10 +14,6 @@ export function ProjectStory({
   mobile?: boolean
 }) {
   const text = uiText[locale]
-  const [selectedImage, setSelectedImage] = useState<number | null>(null)
-  const selected = getFeaturedProjects(locale)
-  const next =
-    selected[(selected.findIndex((item) => item.id === project.id) + 1) % selected.length]
   return (
     <article
       className={`${styles.story} ${mobile ? styles.mobile : ''}`}
@@ -112,12 +100,6 @@ export function ProjectStory({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${text.openImage}: ${image.alt}`}
-                onClick={(event) =>
-                  openProjectLink(event, () => {
-                    event.currentTarget.focus({ preventScroll: true })
-                    setSelectedImage(index)
-                  })
-                }
               >
                 <Image
                   src={image.src}
@@ -152,46 +134,6 @@ export function ProjectStory({
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      <nav
-        className={styles.continue}
-        aria-label={locale === 'it' ? 'Continua a esplorare' : 'Keep exploring'}
-      >
-        {next && next.id !== project.id && (
-          <a
-            href={projectHref(next.id, locale)}
-            onClick={(event) =>
-              openProjectLink(event, () =>
-                mobile
-                  ? useMobileStore.getState().openProject(next.id)
-                  : useWindowStore
-                      .getState()
-                      .openWindow('project', next.title, 'lg', { projectId: next.id })
-              )
-            }
-            data-next-project={next.id}
-          >
-            <small>{locale === 'it' ? 'Progetto successivo' : 'Next project'}</small>
-            <strong>{next.title} ↗</strong>
-          </a>
-        )}
-        <button
-          data-project-contact
-          onClick={() =>
-            mobile
-              ? useMobileStore.getState().openUtility('message')
-              : useWindowStore.getState().openWindow('contact')
-          }
-        >
-          {text.contact} ↗
-        </button>
-      </nav>
-      <MediaLightbox
-        items={project.gallery}
-        index={selectedImage}
-        onChange={setSelectedImage}
-        locale={locale}
-        label={text.projectGallery}
-      />
     </article>
   )
 }

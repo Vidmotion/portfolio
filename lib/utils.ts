@@ -23,12 +23,11 @@ export function cn(...inputs: ClassValue[]): string {
 export function detectPlatform(): Platform {
   if (typeof window === 'undefined') return 'desktop'
   const w = window.innerWidth
-  if (window.matchMedia('(pointer: coarse)').matches) {
-    // Physical screen size distinguishes a rotated phone from a compact iPad (744px).
-    const tabletScreen = Math.min(window.screen.width, window.screen.height) >= 600
-    return tabletScreen && w >= 600 ? 'tablet' : 'mobile'
-  }
   if (w < 768) return 'mobile'
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    // A phone remains an iPhone experience after rotating to a wide viewport.
+    return Math.min(window.screen.width, window.screen.height) < 768 ? 'mobile' : 'tablet'
+  }
   if (w < 1280) return 'tablet'
   return 'desktop'
 }

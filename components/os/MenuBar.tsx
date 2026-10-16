@@ -56,7 +56,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         fontSize: '13px',
         letterSpacing: '-0.005em',
         // Shared translucent chrome follows the selected wallpaper palette.
-        background: 'var(--os-chrome)',
+        background: 'var(--os-dock)',
         backdropFilter: 'blur(24px) saturate(180%)',
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
         borderBottom: '0.5px solid var(--os-line)',
@@ -81,17 +81,9 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
         />
 
         {/* Brand */}
-        <h1
-          style={{
-            font: 'inherit',
-            margin: 0,
-            fontWeight: 600,
-            color: 'var(--os-ink)',
-            letterSpacing: '-0.01em',
-          }}
-        >
+        <span style={{ fontWeight: 600, color: 'var(--os-ink)', letterSpacing: '-0.01em' }}>
           {identity.name}
-        </h1>
+        </span>
 
         {/* Nav items */}
         {navItems.map((item) => (
@@ -127,7 +119,7 @@ export function MenuBar({ tablet = false }: { tablet?: boolean }) {
           color: 'var(--os-ink)',
         }}
       >
-        <LanguageSwitcher size={tablet ? 'regular' : 'compact'} />
+        <LanguageSwitcher />
         {/* WiFi icon */}
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-label="WiFi connected">
           <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="var(--os-accent)" />

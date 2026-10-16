@@ -35,21 +35,6 @@
   padding: 4px;
   margin: 24px 0;
 }
-.directContact {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  margin-top: 12px;
-}
-.directContact a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  color: var(--os-accent);
-  font-size: 12px;
-  text-underline-offset: 4px;
-  overflow-wrap: anywhere;
-}
 .segment button {
   position: relative;
   display: flex;

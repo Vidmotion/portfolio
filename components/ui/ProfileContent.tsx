@@ -48,7 +48,7 @@ export function ProfileContent() {
             {identity.name}
           </div>
           <div style={{ fontSize: '15px', lineHeight: 1.4, marginTop: '6px' }}>{profile.title}</div>
-          <div style={{ fontSize: '12px', color: 'var(--ui-muted)', marginTop: '8px' }}>
+          <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
             {profile.location[locale]}
           </div>
         </div>

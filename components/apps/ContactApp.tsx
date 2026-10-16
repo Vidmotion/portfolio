@@ -1,35 +1,28 @@
 'use client'
 
-import { useRef, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, UserRound, ArrowUpRight, Check, LoaderCircle } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { identity } from '@/core/registries/identity'
-import { contactText, opportunities } from '@/core/registries/contact'
-import { useContactDraftStore } from '@/store/contactDraftStore'
+import { contactText, opportunities, type ContactKind } from '@/core/registries/contact'
 import styles from './ContactApp.module.css'
 
 export function ContactApp() {
   const locale = useLocaleStore((s) => s.locale)
   const text = contactText[locale]
-  const {
-    kind,
-    setKind,
-    status: state,
-    setStatus: setState,
-    error,
-    setError,
-    values,
-    setField,
-    clear,
-  } = useContactDraftStore()
+  const [kind, setKind] = useState<ContactKind>('company')
+  const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
+  const [error, setError] = useState('')
   const formRef = useRef<HTMLFormElement>(null)
+  const busy = useRef(false)
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (useContactDraftStore.getState().status === 'sending') return
+    if (busy.current) return
     const form = event.currentTarget
     if (!form.reportValidity()) return
+    busy.current = true
     setError('')
     setState('sending')
     const data = Object.fromEntries(new FormData(form).entries())
@@ -54,11 +47,12 @@ export function ContactApp() {
         return
       }
       form.reset()
-      clear()
       setState('sent')
     } catch {
       setError('error')
       setState('idle')
+    } finally {
+      busy.current = false
     }
   }
 
@@ -90,22 +84,6 @@ export function ContactApp() {
               </span>
               <h2>{text.title}</h2>
               <p>{text.intro}</p>
-              <nav
-                className={styles.directContact}
-                aria-label={locale === 'it' ? 'Contatti diretti' : 'Direct contact'}
-              >
-                <a href={`mailto:${identity.email}`}>{identity.email}</a>
-                {identity.social.map((social) => (
-                  <a
-                    key={social.platform}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {social.label ?? social.platform} ↗
-                  </a>
-                ))}
-              </nav>
             </header>
             <div
               className={styles.segment}
@@ -138,17 +116,6 @@ export function ContactApp() {
             <form
               ref={formRef}
               onSubmit={submit}
-              onChange={(event) => {
-                const field = event.target
-                if (
-                  (field instanceof HTMLInputElement ||
-                    field instanceof HTMLSelectElement ||
-                    field instanceof HTMLTextAreaElement) &&
-                  field.name &&
-                  field.name !== 'website'
-                )
-                  setField(field.name, field.value)
-              }}
               className={styles.form}
               aria-label={
                 locale === 'it'
@@ -160,19 +127,12 @@ export function ContactApp() {
                 <div className={styles.row}>
                   <label>
                     {text.name}
-                    <input
-                      name="name"
-                      autoComplete="name"
-                      required
-                      maxLength={100}
-                      defaultValue={values.name ?? ''}
-                    />
+                    <input name="name" autoComplete="name" required maxLength={100} />
                   </label>
                   <label>
                     {text.email}
                     <input
                       name="email"
-                      defaultValue={values.email ?? ''}
                       type="email"
                       autoComplete="email"
                       required
@@ -185,7 +145,6 @@ export function ContactApp() {
                     {text.organization}
                     <input
                       name="organization"
-                      defaultValue={values.organization ?? ''}
                       autoComplete="organization"
                       required={kind === 'company'}
                       disabled={kind !== 'company'}
@@ -196,7 +155,6 @@ export function ContactApp() {
                     {text.profession} <small>{text.optional}</small>
                     <input
                       name="profession"
-                      defaultValue={values.profession ?? ''}
                       autoComplete="organization-title"
                       disabled={kind !== 'professional'}
                       maxLength={160}
@@ -204,12 +162,7 @@ export function ContactApp() {
                   </label>
                   <label>
                     {text.opportunity}
-                    <select
-                      key={kind}
-                      name="opportunity"
-                      required
-                      defaultValue={values.opportunity ?? ''}
-                    >
+                    <select key={kind} name="opportunity" required defaultValue="">
                       <option value="" disabled>
                         —
                       </option>
@@ -224,7 +177,7 @@ export function ContactApp() {
                 <div className={styles.row}>
                   <label>
                     {text.timing} <small>{text.optional}</small>
-                    <select name="timing" defaultValue={values.timing ?? ''}>
+                    <select name="timing" defaultValue="">
                       <option value="">—</option>
                       {text.timingOptions.map((label, i) => (
                         <option key={i} value={String(i)}>
@@ -235,18 +188,12 @@ export function ContactApp() {
                   </label>
                   <label hidden={kind !== 'company'}>
                     {text.budget} <small>{text.optional}</small>
-                    <input
-                      name="budget"
-                      defaultValue={values.budget ?? ''}
-                      disabled={kind !== 'company'}
-                      maxLength={120}
-                    />
+                    <input name="budget" disabled={kind !== 'company'} maxLength={120} />
                   </label>
                   <label hidden={kind !== 'professional'}>
                     {text.portfolio} <small>{text.optional}</small>
                     <input
                       name="portfolio"
-                      defaultValue={values.portfolio ?? ''}
                       type="url"
                       placeholder="https://"
                       disabled={kind !== 'professional'}
@@ -258,7 +205,6 @@ export function ContactApp() {
                   {text.message}
                   <textarea
                     name="message"
-                    defaultValue={values.message ?? ''}
                     required
                     minLength={20}
                     maxLength={5000}

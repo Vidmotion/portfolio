@@ -67,9 +67,6 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
           p.title.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
           p.summary.toLowerCase().includes(q) ||
-          (p.agency ?? '').toLowerCase().includes(q) ||
-          (p.client ?? '').toLowerCase().includes(q) ||
-          p.role.toLowerCase().includes(q) ||
           p.tags.some((tag) => tag.toLowerCase().includes(q))
       )
     }
@@ -266,14 +263,12 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                 fontSize: '13px',
               }}
             >
-              {searchQuery.trim() ? text.noSearchResults : text.noProjects}
+              {text.noProjects}
             </div>
           ) : viewMode === 'grid' ? (
             <div className={styles.finderGrid}>
               {filtered.map((project, i) => (
                 <motion.button
-                  className={styles.projectCard}
-                  data-selected={selectedProjectId === project.id}
                   key={project.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -301,14 +296,12 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     cursor: 'default',
                     padding: 0,
                     textAlign: 'left',
+                    outline:
+                      selectedProjectId === project.id ? '2px solid var(--os-accent)' : 'none',
                     outlineOffset: '3px',
                     borderRadius: '14px',
                   }}
-                  title={
-                    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
-                      ? text.tapToOpen
-                      : text.doubleClickToOpen
-                  }
+                  title={text.tapToOpen}
                 >
                   {/* Cover */}
                   <div
@@ -346,6 +339,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                         fontSize: '12px',
                         color: 'var(--ui-muted)',
                         marginTop: '2px',
+                        textTransform: 'capitalize',
                       }}
                     >
                       {projectMeta(project, locale)}
@@ -358,7 +352,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
               {filtered.map((project, i) => (
                 <motion.button
-                  className={`${styles.listRow} ${styles.projectCard}`}
+                  className={styles.listRow}
                   key={project.id}
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -395,11 +389,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                     backgroundColor:
                       selectedProjectId === project.id ? undefined : 'rgba(0,0,0,0.04)',
                   }}
-                  title={
-                    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
-                      ? text.tapToOpen
-                      : text.doubleClickToOpen
-                  }
+                  title={text.tapToOpen}
                 >
                   <div
                     style={{
@@ -434,6 +424,7 @@ export function FinderApp({ initialCategory, navigationRequest }: FinderAppProps
                       fontSize: '12px',
                       color: 'var(--ui-muted)',
                       flexShrink: 0,
+                      textTransform: 'capitalize',
                     }}
                   >
                     {project.category.replace('-', ' ')}

@@ -11,13 +11,8 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { WallpaperLayer } from '@/components/os/WallpaperLayer'
 import { useDesktopStore } from '@/store/desktopStore'
 import { playlist } from '@/core/registries/playlist'
-import { backFromProject } from '@/hooks/usePortfolioNavigation'
-import { identity } from '@/core/registries/identity'
-import { profile } from '@/core/registries/profile'
-import { useLocaleStore } from '@/store/localeStore'
 
 export function MobileShell() {
-  const locale = useLocaleStore((s) => s.locale)
   const wallpaper = useDesktopStore((s) => s.wallpaper)
   const {
     screen,
@@ -44,10 +39,6 @@ export function MobileShell() {
       role="main"
       aria-label="Mobile — iOS experience"
     >
-      <h1 className="sr-only">
-        {identity.name} — {profile.title}
-      </h1>
-      <p className="sr-only">{profile.summary[locale]}</p>
       <WallpaperLayer wallpaper={wallpaper} />
       {screen === 'lock' && (
         <div
@@ -101,7 +92,7 @@ export function MobileShell() {
           <MobileUtilityView key="utility" utility={activeUtility} onBack={goBack} />
         )}
         {screen === 'project' && activeProjectId && (
-          <MobileProjectView key="project" projectId={activeProjectId} onBack={backFromProject} />
+          <MobileProjectView key="project" projectId={activeProjectId} onBack={goBack} />
         )}
       </AnimatePresence>
     </div>

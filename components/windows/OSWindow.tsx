@@ -20,8 +20,6 @@ interface OSWindowProps {
 }
 
 export function OSWindow({ window: win, children }: OSWindowProps) {
-  const element = useRef<HTMLDivElement>(null)
-  const launcher = useRef<HTMLElement | null>(null)
   const menuBarHeight = getOsMenuBarHeight()
   const { closeWindow, focusWindow, minimizeWindow, maximizeWindow, moveWindow, resizeWindow } =
     useWindowStore()
@@ -31,22 +29,6 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
   const [dragging, setDragging] = useState(false)
   const [resizing, setResizing] = useState(false)
   const interactionCleanup = useRef<(() => void) | null>(null)
-  useEffect(() => {
-    launcher.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    return () => {
-      if (!useWindowStore.getState().getFocusedWindow() && launcher.current?.isConnected)
-        launcher.current.focus({ preventScroll: true })
-    }
-  }, [])
-  useEffect(() => {
-    if (
-      win.isFocused &&
-      win.state !== 'minimized' &&
-      !element.current?.contains(document.activeElement) &&
-      !document.querySelector('dialog[open]')
-    )
-      element.current?.focus({ preventScroll: true })
-  }, [win.isFocused, win.state])
   useEffect(() => {
     const cancel = () => interactionCleanup.current?.()
     window.addEventListener('resize', cancel)
@@ -184,8 +166,6 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
 
   return (
     <motion.div
-      ref={element}
-      tabIndex={-1}
       className={styles.window}
       key={win.id}
       initial="closed"
@@ -216,7 +196,6 @@ export function OSWindow({ window: win, children }: OSWindowProps) {
         willChange: 'transform',
       }}
       onPointerDown={onFocus}
-      onFocusCapture={onFocus}
       transition={springs.largeWindow}
       aria-label={`${win.title} window`}
       aria-hidden={win.state === 'minimized'}

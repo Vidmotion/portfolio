@@ -7,7 +7,6 @@ import { useDesktopStore } from '@/store/desktopStore'
 import { useCustomWallpaperStore } from '@/store/customWallpaperStore'
 import { useLocaleStore } from '@/store/localeStore'
 import { wallpapers, getWallpaper } from '@/core/registries/wallpapers'
-import { colorContrast, mixWithWhite } from '@/lib/appearance'
 import styles from './AppearanceSettings.module.css'
 
 export function AppearanceSettings() {
@@ -28,45 +27,17 @@ export function AppearanceSettings() {
     input = useRef<HTMLInputElement>(null)
   const dark = appearance.mode === 'dark',
     theme = getWallpaper(wallpaper)
-  const accent = customWallpaperEnabled && custom.url ? custom.accent : theme.accent
-  const surface =
-    appearance.surfaceColor === 'auto'
-      ? dark
-        ? '#172235'
-        : mixWithWhite(accent, 0.96)
-      : appearance.surfaceColor
-  const ink =
-    appearance.textColor === 'auto' ? (dark ? '#f2f5fb' : theme.ink) : appearance.textColor
-  const glyph = iconColor === 'auto' ? (dark ? mixWithWhite(accent, 0.76) : accent) : iconColor
-  const lowContrast =
-    colorContrast(ink, surface) < 4.5 ||
-    colorContrast(glyph, surface) < 3 ||
-    appearance.iconOpacity < 0.6 ||
-    (appearance.surfaceOpacity !== null && appearance.surfaceOpacity < 0.3)
   async function upload(file?: File) {
     if (!file || custom.busy) return
     setError('')
     try {
       await custom.upload(file)
       setCustomWallpaperEnabled(true)
-    } catch (reason) {
-      const code = reason instanceof Error ? reason.message : ''
+    } catch {
       setError(
-        code === 'decode'
-          ? it
-            ? 'Il file non è un’immagine leggibile. Prova a esportarlo di nuovo in JPG, PNG, WebP o AVIF.'
-            : 'This file is not a readable image. Try exporting it again as JPG, PNG, WebP or AVIF.'
-          : code === 'size'
-            ? it
-              ? 'Questa immagine è troppo grande. Scegli un file fino a 20 MB o riducine le dimensioni.'
-              : 'This image is too large. Choose a file up to 20 MB or reduce its dimensions.'
-            : code === 'format'
-              ? it
-                ? 'Scegli un’immagine JPG, PNG, WebP o AVIF.'
-                : 'Choose a JPG, PNG, WebP or AVIF image.'
-              : it
-                ? 'Non riesco a salvare lo sfondo in questo browser. Riprova.'
-                : 'Could not save the wallpaper in this browser. Please try again.'
+        it
+          ? 'Scegli un’immagine JPG, PNG, WebP o AVIF fino a 20 MB. Riprova con un file più piccolo.'
+          : 'Choose a JPG, PNG, WebP or AVIF up to 20 MB. Try a smaller file.'
       )
     } finally {
       if (input.current) input.current.value = ''
@@ -260,13 +231,6 @@ export function AppearanceSettings() {
           </label>
         ))}
       </div>
-      {lowContrast && (
-        <p className={styles.contrastNote} role="status">
-          {it
-            ? 'Questa combinazione può rendere testi o icone poco leggibili. Prova i colori automatici, aumenta l’opacità o ripristina il tema.'
-            : 'This combination may make text or icons hard to read. Try automatic colors, increase opacity or reset the theme.'}
-        </p>
-      )}
       <button type="button" className={styles.reset} onClick={resetAppearance}>
         <RotateCcw size={14} />
         {it ? 'Ripristina il tema' : 'Reset theme'}

@@ -104,15 +104,6 @@
   color: #bf4d36;
   line-height: 1.5;
 }
-.contrastNote {
-  font-size: 12px;
-  line-height: 1.55;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--ui-raised);
-  color: var(--ui-ink);
-  border: 1px solid var(--ui-border);
-}
 .mode {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -10,7 +10,6 @@
   --os-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.87), rgba(var(--os-wash), 0.8));
   --os-glass-solid: rgb(var(--os-wash));
   --os-dock: rgba(var(--os-wash), 0.76);
-  --os-chrome: rgba(var(--os-wash), 0.82);
   --os-icon-color: #234d83;
   --os-icon-tile: rgba(255, 255, 255, 0.46);
   --os-label-shadow: 0 1px 5px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85);
@@ -75,16 +74,12 @@
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
-  html {
-    --os-chrome: var(--os-glass-solid) !important;
-  }
 }
 html[data-high-contrast='true'] {
   --os-muted: var(--os-ink);
   --os-faint: var(--os-ink);
   --os-glass: var(--os-glass-solid) !important;
   --os-dock: var(--os-glass-solid) !important;
-  --os-chrome: var(--os-glass-solid) !important;
   --os-line: var(--os-ink);
 }
 

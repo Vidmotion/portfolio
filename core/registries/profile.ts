@@ -12,10 +12,6 @@ export const profile = {
     en: 'I connect brand communication, UX/UI and web development with photo and video production, taking projects from the brief to the work people see and use.',
     it: 'Collego comunicazione di brand, UX/UI e sviluppo web alla produzione foto e video, portando i progetti dal brief a ciò che le persone vedono e utilizzano.',
   },
-  homeSummary: {
-    en: 'I connect communication, digital design and visual production.',
-    it: 'Unisco comunicazione, design digitale e produzione visiva.',
-  },
   bio: {
     en: [
       'I’m Carlo Desantis, a creative and digital designer based in Milan. I work across brand communication, interface design, web development and visual content, combining creative thinking with hands-on production.',

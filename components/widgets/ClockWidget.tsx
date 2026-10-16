@@ -8,8 +8,9 @@ interface ClockWidgetProps {
 }
 
 export function ClockWidget({ elevated }: ClockWidgetProps) {
-  const { bigTime: timeDisplay, date, dateLong } = useTime()
+  const { bigTime: timeDisplay, fullTime, date, dateLong } = useTime()
   const dateLabel = date.toUpperCase()
+  const ampm = fullTime.split(' ').at(-1) ?? ''
   const dayFull = dateLong.split(/[ ,]/)[0]
 
   return (
@@ -66,7 +67,7 @@ export function ClockWidget({ elevated }: ClockWidgetProps) {
           fontWeight: 400,
         }}
       >
-        {dayFull}
+        {ampm} · {dayFull}
       </div>
     </div>
   )

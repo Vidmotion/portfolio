@@ -6,12 +6,11 @@
   --dock-icon: 68px;
   --dock-inset: 12px;
   --dock-height: calc(var(--dock-icon) + var(--dock-inset) * 2);
-  --hint-height: 0px;
   --mobile-widget-material: var(--os-glass);
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) var(--hint-height) 44px var(--dock-height);
+  grid-template-rows: minmax(0, 1fr) 44px var(--dock-height);
   padding: var(--home-top) 0 max(12px, calc(env(safe-area-inset-bottom) + 6px));
   color: var(--os-ink);
   font-family: var(--font-text);
@@ -33,16 +32,6 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.015em;
-}
-.home[data-take-look='true'] .header {
-  left: var(--home-gutter);
-  right: var(--home-gutter);
-  padding-inline: 14px;
-  border-radius: 14px;
-  background: var(--os-chrome);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  box-shadow: inset 0 0 0 0.5px var(--os-surface-edge);
 }
 .scrollProgress {
   position: absolute;
@@ -132,16 +121,10 @@
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
-.home[data-take-look='true'] {
-  --hint-height: 30px;
-}
-.scrollHintSlot {
-  min-height: 0;
-  overflow: hidden;
-}
 .scrollHint {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  bottom: 10px;
+  inset-inline: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +229,6 @@
 }
 .widgetCaption {
   display: block;
-  align-self: center;
   text-align: center;
   font-size: 11px;
   line-height: 1.2;
@@ -312,7 +294,7 @@
   border-radius: inherit;
 }
 .appLabel {
-  font-size: 11px;
+  font-size: clamp(10px, 2.8vw, 11px);
   font-weight: 500;
   min-height: 16px;
   max-width: 100%;
@@ -514,9 +496,6 @@
   .page {
     padding-top: 8px;
   }
-  .widgetCaption {
-    display: none;
-  }
   .profile {
     min-height: 104px;
     padding: 16px 18px;
@@ -563,30 +542,7 @@
     font-size: 34px;
   }
   .clockDate {
-    font-size: 11px;
-  }
-}
-@media (max-width: 350px) and (min-height: 541px) {
-  .home {
-    --canvas-gap: 10px;
-    --dock-icon: 58px;
-    --dock-inset: 9px;
-  }
-  .profile {
-    min-height: 88px;
-    padding: 12px 14px;
-  }
-  .summary {
-    min-height: 96px;
-    padding-block: 10px;
-    gap: 6px;
-    font-size: 13px;
-  }
-  .widgetSlot {
-    gap: 4px;
-  }
-  .widgetCaption {
-    display: none;
+    font-size: 9px;
   }
 }
 @media (max-height: 540px) {
@@ -595,7 +551,7 @@
     --canvas-gap: 10px;
     --dock-icon: 56px;
     --dock-inset: 7px;
-    grid-template-rows: minmax(0, 1fr) var(--hint-height) 36px var(--dock-height);
+    grid-template-rows: minmax(0, 1fr) 36px var(--dock-height);
   }
   .page {
     padding-block: 6px;
@@ -613,7 +569,7 @@
   }
   .profession,
   .location {
-    font-size: 11px;
+    font-size: 10px;
   }
   .summary {
     min-height: 76px;
@@ -629,9 +585,6 @@
   }
   .dockButton .iconTile {
     width: min(100%, 56px);
-  }
-  .widgetCaption {
-    display: none;
   }
 }
 @media (max-height: 540px) and (min-width: 560px) {
