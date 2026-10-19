@@ -219,13 +219,14 @@ const definitions: ProjectDefinition[] = [
     preview: { background: '#ffffff', logoWidth: 66, logoHeight: 26 },
     tags: ['Next.js', 'Three.js', 'UX/UI', 'Responsive design', 'Scroll animation'],
     images: [
-      { src: '/images/projects/studio-macaluso/overview.webp', width: 1600, height: 900, caption: { en: 'The digital experience — desktop and mobile', it: 'L’esperienza digitale — desktop e mobile' } },
-      { src: '/images/projects/studio-macaluso/cinematic-opening.webp', width: 1600, height: 900, caption: { en: 'From Milan to the practice: the opening sequence', it: 'Da Milano allo studio: la sequenza di apertura' } },
-      { src: '/images/projects/studio-macaluso/practice-and-services.webp', width: 1600, height: 900, caption: { en: 'The practice, the people and the care pathways', it: 'Lo studio, le persone e i percorsi di cura' } },
-      { src: '/images/projects/studio-macaluso/aligners-3d.webp', width: 1600, height: 900, caption: { en: 'Illustrative 3D aligner model and scroll interaction', it: 'Modello 3D illustrativo degli allineatori e interazione con lo scroll' } },
-      { src: '/images/projects/studio-macaluso/illustrative-comparison.webp', width: 1600, height: 900, caption: { en: 'Illustrative comparison — not a clinical case or an outcome guarantee', it: 'Confronto illustrativo — non è un caso clinico né una promessa di risultato' } },
-      { src: '/images/projects/studio-macaluso/mobile-experience.webp', width: 1600, height: 900, caption: { en: 'The same visual identity on mobile', it: 'La stessa identità visiva su mobile' } },
-      { src: '/images/projects/studio-macaluso/booking-demo.webp', width: 1600, height: 900, caption: { en: 'Four-step booking demo, with calendar integration still pending', it: 'Demo di prenotazione in quattro passaggi, con agenda ancora da integrare' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-01-overview.webp', width: 3200, height: 1800, caption: { en: 'The updated website — desktop and mobile', it: 'Il sito aggiornato — desktop e mobile' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-02-studio.webp', width: 3200, height: 1800, caption: { en: 'The practice — page design and visual identity', it: 'Lo studio — design della pagina e identità visiva' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-03-odontoiatria.webp', width: 3200, height: 1800, caption: { en: 'Dentistry — service overview and care areas', it: 'Odontoiatria — panoramica dei servizi e aree di cura' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-04-allineatori-3d.webp', width: 3200, height: 1800, caption: { en: 'Illustrative 3D aligners and scroll interaction', it: 'Allineatori 3D illustrativi e interazione con lo scroll' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-05-confronto-illustrativo.webp', width: 3200, height: 1800, caption: { en: 'Interactive illustrative comparison — not a clinical case or an outcome guarantee', it: 'Confronto illustrativo interattivo — non è un caso clinico né una promessa di risultato' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-06-mobile.webp', width: 3200, height: 1800, caption: { en: 'The mobile experience — homepage, aligners and booking', it: 'L’esperienza mobile — homepage, allineatori e prenotazione' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-07-prenotazione.webp', width: 3200, height: 1800, caption: { en: 'Guided booking demo — desktop and mobile', it: 'Demo di prenotazione guidata — desktop e mobile' } },
+      { src: '/images/projects/studio-macaluso/2026-10-19-08-medicina-estetica.webp', width: 3200, height: 1800, caption: { en: 'Aesthetic medicine — desktop and tablet', it: 'Medicina estetica — desktop e tablet' } },
     ],
     copy: {
       en: {
