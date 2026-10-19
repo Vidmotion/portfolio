@@ -1,4 +1,5 @@
 import type { Locale, Project, ProjectImage, ProjectVideo } from '@/types'
+import { projectMockups } from './projectMockups'
 
 type ProjectCopy = Pick<
   Project,
@@ -819,7 +820,7 @@ const definitions: ProjectDefinition[] = [
         summary:
           'Landing page design and development, with creative support, direction assistance and on-set support for Penny’s commercial.',
         sections: [],
-        links: [],
+        links: [{ label: 'Visit Penny Sports', href: 'https://www.pennysports.it/' }],
       },
       it: {
         description:
@@ -834,7 +835,7 @@ const definitions: ProjectDefinition[] = [
         summary:
           'Design e sviluppo di landing page, con supporto creativo, aiuto regia e supporto sul set per lo spot Penny.',
         sections: [],
-        links: [],
+        links: [{ label: 'Visita Penny Sports', href: 'https://www.pennysports.it/' }],
       },
     },
   },
@@ -937,25 +938,33 @@ const definitions: ProjectDefinition[] = [
     copy: {
       en: {
         description:
-          'I supported the team on set during the production of a television commercial for Ristora. This credit documents my involvement in the practical work of an advertising production, alongside the creative and technical professionals responsible for the film.',
-        subtitle: 'On-set support for a television commercial.',
+          'I supported the production team on set for Ristora’s television commercial featuring Iva Zanicchi, “Qualità al prezzo giusto”. My contribution focused on practical on-set support, working alongside the creative and technical crew.',
+        subtitle: 'On-set support for the Ristora commercial with Iva Zanicchi.',
         role: 'On-set support.',
         deliverables: ['On-set production support'],
-        summary:
-          'On-set support as part of the team producing a television commercial for Ristora.',
+        summary: 'On-set production support for Ristora’s television commercial with Iva Zanicchi.',
         sections: [],
-        links: [],
+        links: [
+          {
+            label: 'Watch the commercial with Iva Zanicchi',
+            href: 'https://www.youtube.com/watch?v=hQ0G54KtrCg',
+          },
+        ],
       },
       it: {
         description:
-          'Ho supportato il team sul set durante la produzione di uno spot televisivo Ristora. Questo credito documenta il mio coinvolgimento nel lavoro operativo di una produzione pubblicitaria, accanto ai professionisti creativi e tecnici responsabili del film.',
-        subtitle: 'Supporto sul set per uno spot televisivo.',
+          'Ho supportato il team sul set dello spot televisivo Ristora con Iva Zanicchi, “Qualità al prezzo giusto”. Il mio contributo ha riguardato il supporto operativo durante la produzione, al fianco della squadra creativa e tecnica.',
+        subtitle: 'Supporto sul set dello spot Ristora con Iva Zanicchi.',
         role: 'Supporto sul set.',
         deliverables: ['Supporto operativo sul set'],
-        summary:
-          'Supporto sul set all’interno del team di produzione di uno spot televisivo Ristora.',
+        summary: 'Supporto operativo sul set dello spot televisivo Ristora con Iva Zanicchi.',
         sections: [],
-        links: [],
+        links: [
+          {
+            label: 'Guarda lo spot con Iva Zanicchi',
+            href: 'https://www.youtube.com/watch?v=hQ0G54KtrCg',
+          },
+        ],
       },
     },
   },
@@ -1154,7 +1163,7 @@ const definitions: ProjectDefinition[] = [
         role: 'Landing page design and development.',
         deliverables: ['Landing page design', 'Web development'],
         sections: [],
-        links: [],
+        links: [{ label: 'Website preview', href: 'https://smallfly.vidmotion.it/' }],
       },
       it: {
         description:
@@ -1165,7 +1174,7 @@ const definitions: ProjectDefinition[] = [
         role: 'Design e sviluppo della landing page.',
         deliverables: ['Design della landing page', 'Sviluppo web'],
         sections: [],
-        links: [],
+        links: [{ label: 'Anteprima del sito', href: 'https://smallfly.vidmotion.it/' }],
       },
     },
   },
@@ -1363,7 +1372,18 @@ function localize(locale: Locale): Project[] {
     ...project,
     ...copy[locale],
     videos: videos.map(({ caption, ...video }) => ({ ...video, caption: caption[locale] })),
-    gallery: images
+    galleryPresentation: projectMockups[project.id] ? 'mockups' : undefined,
+    photography:
+      project.mediaLayout === 'editorial'
+        ? images.map(({ caption, src, width, height }) => ({
+            src,
+            width,
+            height,
+            caption: caption[locale],
+            alt: `${project.title} — ${caption[locale]}`,
+          }))
+        : undefined,
+    gallery: (projectMockups[project.id] ?? images)
       .filter((image) => !image.locale || image.locale === locale)
       .map(({ caption, src, width, height }) => ({
         src,

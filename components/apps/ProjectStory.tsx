@@ -14,6 +14,10 @@ export function ProjectStory({
   mobile?: boolean
 }) {
   const text = uiText[locale]
+  const editorial =
+    project.mediaLayout === 'editorial' &&
+    project.galleryPresentation !== 'mockups' &&
+    project.gallery.length > 2
   return (
     <article
       className={`${styles.story} ${mobile ? styles.mobile : ''}`}
@@ -90,7 +94,7 @@ export function ProjectStory({
 
       {project.gallery.length > 0 && (
         <section
-          className={`${styles.section} ${project.mediaLayout === 'editorial' && project.gallery.length > 2 ? styles.editorial : ''}`}
+          className={`${styles.section} ${editorial ? styles.editorial : ''}`}
           aria-label={text.projectGallery}
         >
           {project.gallery.map((image, index) => (
@@ -107,7 +111,7 @@ export function ProjectStory({
                   width={image.width}
                   height={image.height}
                   sizes={
-                    project.mediaLayout === 'editorial' && project.gallery.length > 2 && index > 0
+                    editorial && index > 0
                       ? '(max-width: 420px) calc(100vw - 48px), (max-width: 767px) calc(50vw - 32px), 320px'
                       : '(max-width: 767px) calc(100vw - 48px), 720px'
                   }

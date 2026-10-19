@@ -62,6 +62,8 @@ export interface Project {
     logoHeight?: number
   }
   gallery: ProjectImage[]
+  galleryPresentation?: 'mockups'
+  photography?: ProjectImage[]
   videos?: ProjectVideo[]
   mediaLayout?: 'editorial'
   credits: ProjectCredit[]

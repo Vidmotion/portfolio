@@ -21,7 +21,7 @@ function collection(locale: Locale) {
     ...getProjects(locale)
       .filter((project) => project.mediaLayout === 'editorial')
       .flatMap((project) =>
-        project.gallery.map((image) => ({
+        (project.photography ?? project.gallery).map((image) => ({
           id: `${project.id}-${image.src.split('/').pop()}`,
           src: image.src,
           alt: `${project.title} · ${image.caption}`,
