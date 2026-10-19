@@ -372,7 +372,11 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
                     {text.studioTime}
                   </span>
                 </div>
-                <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                <nav
+                  className={`${styles.apps} ${styles.appQuad}`}
+                  aria-label={text.apps}
+                  data-wallpaper-label-group=""
+                >
                   {renderApps(apps)}
                 </nav>
               </div>
@@ -414,7 +418,11 @@ export function MobileHomeScreen(props: MobileHomeScreenProps) {
               </motion.button>
               <div className={styles.splitGrid}>
                 <ExpertiseWidget launch={launch} open={props.onOpenNotes} reduced={reduced} />
-                <nav className={`${styles.apps} ${styles.appQuad}`} aria-label={text.apps}>
+                <nav
+                  className={`${styles.apps} ${styles.appQuad}`}
+                  aria-label={text.apps}
+                  data-wallpaper-label-group=""
+                >
                   {renderApps(personalApps)}
                 </nav>
               </div>

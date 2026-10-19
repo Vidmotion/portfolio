@@ -15,5 +15,6 @@ export const appIcons = {
 } satisfies Record<ApplicationId, IconId>
 
 export function iconSource(id: IconId) {
-  return `/icons/shared/${id}.webp`
+  // The handset is a compact vector; keep it sharp at every shell's icon size.
+  return `/icons/shared/${id}.${id === 'contacts' ? 'svg' : 'webp'}`
 }

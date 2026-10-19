@@ -18,10 +18,10 @@
     "edgeToEdge": false
   },
   "contacts": {
-    "source": "find me.svg",
+    "source": "phone.svg",
     "family": "authored",
-    "scale": 1,
-    "edgeToEdge": true
+    "scale": 0.72,
+    "edgeToEdge": false
   },
   "mail": {
     "source": "message me.svg",

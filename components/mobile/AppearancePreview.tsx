@@ -32,7 +32,7 @@ export function AppearancePreview() {
           <small>CARLO’S iPHONE</small>
           <strong>{bigTime}</strong>
         </div>
-        <div className={styles.apps}>
+        <div className={styles.apps} data-wallpaper-label-group="">
           {(
             [
               ['projects', text.projects],

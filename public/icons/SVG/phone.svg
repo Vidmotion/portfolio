@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="handset-silver" x1="17" y1="4" x2="44" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset=".46" stop-color="#efeff2"/>
+      <stop offset="1" stop-color="#b4b6bd"/>
+    </linearGradient>
+  </defs>
+  <path d="M18.6 5.8C17.3 3.7 15.5 3.3 13.3 4.2L9.2 6.1C4.8 8.2 3.5 12.2 4.1 17.4C5.8 33.6 30.4 58.2 46.6 59.9C51.8 60.5 55.8 59.2 57.9 54.8L59.8 50.7C60.7 48.5 60.3 46.7 58.2 45.4L47.8 38.7C45.9 37.5 44.2 37.7 42.4 38.8L37.7 41.8C36.4 42.6 35.3 42.6 33.9 41.6C29.6 38.5 25.5 34.4 22.4 30.1C21.4 28.7 21.4 27.6 22.2 26.3L25.2 21.6C26.3 19.8 26.5 18.1 25.3 16.2L18.6 5.8Z" fill="url(#handset-silver)" stroke="#fff" stroke-opacity=".45" stroke-width=".35" stroke-linejoin="round"/>
+</svg>

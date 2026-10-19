@@ -44,6 +44,7 @@ export function useWallpaperLabels(textColor: string, opacity: number) {
     let movingParents = new Set<Element>()
     const update = () => {
       const parents = new Set<Element>()
+      const groups = new Map<Element, { labels: HTMLElement[]; luminance: number }>()
       const labels = document.querySelectorAll<HTMLElement>('[data-wallpaper-label]')
       for (const label of labels) {
         if (label.closest('[inert], [aria-hidden="true"]') || !label.getClientRects().length)
@@ -88,6 +89,16 @@ export function useWallpaperLabels(textColor: string, opacity: number) {
               ) / 15
           }
         }
+        // Mobile app grids share one contrast decision so adjacent labels stay consistent.
+        // Other labels still adapt independently, including draggable desktop folders.
+        const key = label.closest('[data-wallpaper-label-group]') ?? label
+        const group = groups.get(key) ?? { labels: [], luminance: 0 }
+        group.labels.push(label)
+        group.luminance += average
+        groups.set(key, group)
+      }
+      for (const group of groups.values()) {
+        const average = group.luminance / group.labels.length
         const dark = '#17202a'
         const useLight =
           1.05 / (average + 0.05) > (average + 0.05) / (luminance([23, 32, 42]) + 0.05)
@@ -97,10 +108,12 @@ export function useWallpaperLabels(textColor: string, opacity: number) {
         const shadow = lightText
           ? '0 1px 2px rgba(0,0,0,.8),0 0 4px rgba(0,0,0,.6)'
           : '0 1px 2px rgba(255,255,255,.85),0 0 4px rgba(255,255,255,.65)'
-        if (label.style.getPropertyValue('--wallpaper-label-color') !== color)
-          label.style.setProperty('--wallpaper-label-color', color)
-        if (label.style.getPropertyValue('--wallpaper-label-shadow') !== shadow)
-          label.style.setProperty('--wallpaper-label-shadow', shadow)
+        for (const label of group.labels) {
+          if (label.style.getPropertyValue('--wallpaper-label-color') !== color)
+            label.style.setProperty('--wallpaper-label-color', color)
+          if (label.style.getPropertyValue('--wallpaper-label-shadow') !== shadow)
+            label.style.setProperty('--wallpaper-label-shadow', shadow)
+        }
       }
       if (parents.size !== movingParents.size || [...parents].some((p) => !movingParents.has(p))) {
         positionObserver.disconnect()
